@@ -61,6 +61,8 @@
     <Compile Include="Entities\Node.cs" />
     <Compile Include="Entities\NodeTree.cs" />
     <Compile Include="Entities\OptimalConcept.cs" />
+    <Compile Include="Entities\OptimalConceptTreeItem.cs" />
+    <Compile Include="Entities\OptimalTree.cs" />
     <Compile Include="Entities\Rank.cs" />
     <Compile Include="Entities\RootNode.cs" />
     <Compile Include="Entities\SimpleNode.cs" />

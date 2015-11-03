@@ -11,7 +11,7 @@ namespace ConceptualBrowser.Business.Common
     public class ConceptExtraction
     {
         List<Node> nodes = new List<Node>();
-        public List<OptimalConcept> Extract(String text)
+        public List<OptimalConceptTreeItem> Extract(String text)
         {
             Stopwatch sw = new Stopwatch();
 
@@ -36,7 +36,31 @@ namespace ConceptualBrowser.Business.Common
 
             List<OptimalConcept> optimals = coverage.ExtractAll();
 
-            return optimals.OrderByDescending(o => o.Gain).ToList();
+            List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
+
+            return optimalTree;
+        }
+
+        public List<OptimalConceptTreeItem> CreateTree(List<OptimalConcept> optimals)
+        {
+            List<OptimalConceptTreeItem> treeItems = new List<OptimalConceptTreeItem>();
+
+            int i = 0;
+            int? parentId = null;
+            foreach(OptimalConcept optimal in optimals)
+            {
+                if (i != 0)
+                    parentId = (i - 1) / 2;
+                treeItems.Add(new OptimalConceptTreeItem()
+                {
+                    Id = i,
+                    ParentId = parentId,
+                    OptimalConcept = optimal
+                });
+                i++;
+            }
+
+            return treeItems;
         }
     }
 }
