@@ -45,12 +45,14 @@ namespace ConceptualBrowser.Business.Common
         {
             List<OptimalConceptTreeItem> treeItems = new List<OptimalConceptTreeItem>();
 
-            int i = 0;
+            int i = 1;
             int? parentId = null;
             foreach(OptimalConcept optimal in optimals)
             {
                 if (i != 0)
-                    parentId = (i - 1) / 2;
+                {
+                    parentId = ((i + 1) - 1) / 2;
+                }
                 treeItems.Add(new OptimalConceptTreeItem()
                 {
                     Id = i,

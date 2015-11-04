@@ -22,6 +22,7 @@ namespace ConceptualBrowser.FormUI
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
         {
+            treeViewBrowser.Nodes.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
 
@@ -29,11 +30,12 @@ namespace ConceptualBrowser.FormUI
             {
                 try
                 {
-                    string text = File.ReadAllText(openFileDialog.FileName);
+                    string text = File.ReadAllText(openFileDialog.FileName, Encoding.Default);
                     txtText.Text = text;
 
                     ConceptExtraction ce = new ConceptExtraction();
                     List<OptimalConceptTreeItem> optimals = ce.Extract(text);
+                    //treeViewBrowser.Nodes.Add(optimals[0].OptimalConcept.ConceptName);
                     FillNode(optimals, null);
                     //AddListToTree(optimals);
                 }

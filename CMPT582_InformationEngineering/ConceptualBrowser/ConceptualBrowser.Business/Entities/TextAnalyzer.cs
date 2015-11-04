@@ -38,7 +38,7 @@ namespace ConceptualBrowser.Business.Entities
         {
             List<string> keywords = new List<string>();
             char[] splitChars = 
-                new char[] { ',', ' ', '\n', '\t', '©', '-', '<', '>', '/', '\\', '.', '(', ')', '?', '@', '^', '#', '%', '&', '*', '$', '!', ';', ':', '\"', '{', '}', '~', '\'', '[',']' };
+                new char[] { ',', ' ', '\n', '\t', '©', '-', '<', '>', '/', '\\', '.', '(', ')', '?', '@', '^', '#', '%', '&', '*', '$', '!', ';', ':', '\"', '{', '}', '~', '\'', '[',']', '“' };
             string[] tokens = sentence.Split(splitChars);
             foreach (String word in tokens)
             {
@@ -46,7 +46,7 @@ namespace ConceptualBrowser.Business.Entities
                 {
                     IStemmer stemmer = new EnglishStemmer();
                     String root = stemmer.Stem(word);
-                    if (!IsEmptyWord(word))
+                    if (!IsEmptyWord(root))
                         keywords.Add(word);
                 }
             }
