@@ -10,7 +10,7 @@ namespace ConceptualBrowser.Business.Entities
     {
         public int Number { get; set; } //Number of Keyword Node
         public string Keyword { get; set; }// name of keywordNode
-        public List<Node> Nodes { get; set; } = new List<Node>();// list of URLs associated with this KeywordNode
+        public List<Node> Nodes { get; set; } = new List<Node>();// list of words associated with this KeywordNode
         public double KeywordRank { get; set; } // rank or gain of keywordNode
 
         public KeywordNode(string keyWord, int number, int rank, List<Node> nodes)
