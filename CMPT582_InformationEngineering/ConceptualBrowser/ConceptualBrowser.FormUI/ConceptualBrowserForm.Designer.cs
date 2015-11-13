@@ -32,9 +32,9 @@
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewBrowser = new System.Windows.Forms.TreeView();
-            this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txtText = new System.Windows.Forms.TextBox();
             this.menuStripMain.SuspendLayout();
             this.SuspendLayout();
@@ -62,31 +62,36 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
+            // 
+            // exportMenuItem
+            // 
+            this.exportMenuItem.Name = "exportMenuItem";
+            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exportMenuItem.Text = "E&xport";
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // treeViewBrowser
             // 
+            this.treeViewBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treeViewBrowser.Location = new System.Drawing.Point(0, 24);
             this.treeViewBrowser.Name = "treeViewBrowser";
             this.treeViewBrowser.Size = new System.Drawing.Size(285, 657);
             this.treeViewBrowser.TabIndex = 1;
             // 
-            // exportMenuItem
-            // 
-            this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportMenuItem.Text = "E&xport";
-            // 
             // txtText
             // 
+            this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtText.Location = new System.Drawing.Point(292, 24);
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
