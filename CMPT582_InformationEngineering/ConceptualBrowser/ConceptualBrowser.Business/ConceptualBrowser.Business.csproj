@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ConceptExtraction.cs" />
-    <Compile Include="Common\EmptyWords.cs" />
+    <Compile Include="Common\Stemmer\EmptyWords.cs" />
     <Compile Include="Common\Stemmer\Among.cs" />
+    <Compile Include="Common\Stemmer\EmptyWordsFrench.cs" />
     <Compile Include="Common\Stemmer\EnglishStemmer.cs" />
+    <Compile Include="Common\Stemmer\FrenchStemmer.cs" />
+    <Compile Include="Common\Stemmer\IEmptyWords.cs" />
     <Compile Include="Common\Stemmer\IStemmer.cs" />
     <Compile Include="Common\Stemmer\StemmerOperations.cs" />
     <Compile Include="Entities\BinaryRelation.cs" />

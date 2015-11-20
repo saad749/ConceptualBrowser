@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using ConceptualBrowser.Business.Common.Stemmer;
 
 namespace ConceptualBrowser.Business.Common
 {
@@ -15,7 +16,10 @@ namespace ConceptualBrowser.Business.Common
         {
             Stopwatch sw = new Stopwatch();
 
-            ITextAnalyzer textAnalyzer = new TextAnalyzer();
+            IStemmer stemmer = new EnglishStemmer();
+            IEmptyWords emptyWords = new EmptyWords();
+
+            ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
 
             List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
 
@@ -31,7 +35,7 @@ namespace ConceptualBrowser.Business.Common
 
             List<String> sentences = textAnalyzer.GetSentences(text);
 
-            Coverage coverage = new Coverage();
+            Coverage coverage = new Coverage(stemmer, emptyWords);
             coverage.CreateBinaryRelation(sentences, nodes, false);
 
             List<OptimalConcept> optimals = coverage.ExtractAll();

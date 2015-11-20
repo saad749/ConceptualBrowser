@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConceptualBrowser.Business.Common.Stemmer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,12 +18,22 @@ namespace ConceptualBrowser.Business.Entities
         public List<OptimalConcept> OptimalConcepts { get; set; } = new List<OptimalConcept>();
         public ConceptTree HeapConcepts { get; set; } = new ConceptTree(1000);
 
+        public IStemmer Stemmer { get; set; }
+        public IEmptyWords EmptyWordsRoot { get; set; }
+
+
+        public Coverage(IStemmer stemmer, IEmptyWords emptywords)
+        {
+            Stemmer = stemmer;
+            EmptyWordsRoot = emptywords;
+        }
+
         public void CreateBinaryRelation(List<string> sentences, List<Node> nodes, bool rankedDocs)
         {
             Nodes = nodes;
             TotalResults = nodes.Count;
             BinaryRelation = new BinaryRelation(TotalResults, MaxRank);
-            ITextAnalyzer textAnalyzer = new TextAnalyzer();
+            ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
             for (int i = 0; i < sentences.Count; i++)
             {
                 List<string> keyWords = textAnalyzer.Tokenizer(sentences[i]);

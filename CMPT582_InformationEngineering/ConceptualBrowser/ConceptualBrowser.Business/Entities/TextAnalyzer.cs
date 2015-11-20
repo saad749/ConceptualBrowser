@@ -12,6 +12,14 @@ namespace ConceptualBrowser.Business.Entities
 {
     class TextAnalyzer : ITextAnalyzer
     {
+        public IStemmer Stemmer { get; set; }
+        public IEmptyWords EmptyWords { get; set; }
+
+        public TextAnalyzer(IStemmer stemmer, IEmptyWords emptywords)
+        {
+            Stemmer = stemmer;
+            EmptyWords = emptywords;
+        }
         public List<String> GetSentences(string text)
         {
             List<String> sentences = new List<string>();
@@ -44,22 +52,15 @@ namespace ConceptualBrowser.Business.Entities
             {
                 if(word.Length > 1)
                 {
-                    IStemmer stemmer = new EnglishStemmer();
-                    String root = stemmer.Stem(word);
-                    if (!IsEmptyWord(root))
+                    String root = Stemmer.Stem(word);
+                    if (!EmptyWords.IsEmptyWord(root))
                         keywords.Add(word);
                 }
             }
             return keywords;
         }
 
-        public bool IsEmptyWord(string word)
-        {
-            EmptyWords emptyWords = new EmptyWords();
 
-            return emptyWords.EmptyWordRoots.Contains(word.ToLower()) ? true : false;
-
-        }
 
 
     }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConceptualBrowserConsole
+namespace ConceptualBrowser.Business.Common.Stemmer
 {
-    class Program
+    public interface IEmptyWords
     {
-        static void Main(string[] args)
-        {
-        }
+        bool IsEmptyWord(string word);
     }
+
+    
 }
