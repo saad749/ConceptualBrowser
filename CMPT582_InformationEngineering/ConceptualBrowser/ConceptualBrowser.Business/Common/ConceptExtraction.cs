@@ -16,8 +16,10 @@ namespace ConceptualBrowser.Business.Common
         {
             Stopwatch sw = new Stopwatch();
 
-            IStemmer stemmer = new EnglishStemmer();
-            IEmptyWords emptyWords = new EmptyWords();
+            ;           //IStemmer stemmer = new EnglishStemmer();
+            //IEmptyWords emptyWords = new EmptyWords();
+            IStemmer stemmer = new FrenchStemmer();
+            IEmptyWords emptyWords = new EmptyWordsFrench();
 
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
 
