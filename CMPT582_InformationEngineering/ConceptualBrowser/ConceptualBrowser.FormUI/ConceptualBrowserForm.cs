@@ -9,15 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConceptualBrowser.Business.Common;
+using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Entities;
 
 namespace ConceptualBrowser.FormUI
 {
     public partial class ConceptualBrowserForm : Form
     {
+        public string Langauge { get; set; }
+
         public ConceptualBrowserForm()
         {
             InitializeComponent();
+            this.tsAddToStopWords.Click += new EventHandler(AddToStopWords);
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
@@ -33,11 +37,16 @@ namespace ConceptualBrowser.FormUI
                     string text = File.ReadAllText(openFileDialog.FileName, Encoding.Default);
                     txtText.Text = text;
 
+
+                    Langauge = DetectLanguage(text);
+                    tssLanguage.Text = "Language: " + Langauge;
+
+
                     ConceptExtraction ce = new ConceptExtraction();
-                    List<OptimalConceptTreeItem> optimals = ce.Extract(text);
-                    //treeViewBrowser.Nodes.Add(optimals[0].OptimalConcept.ConceptName);
+                    List<OptimalConceptTreeItem> optimals = ce.Extract(text, Langauge);
+
+
                     FillNode(optimals, null);
-                    //AddListToTree(optimals);
                 }
                 catch (IOException ex)
                 {
@@ -57,9 +66,28 @@ namespace ConceptualBrowser.FormUI
             {
                 var newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName);//, optimal.Name);
                 newNode.Tag = optimal.Id;
+                newNode.ContextMenuStrip = ctxMenuTreeView;
 
                 FillNode(optimals, newNode);
             }
+        }
+
+        private string DetectLanguage(string text)
+        {
+            int sampleStringLength = text.Length > 250 ? 250 : text.Length;
+            string textSample = text.Substring(0, sampleStringLength);
+            LanguageDetection detection = new LanguageDetection();
+
+            return detection.DetectLanguage(textSample);
+        }
+
+        private void AddToStopWords(object sender, EventArgs e)
+        {
+            EmptyWords emptyWords = new EmptyWords(Langauge);
+
+            string text = treeViewBrowser.SelectedNode.Text;
+            emptyWords.AppendEmptyWordsToFile(text);
+
         }
 
     }

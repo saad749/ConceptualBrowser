@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConceptualBrowserForm));
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,7 +37,13 @@
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewBrowser = new System.Windows.Forms.TreeView();
             this.txtText = new System.Windows.Forms.TextBox();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.tssLanguage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ctxMenuTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsAddToStopWords = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
+            this.statusStrip.SuspendLayout();
+            this.ctxMenuTreeView.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -84,7 +91,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.treeViewBrowser.Location = new System.Drawing.Point(0, 24);
             this.treeViewBrowser.Name = "treeViewBrowser";
-            this.treeViewBrowser.Size = new System.Drawing.Size(285, 657);
+            this.treeViewBrowser.Size = new System.Drawing.Size(285, 632);
             this.treeViewBrowser.TabIndex = 1;
             // 
             // txtText
@@ -96,14 +103,44 @@
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
             this.txtText.ReadOnly = true;
-            this.txtText.Size = new System.Drawing.Size(716, 657);
+            this.txtText.Size = new System.Drawing.Size(716, 632);
             this.txtText.TabIndex = 2;
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssLanguage});
+            this.statusStrip.Location = new System.Drawing.Point(0, 659);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1008, 22);
+            this.statusStrip.TabIndex = 3;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // tssLanguage
+            // 
+            this.tssLanguage.Name = "tssLanguage";
+            this.tssLanguage.Size = new System.Drawing.Size(151, 17);
+            this.tssLanguage.Text = "Language: Not Yet Selected";
+            // 
+            // ctxMenuTreeView
+            // 
+            this.ctxMenuTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsAddToStopWords});
+            this.ctxMenuTreeView.Name = "ctxMenuTreeView";
+            this.ctxMenuTreeView.Size = new System.Drawing.Size(214, 48);
+            // 
+            // tsAddToStopWords
+            // 
+            this.tsAddToStopWords.Name = "tsAddToStopWords";
+            this.tsAddToStopWords.Size = new System.Drawing.Size(213, 22);
+            this.tsAddToStopWords.Text = "Add to Stop/Empty Words";
             // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.txtText);
             this.Controls.Add(this.treeViewBrowser);
             this.Controls.Add(this.menuStripMain);
@@ -114,6 +151,9 @@
             this.Text = "Conceptual Browser";
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
+            this.ctxMenuTreeView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,6 +168,10 @@
         private System.Windows.Forms.TreeView treeViewBrowser;
         private System.Windows.Forms.ToolStripMenuItem exportMenuItem;
         private System.Windows.Forms.TextBox txtText;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel tssLanguage;
+        private System.Windows.Forms.ContextMenuStrip ctxMenuTreeView;
+        private System.Windows.Forms.ToolStripMenuItem tsAddToStopWords;
     }
 }
 

@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ConceptExtraction.cs" />
+    <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Stemmer\CzechStemmer.cs" />
     <Compile Include="Common\Stemmer\DanishStemmer.cs" />
     <Compile Include="Common\Stemmer\DutchStemmer.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Common\Stemmer\RussianStemmer.cs" />
     <Compile Include="Common\Stemmer\SpanishStemmer.cs" />
     <Compile Include="Common\Stemmer\StemmerOperations.cs" />
+    <Compile Include="Common\Stemmer\Stemmers.cs" />
     <Compile Include="Entities\BinaryRelation.cs" />
     <Compile Include="Entities\ConceptTree.cs" />
     <Compile Include="Entities\Coverage.cs" />
