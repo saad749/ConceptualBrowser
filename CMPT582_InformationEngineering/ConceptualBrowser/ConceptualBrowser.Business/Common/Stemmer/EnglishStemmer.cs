@@ -8,7 +8,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 {
     public class EnglishStemmer : StemmerOperations, IStemmer
     {
-        private readonly static Among[] a_0 =
+        private static readonly Among[] a_0 =
         {
             new Among ( "arsen", -1, -1,null ),
             new Among ( "commun", -1, -1, null ),
@@ -16,7 +16,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         };
 
 
-        private readonly static Among[] a_1 =
+        private static readonly Among[] a_1 =
         {
             new Among ( "'", -1, 1, null),
             new Among ( "'s'", 0, 1, null),
@@ -24,7 +24,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         };
 
 
-        private readonly static Among[] a_2 =
+        private static readonly Among[] a_2 =
         {
             new Among ( "ied", -1, 2, null),
             new Among ( "s", -1, 3, null),
@@ -35,7 +35,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         };
 
 
-        private readonly static Among[] a_3 =
+        private static readonly Among[] a_3 =
         {
             new Among ( "", -1, 3, null),
             new Among ( "bb", 0, 2, null),
@@ -53,7 +53,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         };
 
 
-        private readonly static Among[] a_4 =
+        private static readonly Among[] a_4 =
         {
             new Among ( "ed", -1, 2, null),
             new Among ( "eed", 0, 1, null),
@@ -64,7 +64,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         };
 
 
-        private readonly static Among[] a_5 =
+        private static readonly Among[] a_5 =
         {
             new Among ( "anci", -1, 3, null),
             new Among ( "enci", -1, 2, null),
@@ -95,7 +95,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
 
 
-        private readonly static Among[] a_6 =
+        private static readonly Among[] a_6 =
         {
             new Among ( "icate", -1, 4, null),
             new Among ( "ative", -1, 6, null),
@@ -110,7 +110,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
 
 
-        private readonly static Among[] a_7 =
+        private static readonly Among[] a_7 =
         {
             new Among ( "ic", -1, 1, null),
             new Among ( "ance", -1, 1, null),
@@ -135,14 +135,14 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
 
 
-        private readonly static Among[] a_8 =
+        private static readonly Among[] a_8 =
         {
             new Among ( "e", -1, 1, null),
             new Among ( "l", -1, 2, null)
         };
 
 
-        private readonly static Among[] a_9 =
+        private static readonly Among[] a_9 =
         {
             new Among ( "succeed", -1, -1, null),
             new Among ( "proceed", -1, -1, null),
@@ -156,7 +156,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
 
 
-        private readonly static Among[] a_10 =
+        private static readonly Among[] a_10 =
         {
             new Among ( "andes", -1, -1, null),
             new Among ( "atlas", -1, -1, null),

@@ -30,6 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IvanAkcheurov.Commons, Version=0.2.1.30, Culture=neutral, PublicKeyToken=a61413de1d13f8fc, processorArchitecture=MSIL">
+      <HintPath>..\packages\NTextCat.0.2.1.30\lib\net40\IvanAkcheurov.Commons.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IvanAkcheurov.NClassify, Version=0.2.1.30, Culture=neutral, PublicKeyToken=a61413de1d13f8fc, processorArchitecture=MSIL">
+      <HintPath>..\packages\NTextCat.0.2.1.30\lib\net40\IvanAkcheurov.NClassify.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NTextCat, Version=0.2.1.30, Culture=neutral, PublicKeyToken=a61413de1d13f8fc, processorArchitecture=MSIL">
+      <HintPath>..\packages\NTextCat.0.2.1.30\lib\net40\NTextCat.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,13 +53,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ConceptExtraction.cs" />
+    <Compile Include="Common\Stemmer\CzechStemmer.cs" />
+    <Compile Include="Common\Stemmer\DanishStemmer.cs" />
+    <Compile Include="Common\Stemmer\DutchStemmer.cs" />
     <Compile Include="Common\Stemmer\EmptyWords.cs" />
     <Compile Include="Common\Stemmer\Among.cs" />
     <Compile Include="Common\Stemmer\EmptyWordsFrench.cs" />
     <Compile Include="Common\Stemmer\EnglishStemmer.cs" />
+    <Compile Include="Common\Stemmer\FinnishStemmer.cs" />
     <Compile Include="Common\Stemmer\FrenchStemmer.cs" />
+    <Compile Include="Common\Stemmer\GermanStemmer.cs" />
+    <Compile Include="Common\Stemmer\HungarianStemmer.cs" />
     <Compile Include="Common\Stemmer\IEmptyWords.cs" />
     <Compile Include="Common\Stemmer\IStemmer.cs" />
+    <Compile Include="Common\Stemmer\ItalianStemmer.cs" />
+    <Compile Include="Common\Stemmer\NorwegianStemmer.cs" />
+    <Compile Include="Common\Stemmer\PortugueseStemmer.cs" />
+    <Compile Include="Common\Stemmer\RomanianStemmer.cs" />
+    <Compile Include="Common\Stemmer\RussianStemmer.cs" />
+    <Compile Include="Common\Stemmer\SpanishStemmer.cs" />
     <Compile Include="Common\Stemmer\StemmerOperations.cs" />
     <Compile Include="Entities\BinaryRelation.cs" />
     <Compile Include="Entities\ConceptTree.cs" />
@@ -67,7 +91,9 @@
     <Compile Include="ITextAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

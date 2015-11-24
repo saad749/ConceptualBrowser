@@ -39,9 +39,9 @@ namespace ConceptualBrowser.FormUI
                     FillNode(optimals, null);
                     //AddListToTree(optimals);
                 }
-                catch (IOException)
+                catch (IOException ex)
                 {
-                    MessageBox.Show("Input Exception");
+                    MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
                 }
 
             }
@@ -49,9 +49,9 @@ namespace ConceptualBrowser.FormUI
 
         private void FillNode(List<OptimalConceptTreeItem> optimals, TreeNode node)
         {
-            int parentID = node != null ? (int)node.Tag : 0;
+            int parentID = (int?) node?.Tag ?? 0;
 
-            TreeNodeCollection nodesCollection = node != null ? node.Nodes : treeViewBrowser.Nodes;
+            TreeNodeCollection nodesCollection = node?.Nodes ?? treeViewBrowser.Nodes;
 
             foreach (OptimalConceptTreeItem optimal in optimals.Where(i => i.ParentId == parentID))
             {

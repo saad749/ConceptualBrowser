@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using ConceptualBrowser.Business.Common.Stemmer;
+using NTextCat;
 
 namespace ConceptualBrowser.Business.Common
 {
@@ -15,10 +16,15 @@ namespace ConceptualBrowser.Business.Common
         public List<OptimalConceptTreeItem> Extract(String text)
         {
             Stopwatch sw = new Stopwatch();
+            int sampleStringLength = text.Length > 50 ? 50 : text.Length;
+            string textSample = text.Substring(0, sampleStringLength);
 
-            ;           //IStemmer stemmer = new EnglishStemmer();
+            string languageCode = DetectLanguage(textSample);
+           
+
+            //IStemmer stemmer = new EnglishStemmer();
             //IEmptyWords emptyWords = new EmptyWords();
-            IStemmer stemmer = new FrenchStemmer();
+            IStemmer stemmer = GetStemmer(languageCode);
             IEmptyWords emptyWords = new EmptyWordsFrench();
 
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
@@ -69,6 +75,61 @@ namespace ConceptualBrowser.Business.Common
             }
 
             return treeItems;
+        }
+
+        private string DetectLanguage(string sampleText)
+        {
+            var factory = new RankedLanguageIdentifierFactory();
+            var identifier = factory.Load("Core14.profile.xml");
+            var languages = identifier.Identify(sampleText);
+            var mostCertainLanguage = languages.FirstOrDefault();
+
+            if (mostCertainLanguage != null)
+            {
+                return mostCertainLanguage.Item1.Iso639_3;
+            }
+
+            Console.WriteLine("The language couldn’t be identified with an acceptable degree of certainty");
+
+            return "N/A";
+        }
+
+        private IStemmer GetStemmer(string languageCode)
+        {
+            switch (languageCode)
+            {
+                case "eng":
+                    return new EnglishStemmer();
+                case "fra":
+                    return new FrenchStemmer();
+                case "spa":
+                    return new SpanishStemmer();
+                case "ces":
+                    return new CzechStemmer();
+                case "dan":
+                    return new DanishStemmer();
+                case "nld":
+                    return new DutchStemmer();
+                case "fin":
+                    return new FinnishStemmer();
+                case "deu":
+                    return new GermanStemmer();
+                case "hun":
+                    return new HungarianStemmer();
+                case "ita":
+                    return new ItalianStemmer();
+                case "nor":
+                    return new NorwegianStemmer();
+                case "por":
+                    return new PortugueseStemmer();
+                case "ron":
+                    return  new RomanianStemmer();
+                case "rus":
+                    return new RussianStemmer();
+                default:
+                    return null;
+
+            }
         }
     }
 }
