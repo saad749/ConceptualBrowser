@@ -93,6 +93,7 @@
             this.treeViewBrowser.Name = "treeViewBrowser";
             this.treeViewBrowser.Size = new System.Drawing.Size(285, 632);
             this.treeViewBrowser.TabIndex = 1;
+            this.treeViewBrowser.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewBrowser_NodeMouseClick);
             // 
             // txtText
             // 
@@ -127,7 +128,7 @@
             this.ctxMenuTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddToStopWords});
             this.ctxMenuTreeView.Name = "ctxMenuTreeView";
-            this.ctxMenuTreeView.Size = new System.Drawing.Size(214, 48);
+            this.ctxMenuTreeView.Size = new System.Drawing.Size(214, 26);
             // 
             // tsAddToStopWords
             // 

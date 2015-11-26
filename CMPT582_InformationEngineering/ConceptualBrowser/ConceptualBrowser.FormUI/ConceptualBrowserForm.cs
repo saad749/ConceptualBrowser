@@ -90,5 +90,12 @@ namespace ConceptualBrowser.FormUI
 
         }
 
+        private void treeViewBrowser_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node != null)
+            {
+                treeViewBrowser.SelectedNode = e.Node;
+            }
+        }
     }
 }
