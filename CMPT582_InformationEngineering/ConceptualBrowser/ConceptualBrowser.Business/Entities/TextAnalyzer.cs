@@ -53,7 +53,7 @@ namespace ConceptualBrowser.Business.Entities
                 if(word.Length > 1)
                 {
                     String root = Stemmer.Stem(word);
-                    if (!EmptyWords.IsEmptyWord(root))
+                    if (!EmptyWords.IsEmptyWord(root) && !EmptyWords.IsEmptyWord(word))
                         keywords.Add(word);
                 }
             }

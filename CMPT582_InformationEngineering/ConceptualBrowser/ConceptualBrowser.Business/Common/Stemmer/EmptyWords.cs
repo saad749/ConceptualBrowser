@@ -100,7 +100,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                 LanguageFileDictionary = new Dictionary<string, string>()
                 {
                     {"eng", "EnglishStopWords_637.csv"},
-                    {"fra", "FrenchStopWords.csv"},
+                    {"fra", "FrenchStopWords_Unique_FullListFromInternet.txt"},
                     {"spa", ""}
                 };
 
@@ -120,14 +120,12 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         public void AppendEmptyWordsToFile(string word)
         {
             string root = Stemmer.Stem(word);
-            File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding.Default);
+            File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding.Unicode);
         }
 
         public bool IsEmptyWord(string word)
         {
-            if (word == "l’Académie" || word == "l’Académie")
-                Console.WriteLine("in If cond");
-            return EmptyWordRoots.Any( w => String.Equals(word.ToLowerInvariant(), w, StringComparison.OrdinalIgnoreCase));
+            return EmptyWordRoots.Any( w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
