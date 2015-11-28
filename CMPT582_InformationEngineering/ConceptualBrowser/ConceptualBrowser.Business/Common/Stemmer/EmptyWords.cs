@@ -101,7 +101,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                 {
                     {"eng", "EnglishStopWords_637.csv"},
                     {"fra", "FrenchStopWords_Unique_FullListFromInternet.txt"},
-                    {"spa", ""}
+                    {"spa", "SpanishStopWords_FullListFromInternet.txt"}
                 };
 
                 FileName = LanguageFileDictionary[Language];

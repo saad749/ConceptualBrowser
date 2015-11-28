@@ -369,13 +369,6 @@ namespace ConceptualBrowser.Business.Entities
         public OptimalConcept GetConcept(int number)
         {
             return OptimalConcepts.Where(c => c.ConceptNumber == number).FirstOrDefault();
-
-            //for (int i = 0; i < OptimalConcepts.Count; i++)
-            //{
-            //    if (OptimalConcepts[i].ConceptNumber == number)
-            //        return OptimalConcepts[i];
-            //}
-            //return null;
         }
     }
 }

@@ -29,12 +29,13 @@ namespace ConceptualBrowser.FormUI
             treeViewBrowser.Nodes.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
+            string fileName = openFileDialog.FileName;
 
-            if(!String.IsNullOrWhiteSpace(openFileDialog.FileName))
+            if (!String.IsNullOrWhiteSpace(fileName))
             {
                 try
                 {
-                    string text = File.ReadAllText(openFileDialog.FileName, Encoding.Default);
+                    string text = ReadFile(fileName);
                     txtText.Text = text;
 
 
@@ -74,7 +75,7 @@ namespace ConceptualBrowser.FormUI
 
         private string DetectLanguage(string text)
         {
-            int sampleStringLength = text.Length > 250 ? 250 : text.Length;
+            int sampleStringLength = text.Length > 1000 ? 1000 : text.Length;
             string textSample = text.Substring(0, sampleStringLength);
             LanguageDetection detection = new LanguageDetection();
 
@@ -96,6 +97,19 @@ namespace ConceptualBrowser.FormUI
             {
                 treeViewBrowser.SelectedNode = e.Node;
             }
+        }
+
+        private string ReadFile(string path)
+        {
+            return File.ReadAllText(path, Encoding.Default);
+
+            //using (var reader = new StreamReader(path))
+            //{
+            //    // Make sure you read from the file or it won't be able
+            //    // to guess the encoding
+            //    var file = reader.ReadToEnd();
+            //    Console.WriteLine(reader.CurrentEncoding);
+            //}
         }
     }
 }
