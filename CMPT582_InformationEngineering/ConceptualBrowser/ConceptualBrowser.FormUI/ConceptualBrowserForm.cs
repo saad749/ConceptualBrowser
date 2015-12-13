@@ -17,6 +17,8 @@ namespace ConceptualBrowser.FormUI
     public partial class ConceptualBrowserForm : Form
     {
         public string Langauge { get; set; }
+        public List<OptimalConceptTreeItem> OptimalTree { get; set; }
+        public string FileText { get; set; }
 
         public ConceptualBrowserForm()
         {
@@ -35,19 +37,19 @@ namespace ConceptualBrowser.FormUI
             {
                 try
                 {
-                    string text = ReadFile(fileName);
-                    txtText.Text = text;
+                    FileText = ReadFile(fileName);
+                    txtText.Text = FileText;
 
 
-                    Langauge = DetectLanguage(text);
+                    Langauge = DetectLanguage(FileText);
                     tssLanguage.Text = "Language: " + Langauge;
 
 
                     ConceptExtraction ce = new ConceptExtraction();
-                    List<OptimalConceptTreeItem> optimals = ce.Extract(text, Langauge);
+                    OptimalTree = ce.Extract(FileText, Langauge);
 
 
-                    FillNode(optimals, null);
+                    FillNode(OptimalTree, null);
                 }
                 catch (IOException ex)
                 {
@@ -65,9 +67,10 @@ namespace ConceptualBrowser.FormUI
 
             foreach (OptimalConceptTreeItem optimal in optimals.Where(i => i.ParentId == parentID))
             {
-                var newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName);//, optimal.Name);
+                TreeNode newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName);//, optimal.Name);
                 newNode.Tag = optimal.Id;
                 newNode.ContextMenuStrip = ctxMenuTreeView;
+
 
                 FillNode(optimals, newNode);
             }
@@ -96,6 +99,24 @@ namespace ConceptualBrowser.FormUI
             if (e.Node != null)
             {
                 treeViewBrowser.SelectedNode = e.Node;
+                OptimalConceptTreeItem optimal = OptimalTree.Find(t => t.Id == (int)e.Node.Tag);
+                List<int> coveringSentenceNumbers = optimal.OptimalConcept.Nodes.Select(n => n.Number).ToList();
+
+                List<String> sentences = FileText.Split(new char[] { '.', ',', ';' }).ToList();
+                txtText.Text = String.Empty;
+
+                for (int i = 0; i < sentences.Count; i++)
+                {
+                    if (coveringSentenceNumbers.Contains(i))
+                    {
+                        AppendText(txtText, sentences[i], Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 12.0F, FontStyle.Bold));
+                    }
+                    else
+                    {
+                        AppendText(txtText, sentences[i], Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                    }
+                }
+                
             }
         }
 
@@ -110,6 +131,25 @@ namespace ConceptualBrowser.FormUI
             //    var file = reader.ReadToEnd();
             //    Console.WriteLine(reader.CurrentEncoding);
             //}
+        }
+
+        public static void AppendText(RichTextBox box, string text, Color color, Font font)
+        {
+            int length = box.TextLength;  // at end of text
+            box.AppendText(text);
+            box.SelectionStart = length;
+            box.SelectionLength = text.Length;
+            box.SelectionColor = color;
+            box.SelectionFont = font;
+
+            //box.SelectionStart = box.TextLength;
+            //box.SelectionLength = 0;
+
+            //box.SelectionColor = color;
+            //box.SelectionFont = font;
+            //box.AppendText(text);
+            //box.SelectionColor = box.ForeColor;
+            //box.SelectionFont = new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular);
         }
     }
 }
