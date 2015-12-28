@@ -102,10 +102,18 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                 {
                     {"eng", new Tuple<string, Encoding> ("EnglishStopWords_637.csv", Encoding.Default)},
                     {"fra", new Tuple<string, Encoding> ("FrenchStopWords_Unique_FullListFromInternet.txt", Encoding.Default)},
-                    {"spa", new Tuple<string, Encoding> ( "SpanishStopWords_FullListFromInternet.txt", Encoding.Default)},
-                    {"ces", new Tuple<string, Encoding> ( "CzechStopWords_468_Unicode.txt", Encoding.Unicode)},
-                    {"dan", new Tuple<string, Encoding> ( "DanishStopWords_FullListFromInternet.csv", Encoding.Default)},
-                    {"nld", new Tuple<string, Encoding> ( "DutchStopWords_FullListFromInternet.csv", Encoding.Default)}
+                    {"spa", new Tuple<string, Encoding> ("SpanishStopWords_FullListFromInternet.txt", Encoding.Default)},
+                    {"ces", new Tuple<string, Encoding> ("CzechStopWords_468_Unicode.txt", Encoding.Unicode)},
+                    {"dan", new Tuple<string, Encoding> ("DanishStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"nld", new Tuple<string, Encoding> ("DutchStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"fin", new Tuple<string, Encoding> ("FinnishStopWords_Unicode_FullListFromInternet.txt", Encoding.Unicode)},
+                    {"deu", new Tuple<string, Encoding> ("GermanStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"hun", new Tuple<string, Encoding> ("HungarianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
+                    {"ita", new Tuple<string, Encoding> ("ItalianStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"nor", new Tuple<string, Encoding> ("NorwegianStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"por", new Tuple<string, Encoding> ("PortugueseStopWords_FullListFromInternet.txt", Encoding.Unicode)},
+                    {"rom", new Tuple<string, Encoding> ("RomanianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
+                    {"rus", new Tuple<string, Encoding> ("RussianStopWords_FullListFromInternet.txt", Encoding.Unicode)}
                 };
 
                 try
@@ -132,7 +140,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         public void AppendEmptyWordsToFile(string word)
         {
             string root = Stemmer.Stem(word);
-            File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding.Unicode);
+            File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding);
         }
 
         public bool IsEmptyWord(string word)

@@ -196,7 +196,12 @@
             "spa",
             "ces",
             "dan",
-            "nld"});
+            "nld",
+            "fin",
+            "deu",
+            "hun",
+            "nor"
+            });
             this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
