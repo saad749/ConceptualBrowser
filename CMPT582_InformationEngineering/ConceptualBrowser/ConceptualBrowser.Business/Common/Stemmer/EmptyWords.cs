@@ -14,7 +14,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         public string EmptyWordsFilePath { get; set; }
         public string FileName { get; set; }
         public IStemmer Stemmer { get; set; }
-        private Dictionary<string, string> LanguageFileDictionary { get; set; }
+        private Dictionary<string, Tuple<string, Encoding>> LanguageFileDictionary { get; set; }
+        private Encoding Encoding;
 
         public EmptyWords(string language, string emptyWordsFilePath = "Assets/", string fileName = "" )
         {
@@ -97,14 +98,25 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         {
             if (String.IsNullOrWhiteSpace((FileName)))
             {
-                LanguageFileDictionary = new Dictionary<string, string>()
+                LanguageFileDictionary = new Dictionary<string, Tuple<string, Encoding>>
                 {
-                    {"eng", "EnglishStopWords_637.csv"},
-                    {"fra", "FrenchStopWords_Unique_FullListFromInternet.txt"},
-                    {"spa", "SpanishStopWords_FullListFromInternet.txt"}
+                    {"eng", new Tuple<string, Encoding> ("EnglishStopWords_637.csv", Encoding.Default)},
+                    {"fra", new Tuple<string, Encoding> ("FrenchStopWords_Unique_FullListFromInternet.txt", Encoding.Default)},
+                    {"spa", new Tuple<string, Encoding> ( "SpanishStopWords_FullListFromInternet.txt", Encoding.Default)},
+                    {"ces", new Tuple<string, Encoding> ( "CzechStopWords_468_Unicode.txt", Encoding.Unicode)},
+                    {"dan", new Tuple<string, Encoding> ( "DanishStopWords_FullListFromInternet.csv", Encoding.Default)},
+                    {"nld", new Tuple<string, Encoding> ( "DutchStopWords_FullListFromInternet.csv", Encoding.Default)}
                 };
 
-                FileName = LanguageFileDictionary[Language];
+                try
+                {
+                    FileName = LanguageFileDictionary[Language].Item1;
+                    Encoding = LanguageFileDictionary[Language].Item2;
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw;
+                }
             }
 
             LoadEmptyWordsFromFile();
@@ -114,7 +126,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
         public void LoadEmptyWordsFromFile()
         {
-            EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName).ToList();
+            EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName, Encoding).ToList();
         }
 
         public void AppendEmptyWordsToFile(string word)

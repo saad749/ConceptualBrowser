@@ -35,12 +35,18 @@
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aNSIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uTF8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewBrowser = new System.Windows.Forms.TreeView();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tssLanguage = new System.Windows.Forms.ToolStripStatusLabel();
             this.ctxMenuTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddToStopWords = new System.Windows.Forms.ToolStripMenuItem();
             this.txtText = new System.Windows.Forms.RichTextBox();
+            this.labelLanguage = new System.Windows.Forms.Label();
+            this.cmbLanguage = new System.Windows.Forms.ComboBox();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -49,7 +55,8 @@
             // menuStripMain
             // 
             this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.encodingToolStripMenuItem});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripMain.Name = "menuStripMain";
             this.menuStripMain.Size = new System.Drawing.Size(1008, 24);
@@ -85,13 +92,46 @@
             this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
+            // encodingToolStripMenuItem
+            // 
+            this.encodingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.unicodeToolStripMenuItem,
+            this.aNSIToolStripMenuItem,
+            this.uTF8ToolStripMenuItem});
+            this.encodingToolStripMenuItem.Name = "encodingToolStripMenuItem";
+            this.encodingToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.encodingToolStripMenuItem.Text = "Encoding";
+            // 
+            // unicodeToolStripMenuItem
+            // 
+            this.unicodeToolStripMenuItem.Name = "unicodeToolStripMenuItem";
+            this.unicodeToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.unicodeToolStripMenuItem.Text = "Unicode";
+            this.unicodeToolStripMenuItem.Click += new System.EventHandler(this.unicodeToolStripMenuItem_Click);
+            // 
+            // aNSIToolStripMenuItem
+            // 
+            this.aNSIToolStripMenuItem.Checked = true;
+            this.aNSIToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.aNSIToolStripMenuItem.Name = "aNSIToolStripMenuItem";
+            this.aNSIToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.aNSIToolStripMenuItem.Text = "ANSI";
+            this.aNSIToolStripMenuItem.Click += new System.EventHandler(this.aNSIToolStripMenuItem_Click);
+            // 
+            // uTF8ToolStripMenuItem
+            // 
+            this.uTF8ToolStripMenuItem.Name = "uTF8ToolStripMenuItem";
+            this.uTF8ToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.uTF8ToolStripMenuItem.Text = "UTF-8";
+            this.uTF8ToolStripMenuItem.Click += new System.EventHandler(this.uTF8ToolStripMenuItem_Click);
+            // 
             // treeViewBrowser
             // 
             this.treeViewBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.treeViewBrowser.Location = new System.Drawing.Point(0, 24);
+            this.treeViewBrowser.Location = new System.Drawing.Point(0, 55);
             this.treeViewBrowser.Name = "treeViewBrowser";
-            this.treeViewBrowser.Size = new System.Drawing.Size(285, 632);
+            this.treeViewBrowser.Size = new System.Drawing.Size(285, 601);
             this.treeViewBrowser.TabIndex = 1;
             this.treeViewBrowser.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewBrowser_NodeMouseClick);
             // 
@@ -129,17 +169,46 @@
             this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtText.Location = new System.Drawing.Point(291, 24);
+            this.txtText.Location = new System.Drawing.Point(291, 55);
             this.txtText.Name = "txtText";
-            this.txtText.Size = new System.Drawing.Size(717, 632);
+            this.txtText.Size = new System.Drawing.Size(717, 601);
             this.txtText.TabIndex = 4;
             this.txtText.Text = "";
+            // 
+            // labelLanguage
+            // 
+            this.labelLanguage.AutoSize = true;
+            this.labelLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelLanguage.Location = new System.Drawing.Point(806, 30);
+            this.labelLanguage.Name = "labelLanguage";
+            this.labelLanguage.Size = new System.Drawing.Size(55, 13);
+            this.labelLanguage.TabIndex = 5;
+            this.labelLanguage.Text = "Langauge";
+            // 
+            // cmbLanguage
+            // 
+            this.cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLanguage.FormattingEnabled = true;
+            this.cmbLanguage.Items.AddRange(new object[] {
+            "Auto-Detect",
+            "eng",
+            "fra",
+            "spa",
+            "ces",
+            "dan",
+            "nld"});
+            this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
+            this.cmbLanguage.Name = "cmbLanguage";
+            this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
+            this.cmbLanguage.TabIndex = 6;
             // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.cmbLanguage);
+            this.Controls.Add(this.labelLanguage);
             this.Controls.Add(this.txtText);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.treeViewBrowser);
@@ -172,6 +241,12 @@
         private System.Windows.Forms.ContextMenuStrip ctxMenuTreeView;
         private System.Windows.Forms.ToolStripMenuItem tsAddToStopWords;
         private System.Windows.Forms.RichTextBox txtText;
+        private System.Windows.Forms.ToolStripMenuItem encodingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unicodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aNSIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uTF8ToolStripMenuItem;
+        private System.Windows.Forms.Label labelLanguage;
+        private System.Windows.Forms.ComboBox cmbLanguage;
     }
 }
 

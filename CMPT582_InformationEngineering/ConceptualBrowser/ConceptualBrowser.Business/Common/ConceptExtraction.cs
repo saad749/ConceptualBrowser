@@ -15,8 +15,17 @@ namespace ConceptualBrowser.Business.Common
         List<Node> nodes = new List<Node>();
         public List<OptimalConceptTreeItem> Extract(String text, string languageCode)
         {
-            IStemmer stemmer = Stemmers.GetStemmer(languageCode);
-            IEmptyWords emptyWords = new EmptyWords(languageCode);
+            IStemmer stemmer;
+            IEmptyWords emptyWords;
+            try
+            {
+                stemmer = Stemmers.GetStemmer(languageCode);
+                emptyWords = new EmptyWords(languageCode);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw;
+            }
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
 
 

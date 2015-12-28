@@ -19,10 +19,13 @@ namespace ConceptualBrowser.FormUI
         public string Langauge { get; set; }
         public List<OptimalConceptTreeItem> OptimalTree { get; set; }
         public string FileText { get; set; }
+        public Encoding Encoding { get; set; } = Encoding.Default;
+
 
         public ConceptualBrowserForm()
         {
             InitializeComponent();
+            cmbLanguage.SelectedIndex = 0;
             this.tsAddToStopWords.Click += new EventHandler(AddToStopWords);
         }
 
@@ -40,11 +43,9 @@ namespace ConceptualBrowser.FormUI
                     FileText = ReadFile(fileName);
                     txtText.Text = FileText;
 
-
-                    Langauge = DetectLanguage(FileText);
+                    //Also Take Language by User Input
+                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedItem.ToString();
                     tssLanguage.Text = "Language: " + Langauge;
-
-
                     ConceptExtraction ce = new ConceptExtraction();
                     OptimalTree = ce.Extract(FileText, Langauge);
 
@@ -54,6 +55,13 @@ namespace ConceptualBrowser.FormUI
                 catch (IOException ex)
                 {
                     MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    MessageBox.Show("The language of text is not supported" + Environment.NewLine
+                        + "Try choosing a different Encoding or choose a supported language" + Environment.NewLine
+                        + "Detected Language is " + Langauge + Environment.NewLine
+                        + ex.Message);
                 }
 
             }
@@ -122,7 +130,7 @@ namespace ConceptualBrowser.FormUI
 
         private string ReadFile(string path)
         {
-            return File.ReadAllText(path, Encoding.Default);
+            return File.ReadAllText(path, Encoding);
 
             //using (var reader = new StreamReader(path))
             //{
@@ -151,5 +159,30 @@ namespace ConceptualBrowser.FormUI
             //box.SelectionColor = box.ForeColor;
             //box.SelectionFont = new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular);
         }
+
+        private void unicodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Encoding = Encoding.Unicode;
+            ((ToolStripMenuItem) sender).Checked = true;
+            aNSIToolStripMenuItem.Checked = false;
+            uTF8ToolStripMenuItem.Checked = false;
+        }
+
+        private void aNSIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Encoding = Encoding.Default;
+            ((ToolStripMenuItem)sender).Checked = true;
+            unicodeToolStripMenuItem.Checked = false;
+            uTF8ToolStripMenuItem.Checked = false;
+        }
+
+        private void uTF8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Encoding = Encoding.Default;
+            ((ToolStripMenuItem)sender).Checked = true;
+            unicodeToolStripMenuItem.Checked = false;
+            aNSIToolStripMenuItem.Checked = false;
+        }
+
     }
 }
