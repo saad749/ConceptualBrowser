@@ -1,14 +1,10 @@
-﻿using ConceptualBrowser.Business.Common;
-using ConceptualBrowser.Business.Common.Stemmer;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using ConceptualBrowser.Business.Common.Stemmer;
 
-namespace ConceptualBrowser.Business.Entities
+namespace ConceptualBrowser.Business
 {
     class TextAnalyzer : ITextAnalyzer
     {
