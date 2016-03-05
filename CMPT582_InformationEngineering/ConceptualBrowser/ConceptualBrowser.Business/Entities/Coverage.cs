@@ -41,11 +41,11 @@ namespace ConceptualBrowser.Business.Entities
                 BinaryRelation.AppendToBinaryRelation(keyWords, nodes[i], rankedDocs);
             }
 
-            this.keywordsRank(rankedDocs);
+            this.KeywordsRank(rankedDocs);
             this.AddHighestRankKeywords();
         }
 
-        public void keywordsRank(bool rankedDocs)
+        public void KeywordsRank(bool rankedDocs)
         {
             if (rankedDocs)
             {
