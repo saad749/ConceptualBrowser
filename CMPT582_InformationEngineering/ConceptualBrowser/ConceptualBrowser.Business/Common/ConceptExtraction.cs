@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
+using ConceptualBrowser.Business.Common.Performance;
 using ConceptualBrowser.Business.Common.Stemmer;
 
 
@@ -15,6 +17,14 @@ namespace ConceptualBrowser.Business.Common
         List<Node> nodes = new List<Node>();
         public List<OptimalConceptTreeItem> Extract(String text, string languageCode)
         {
+            PerformanceMonitor monitor = new PerformanceMonitor
+            {
+                Checkpoints = new List<Tuple<string, long>>(),
+                Stopwatch = new Stopwatch()
+            };
+            monitor.Stopwatch.Start();
+            monitor.Checkpoints.Add( new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedTicks));
+
             IStemmer stemmer;
             IEmptyWords emptyWords;
             try
@@ -22,16 +32,20 @@ namespace ConceptualBrowser.Business.Common
                 stemmer = Stemmers.GetStemmer(languageCode);
                 emptyWords = new EmptyWords(languageCode);
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                throw;
+                throw ex;
             }
+
+            
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
 
-
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedTicks));
             List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
             List<String> sentences = textAnalyzer.GetSentences(text);
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedTicks));
 
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
             for (int i = 0; i < sentencesWithDelimiters.Count;i++)
             {
                 int[] ranks = new int[] { i + 1, i + 1};
@@ -40,13 +54,32 @@ namespace ConceptualBrowser.Business.Common
 
                 nodes.Add(new Node(i + "", -1, i, rank));
             }
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
 
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
             Coverage coverage = new Coverage(stemmer, emptyWords);
             coverage.CreateBinaryRelation(sentences, nodes, false);
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
 
+
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedTicks));
             List<OptimalConcept> optimals = coverage.ExtractAll();
+            monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedTicks));
+
 
             List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
+
+
+            monitor.Stopwatch.Stop();
+            StringBuilder sb = new StringBuilder();
+            foreach (var tuple in monitor.Checkpoints)
+            {
+                sb.Append(tuple.Item1);
+                sb.Append("\t");
+                sb.Append(tuple.Item2);
+                sb.AppendLine();
+            }
+            File.WriteAllText("PerformanceLog.txt", sb.ToString());
 
             return optimalTree;
         }
