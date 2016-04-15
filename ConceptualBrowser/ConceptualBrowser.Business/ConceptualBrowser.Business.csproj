@@ -89,12 +89,12 @@
     <Compile Include="Entities\OptimalTree.cs" />
     <Compile Include="Entities\Rank.cs" />
     <Compile Include="Entities\RootNode.cs" />
-    <Compile Include="Entities\SimpleNode.cs" />
     <Compile Include="Common\TextAnalysis\TextAnalyzer.cs" />
     <Compile Include="Common\TextAnalysis\ITextAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
