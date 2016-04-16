@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConceptualBrowser.Business.Common.Helpers;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -95,12 +96,14 @@ namespace ConceptualBrowser.Business.Entities
 
         public void MarkAsCovered(List<int[]> tuples, int current)
         {
+            //LogHelper.PrintListArray(tuples, "MarkAsCovered -- List Array - ");
             for (int i = 0; i < tuples.Count; i++)
             {
                 int[] pair = tuples[i];
                 KeywordNode keyword = Keywords[pair[0]];
+                //LogHelper.PrintKeyword(keyword, "Marked As Covered: ");
                 //((URLNode)keyword.getURLNodeHasNo(pair[1])).setCoveredBy(current);
-                keyword.Nodes.Where(n => n.Number == pair[1]).FirstOrDefault().CoveredBy = current;
+                keyword.Nodes.FirstOrDefault(n => n.Number == pair[1]).CoveredBy = current;
             }
         }
 

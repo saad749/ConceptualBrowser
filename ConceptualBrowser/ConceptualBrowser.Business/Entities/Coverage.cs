@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConceptualBrowser.Business.Common.Helpers;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -40,6 +41,8 @@ namespace ConceptualBrowser.Business.Entities
 
                 BinaryRelation.AppendToBinaryRelation(keyWords, nodes[i], rankedDocs);
             }
+
+
 
             this.KeywordsRank(rankedDocs);
             this.AddHighestRankKeywords();
@@ -84,7 +87,7 @@ namespace ConceptualBrowser.Business.Entities
 
         private void AddHighestRankKeywords()
         {
-            List<string> UsedKeywords = new List<string>();
+            List<string> usedKeywords = new List<string>();
             List<Node> namedNodes = new List<Node>();
 
             double max = MaxRank;
@@ -106,7 +109,7 @@ namespace ConceptualBrowser.Business.Entities
                             KeywordNode keywordNode = BinaryRelation.Keywords[j];
                             if (keywordNode.ContainsWord(node.Word))
                             {
-                                if (!UsedKeywords.Contains(keywordNode.Keyword))
+                                if (!usedKeywords.Contains(keywordNode.Keyword))
                                     if (keywordNode.KeywordRank < max)
                                     {
                                         max = keywordNode.KeywordRank;
@@ -117,7 +120,7 @@ namespace ConceptualBrowser.Business.Entities
                         }
                         if (keywordString == null)
                         {
-                            UsedKeywords.Clear();
+                            usedKeywords.Clear();
                             max = MaxRank;
                             KeywordNo = -1;
                             keywordString = null;
@@ -129,7 +132,7 @@ namespace ConceptualBrowser.Business.Entities
                             String key = (BinaryRelation.GetRootNode(keywordString)).getMaxLengthWord();
                             node.KeywordString = key;
                             max = MaxRank;
-                            UsedKeywords.Add(keywordString);
+                            usedKeywords.Add(keywordString);
                             namedNodes.Add(node);
                         }
                     }
@@ -155,8 +158,10 @@ namespace ConceptualBrowser.Business.Entities
         public List<OptimalConcept> ExtractAll()
         {
             int[] next = this.NextNonCovered(BinaryRelation);
+            //Console.WriteLine();
             while (next != null)
             {
+                //Console.WriteLine("Next: " + next[0] + " | " + next[1]);
                 this.ExtractOptimalConcept(this.BinaryRelation, next[0], next[1]);
                 next = this.NextNonCovered(this.BinaryRelation);
             }
@@ -177,21 +182,25 @@ namespace ConceptualBrowser.Business.Entities
         public int[] NextNonCovered(BinaryRelation binaryRelation)
         {
             List<KeywordNode> keywords = binaryRelation.Keywords.Values.ToList();
+            //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
             for (int i = 0; i < keywords.Count; i++)
             {
                 KeywordNode keyword = keywords[i];
+                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
 
                 List<Node> nodes = keyword.Nodes;
                 for (int j = 0; j < nodes.Count; j++)
                 {
                     Node node = nodes[j];
+                    //LogHelper.PrintNode(node, "NextNonCovered - ");
                     if (node.CoveredBy < 0)
                     {
                         int[] indexes = { keyword.Number, node.Number };
                         return indexes;
                     }
                 }
+                //Console.WriteLine();
             }
             return null;
         }
@@ -210,7 +219,7 @@ namespace ConceptualBrowser.Business.Entities
         // extract optimal concept that cover the tuple(k,u)
         public void ExtractOptimalConcepts(EquivalentRectangle equivalentRectangle, List<int[]> tuple, int k, int u)
         {
-
+            //LogHelper.PrintListArray(tuple, "ExtractOptimalConcepts -- List Array - k: " + k + " | u: " + u);
             bool conceptExtracted = false;
             EquivalentRectangle temp1 = new EquivalentRectangle();
             EquivalentRectangle temp2 = new EquivalentRectangle();
@@ -220,7 +229,6 @@ namespace ConceptualBrowser.Business.Entities
             /*#######################################################*/
             for (; !conceptExtracted;)
             {
-
                 double max = -10000;
                 EquivalentRectangle heighest = new EquivalentRectangle();
                 double e = -1;
@@ -243,23 +251,20 @@ namespace ConceptualBrowser.Business.Entities
                             uu = pair[1];
                         }
                         temp1 = temp2.Clone();
-
                     }
-
                 }
-
                 if (heighest.Keywords.Count == 0)
                 {
-
-
-
                     KeywordNode tempKeyword = this.BinaryRelation.Keywords[k];
                     List<KeywordNode> temp_keywords = new List<KeywordNode>();
                     temp_keywords.Add(tempKeyword);
 
-
                     List<Node> temp_Nodes = new List<Node>();
-                    Node node = tempKeyword.Nodes.Where(w => w.Number == u).FirstOrDefault();// getURLNodeHasNo(u);
+                    //Console.WriteLine();
+                    //LogHelper.PrintNode(tempKeyword.Nodes.FirstOrDefault(w => w.Number == u), "ExtractOptimalConcept - ");
+                    //Console.WriteLine("U: " + u);
+                    //Console.WriteLine();
+                    Node node = tempKeyword.Nodes.FirstOrDefault(w => w.Number == u);// getURLNodeHasNo(u);
                     temp_Nodes.Add(node);
 
                     List<int[]> tupple = new List<int[]>();
@@ -269,33 +274,26 @@ namespace ConceptualBrowser.Business.Entities
                     AddToCoverage(new OptimalConcept(CurrentConcept, -1, temp_keywords, temp_Nodes));
                     conceptExtracted = true;
                 }
-
                 else
                 {
                     if (!heighest.IsRectangle())
                     {
-
                         temp1 = heighest.Clone();
                         temp2 = heighest.Clone();
                         tuple = heighest.convertR_PR(kk, uu);
                         k = kk; u = uu;
-
                     }
-
                     else
                     {
                         List<int[]> tup = new List<int[]>();
                         tup.AddRange(heighest.CalculateHeighestTuples());
                         CurrentConcept++;
                         this.BinaryRelation.MarkAsCovered(tup, CurrentConcept);
-                        AddToCoverage(heighest.convertToConcept(this.BinaryRelation,
-                                CurrentConcept, e));
+                        AddToCoverage(heighest.convertToConcept(this.BinaryRelation, CurrentConcept, e));
                         conceptExtracted = true;
                     }//end of else
                 }
-
             }//end of for(!conceptExtracted)
-
         }
 
         public bool InPairs(List<int[]> tuples, int k, int u)
@@ -345,20 +343,6 @@ namespace ConceptualBrowser.Business.Entities
                     this.OptimalConcepts[index] =  optimal2;
                 }
             }
-
-
-            /****************************Heap sort**************************/
-
-
-            //		for (int i = this.optimalConcepts.size()-1; i >= 0; i--)
-            //		  {
-            //			
-            //			OptimalConcept temp = (OptimalConcept) this.optimalConcepts.get(0);
-            //			this.optimalConcepts.add(0,(OptimalConcept) this.optimalConcepts.get(i));//numbers[0] = numbers[i];
-            //			this.optimalConcepts.add(i,temp);
-            //		    siftDown(optimalConcepts, 0, i-1);
-            //		  }
-
         }
 
         private void AddToHeapOfConcepts(int step, int currentConcept)
@@ -368,7 +352,10 @@ namespace ConceptualBrowser.Business.Entities
 
         public OptimalConcept GetConcept(int number)
         {
-            return OptimalConcepts.Where(c => c.ConceptNumber == number).FirstOrDefault();
+            return OptimalConcepts.FirstOrDefault(c => c.ConceptNumber == number);
         }
+
+
+        
     }
 }

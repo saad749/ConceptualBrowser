@@ -29,7 +29,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 KeywordNode keyword = binaryRelation.Keywords[i];
                 List<int> tempNodes = new List<int>();
-                for (int j = 0; j < keyword.Nodes.Count(); j++)
+                for (int j = 0; j < keyword.Nodes.Count; j++)
                     tempNodes.Add(keyword.Nodes[j].Number);
                 EquivalentNode nodes = new EquivalentNode(i, tempNodes);
                 Keywords.Add(nodes);
@@ -233,6 +233,9 @@ namespace ConceptualBrowser.Business.Entities
         //	 convert this EquivalentR to object of type OptimalConcept
         public OptimalConcept convertToConcept(BinaryRelation binaryRelation, int currentConceptNo, double gain)
         {
+            //Console.WriteLine();
+            //Console.WriteLine("ConceptNumber: " + currentConceptNo);
+            //Console.WriteLine();
             List<KeywordNode> temp_keywords = new List<KeywordNode>();
             for (int i = 0; i < Keywords.Count; i++)
             {

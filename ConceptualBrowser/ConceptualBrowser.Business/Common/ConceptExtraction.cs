@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using ConceptualBrowser.Business.Common.Performance;
 using ConceptualBrowser.Business.Common.Stemmer;
+using ConceptualBrowser.Business.Common.Helpers;
 
 
 namespace ConceptualBrowser.Business.Common
@@ -59,6 +60,8 @@ namespace ConceptualBrowser.Business.Common
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
             Coverage coverage = new Coverage(stemmer, emptyWords);
             coverage.CreateBinaryRelation(sentences, nodes, false);
+            //PrintBinaryRelation(coverage.BinaryRelation);
+
             monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
 
 
@@ -108,8 +111,25 @@ namespace ConceptualBrowser.Business.Common
             return treeItems;
         }
 
-        
+        /// <summary>
+        /// This method is just to test the values of BR for comparison
+        /// </summary>
+        /// <param name="binaryRelation"></param>
+        private void PrintBinaryRelation(BinaryRelation binaryRelation)
+        {
+            //Console.WriteLine();
+            //Console.WriteLine("Keywords Dictionary:");
+            //LogHelper.PrintKeywords(binaryRelation.Keywords.Values.ToList());
 
-        
+            //Console.WriteLine();
+
+            //Console.WriteLine("Total Results: " + binaryRelation.TotalResults);
+
+            //Console.WriteLine("Status: " + binaryRelation.Status);
+            //Console.WriteLine();
+
+            //Console.WriteLine("Roots in Binary Relations: ");
+            //LogHelper.PrintRootNodes(binaryRelation.Roots);
+        }
     }
 }
