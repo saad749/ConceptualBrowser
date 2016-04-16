@@ -8,15 +8,27 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class KeywordNode
     {
-        public int Number { get; set; } //Number of Keyword Node
+        /// <summary>
+        /// KeywordIndex in the list of Keywords. A number assigned to the word (probably) related to chronological order of appearance.
+        /// </summary>
+        public int KeywordIndex { get; set; } //Number of Keyword Node
+        /// <summary>
+        /// Word Stem of the Words this Keyword Represents
+        /// </summary>
         public string Keyword { get; set; }// name of keywordNode
+        /// <summary>
+        /// Sentences in which the word occured
+        /// </summary>
         public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
-        public double KeywordRank { get; set; } // rank or gain of keywordNode
+        /// <summary>
+        /// Number of times this Keyword appeared in the text.
+        /// </summary>
+        public double KeywordRank { get; set; } 
 
         public KeywordNode(string keyWord, int number, int rank, List<Sentence> sentences)
         {
             Keyword = keyWord;
-            Number = number;
+            KeywordIndex = number;
             KeywordRank = rank;
             Sentences = sentences;
         }

@@ -71,7 +71,7 @@ namespace ConceptualBrowser.Business.Entities
                     if (!binaryRelation.GetRootNode(root).Covered)
                     {
                         min = Keywords[i].KeywordRank;
-                        index = Keywords[i].Number;
+                        index = Keywords[i].KeywordIndex;
                         rootString = Keywords[i].Keyword;
 
                         if (binaryRelation.InPrimaryConceptsName(rootString))
@@ -87,7 +87,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 binaryRelation.ResetRootNodes();
                 min = Keywords[0].KeywordRank;
-                index = Keywords[0].Number;
+                index = Keywords[0].KeywordIndex;
                 rootString = Keywords[0].Keyword;
 
                 if (binaryRelation.InPrimaryConceptsName(rootString))
@@ -103,7 +103,7 @@ namespace ConceptualBrowser.Business.Entities
                     if (!((RootNode)binaryRelation.GetRootNode(keyword.Keyword)).Covered)
                         if (keyword.KeywordRank < min)
                         {
-                            index = keyword.Number;
+                            index = keyword.KeywordIndex;
                             min = keyword.KeywordRank;
                             rootString = keyword.Keyword;
 

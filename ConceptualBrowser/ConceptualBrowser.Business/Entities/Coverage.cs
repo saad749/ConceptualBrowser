@@ -88,7 +88,7 @@ namespace ConceptualBrowser.Business.Entities
                                     if (keywordNode.KeywordRank < max)
                                     {
                                         max = keywordNode.KeywordRank;
-                                        KeywordNo = keywordNode.Number;
+                                        KeywordNo = keywordNode.KeywordIndex;
                                         keywordString = keywordNode.Keyword;
                                     }
                             }
@@ -167,7 +167,7 @@ namespace ConceptualBrowser.Business.Entities
                     //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
                     if (sentence.CoveredByConceptNumber < 0)
                     {
-                        int[] indexes = { keyword.Number, sentence.SentenceIndex };
+                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
                         return indexes;
                     }
                 }
@@ -176,14 +176,23 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         // get the elements that are contained in the optimal rectangles of pr(k,u)
-        public void ExtractOptimalConcept(BinaryRelation binaryRelation, int k, int u)
+        public void ExtractOptimalConcept(BinaryRelation binaryRelation, int keywordIndex, int sentenceIndex)
         {
+            //GetEquivalent Just Stores all the sentence Indexes for All the keywords in the binary relation
+            //GetInverse Gets All the sentences in the Binary Relation, then checks for all the indexes stored by GetEquivalent ..
+            //If it contains them. If it does, it puts them in a list.
+            // So for Each Sentence in the Binary Relation, it stores an Equivalent node, with the Sentence Index and all the Keyword Indexes
+
+            //SHORT: 
+            //GetEquivalent - Keyword Index, List of SentenceIndexes
+            //GetInverse - Sentence Index, List of KeywordIndices
+
 
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
-            equivalentRectangle.GetEquivalent(binaryRelation);
+            equivalentRectangle.GetEquivalent(binaryRelation); //What it really needs is just BinaryRelation.Keywords.
             equivalentRectangle.GetInverse(Sentences);
-            List<int[]> tuples = equivalentRectangle.convertR_PR(k, u);
-            ExtractOptimalConcepts(equivalentRectangle, tuples, k, u);
+            List<int[]> tuples = equivalentRectangle.convertR_PR(keywordIndex, sentenceIndex);//Continue Exploring Here
+            ExtractOptimalConcepts(equivalentRectangle, tuples, keywordIndex, sentenceIndex);
         }
 
         // extract optimal concept that cover the tuple(k,u)

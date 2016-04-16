@@ -11,7 +11,6 @@ namespace ConceptualBrowser.Business.Entities
     public class BinaryRelation
     {
         public List<KeywordNode> Keywords { get; set; } //Changing Dictionary to List
-
         public int TotalResults { get; set; }
         public bool Status { get; set; }
         public List<RootNode> Roots { get; set; } = new List<RootNode>();

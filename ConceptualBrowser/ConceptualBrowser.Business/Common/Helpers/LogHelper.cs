@@ -44,7 +44,7 @@ namespace ConceptualBrowser.Business.Common.Helpers
         public static void PrintKeyword(KeywordNode keywordNode, string additionalMessage = "")
         {
             Console.Write(additionalMessage);
-            Console.WriteLine("Keyword -  Value: " + keywordNode.Keyword + "\t" + keywordNode.Number + "\t" + keywordNode.KeywordRank);
+            Console.WriteLine("Keyword -  Value: " + keywordNode.Keyword + "\t" + keywordNode.KeywordIndex + "\t" + keywordNode.KeywordRank);
             PrintSentences(keywordNode.Sentences);
         }
         public static void PrintSentences(List<Sentence> sentences, string additionalMessage = "")
