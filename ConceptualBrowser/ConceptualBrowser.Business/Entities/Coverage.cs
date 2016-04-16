@@ -55,7 +55,7 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < keywords.Count; i++)
             {
                 KeywordNode key = keywords[i];
-                key.KeywordRank = (1 / key.KeywordRank); //Divide By Zerooo????
+                key.KeywordRank = (1 / key.KeywordRank); //This changes the keyword rank in the BinaryRelation Keywords List.
             }   
         }
 
@@ -140,13 +140,9 @@ namespace ConceptualBrowser.Business.Entities
                 this.ExtractOptimalConcept(this.BinaryRelation, next[0], next[1]);
                 next = this.NextNonCovered(this.BinaryRelation);
             }
-
             this.Sort();
-
-
             for (int i = 0; i < OptimalConcepts.Count; i++)
                 AddToHeapOfConcepts(i, (OptimalConcepts[i].ConceptNumber));
-
 
             for (int i = 0; i < OptimalConcepts.Count; i++)
                 OptimalConcepts[i].SetConceptName(this.BinaryRelation);
@@ -154,21 +150,20 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         //get the next non covered tuple in the BR
+        //It is a simple method, that goes through all the keywords in the binary relation and chooses that one that is yet not covered.
+        //We can Apply Randomization here!!
         public int[] NextNonCovered(BinaryRelation binaryRelation)
         {
             //List<KeywordNode> keywords = binaryRelation.Keywords.Values.ToList();
             List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
             //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
-            for (int i = 0; i < keywords.Count; i++)
+            foreach (KeywordNode keyword in keywords)
             {
-                KeywordNode keyword = keywords[i];
-
                 //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
                 List<Sentence> sentences = keyword.Sentences;
-                for (int j = 0; j < sentences.Count; j++)
+                foreach (Sentence sentence in sentences)
                 {
-                    Sentence sentence = sentences[j];
                     //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
                     if (sentence.CoveredByConceptNumber < 0)
                     {
@@ -176,17 +171,16 @@ namespace ConceptualBrowser.Business.Entities
                         return indexes;
                     }
                 }
-                //Console.WriteLine();
             }
             return null;
         }
 
         // get the elements that are contained in the optimal rectangles of pr(k,u)
-        public void ExtractOptimalConcept(BinaryRelation R, int k, int u)
+        public void ExtractOptimalConcept(BinaryRelation binaryRelation, int k, int u)
         {
 
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
-            equivalentRectangle.GetEquivalent(R);
+            equivalentRectangle.GetEquivalent(binaryRelation);
             equivalentRectangle.GetInverse(Sentences);
             List<int[]> tuples = equivalentRectangle.convertR_PR(k, u);
             ExtractOptimalConcepts(equivalentRectangle, tuples, k, u);
