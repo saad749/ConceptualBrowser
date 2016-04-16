@@ -10,20 +10,20 @@ namespace ConceptualBrowser.Business.Entities
     {
         public int Number { get; set; } //Number of Keyword Node
         public string Keyword { get; set; }// name of keywordNode
-        public List<Node> Nodes { get; set; } = new List<Node>();// list of words associated with this KeywordNode
+        public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
         public double KeywordRank { get; set; } // rank or gain of keywordNode
 
-        public KeywordNode(string keyWord, int number, int rank, List<Node> nodes)
+        public KeywordNode(string keyWord, int number, int rank, List<Sentence> sentences)
         {
             Keyword = keyWord;
             Number = number;
             KeywordRank = rank;
-            Nodes = nodes;
+            Sentences = sentences;
         }
 
-        public bool ContainsWord(string word)
+        public bool ContainsSentenceIndex(int sentenceIndex)
         {
-            return Nodes.Any(n => n.Word.Equals(word, StringComparison.OrdinalIgnoreCase));
+            return Sentences.Any(n => n.SentenceIndex == sentenceIndex);
         }
     }
 }

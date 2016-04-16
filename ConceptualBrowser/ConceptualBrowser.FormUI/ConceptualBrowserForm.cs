@@ -108,7 +108,7 @@ namespace ConceptualBrowser.FormUI
             {
                 treeViewBrowser.SelectedNode = e.Node;
                 OptimalConceptTreeItem optimal = OptimalTree.Find(t => t.Id == (int)e.Node.Tag);
-                List<int> coveringSentenceNumbers = optimal.OptimalConcept.Nodes.Select(n => n.Number).ToList();
+                List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
 
                 List<String> sentences = FileText.Split(new char[] { '.', ',', ';' }).ToList();
                 txtText.Text = String.Empty;

@@ -11,43 +11,43 @@ namespace ConceptualBrowser.Business.Entities
         public int ConceptNumber { get; set; }
         public double Gain { get; set; }
         public List<KeywordNode> Keywords { get; set; }
-        public List<Node> Nodes { get; set; }
+        public List<Sentence> Sentences { get; set; }
         public NodeTree NodesTree { get; set; } = null;
         public string ConceptName { get; set; }
 
-        public OptimalConcept(int conceptNumber, double gain, List<KeywordNode> keywords, List<Node> nodes)
+        public OptimalConcept(int conceptNumber, double gain, List<KeywordNode> keywords, List<Sentence> sentences)
         {
             ConceptNumber = conceptNumber;
             Gain = gain;
             Keywords = keywords;
-            Nodes = nodes;
-            NodesTree = new NodeTree(nodes.Count);
+            Sentences = sentences;
+            NodesTree = new NodeTree(sentences.Count);
         }
 
         public void Model()
         {
             int position = 0;
-            for (int i = 0; i < Nodes.Count; i++)
+            for (int i = 0; i < Sentences.Count; i++)
             {
-                if (!this.InHeap(Nodes[i]))
+                if (!this.InHeap(Sentences[i]))
                 {
                     if (NodesTree.IsNewElement)
-                        NodesTree.InsertNode(Nodes[i], position++);
+                        NodesTree.InsertNode(Sentences[i], position++);
                     else
-                        NodesTree.InsertNode(Nodes[i], position - 1);
+                        NodesTree.InsertNode(Sentences[i], position - 1);
                 }
             }
         }
 
         // check whether this concept is already in the heap
-        private bool InHeap(Node node)
+        private bool InHeap(Sentence sentence)
         {
             for (int i = 0; i < NodesTree.Heap.Count; i++)
             {
                 for (int j = 0; j < NodesTree.Heap[i].Count; j++)
                 {
-                    Node tempNode = NodesTree.Heap[i][j];
-                    if (tempNode.Word.Equals(node.Word,StringComparison.OrdinalIgnoreCase))
+                    Sentence tempNode = NodesTree.Heap[i][j];
+                    if (tempNode.SentenceIndex == sentence.SentenceIndex)
                         return true;
                 }
             }

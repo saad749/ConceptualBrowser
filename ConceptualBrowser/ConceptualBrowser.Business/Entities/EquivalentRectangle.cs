@@ -29,8 +29,8 @@ namespace ConceptualBrowser.Business.Entities
             {
                 KeywordNode keyword = binaryRelation.Keywords[i];
                 List<int> tempNodes = new List<int>();
-                for (int j = 0; j < keyword.Nodes.Count(); j++)
-                    tempNodes.Add(keyword.Nodes[j].Number);
+                for (int j = 0; j < keyword.Sentences.Count; j++)
+                    tempNodes.Add(keyword.Sentences[j].SentenceIndex);
                 EquivalentNode nodes = new EquivalentNode(i, tempNodes);
                 Keywords.Add(nodes);
             }
@@ -39,24 +39,24 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         //	 create inverse of EquivalentR
-        public void GetInverse(List<Node> nodes)
+        public void GetInverse(List<Sentence> sentences)
         {
             Nodes.Clear();
-            Node node = new Node();
+            Sentence sentence = new Sentence();
 
-            for (int i = 0; i < nodes.Count; i++)
+            for (int i = 0; i < sentences.Count; i++)
             {
-                node = nodes[i];
+                sentence = sentences[i];
                 List<int> temp_keywords = new List<int>();
 
                 for (int j = 0; j < Keywords.Count; j++)
                 {
 
                     EquivalentNode equivalentNode = Keywords[j];
-                    if (equivalentNode.InNode(node.Number))
+                    if (equivalentNode.InNode(sentence.SentenceIndex))
                         temp_keywords.Add(equivalentNode.Index);
                 }
-                EquivalentNode equivalentNode1 = new EquivalentNode(node.Number, temp_keywords);
+                EquivalentNode equivalentNode1 = new EquivalentNode(sentence.SentenceIndex, temp_keywords);
                 this.Nodes.Add(equivalentNode1);
             }
 
@@ -127,7 +127,7 @@ namespace ConceptualBrowser.Business.Entities
             }
             TupleCount = Keywords.Sum(w => w.Nodes.Count);
             TotalResults = Nodes.Count;
-            return CalculateHeighestTuples();
+            return CalculateHighestTuples();
         }
 
         //	 return the list of nodes associated with EquivalentNode that has index from inverse of EquivalentR
@@ -160,7 +160,7 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         //	 return the list of tuples that is contained in this EquivalentR
-        public List<int[]> CalculateHeighestTuples()
+        public List<int[]> CalculateHighestTuples()
         {
             List<int[]> tuples = new List<int[]>();
             for (int i = 0; i < Keywords.Count; i++)
@@ -231,29 +231,32 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         //	 convert this EquivalentR to object of type OptimalConcept
-        public OptimalConcept convertToConcept(BinaryRelation binaryRelation, int currentConceptNo, double gain)
+        public OptimalConcept ConvertToConcept(BinaryRelation binaryRelation, int currentConceptNo, double gain)
         {
-            List<KeywordNode> temp_keywords = new List<KeywordNode>();
+            //Console.WriteLine();
+            //Console.WriteLine("ConceptNumber: " + currentConceptNo);
+            //Console.WriteLine();
+            List<KeywordNode> tempKeywords = new List<KeywordNode>();
             for (int i = 0; i < Keywords.Count; i++)
             {
                 int index = Keywords[i].Index;
                 KeywordNode x = binaryRelation.Keywords[index];
-                temp_keywords.Add(x);
+                tempKeywords.Add(x);
             }
 
-            List<Node> temp_Nodes = new List<Node>();
-            for (int i = 0; i < temp_keywords.Count; i++)
+            List<Sentence> tempSentences = new List<Sentence>();
+            for (int i = 0; i < tempKeywords.Count; i++)
             {
-                KeywordNode keywordNode = temp_keywords[i];
-                for (int j = 0; j < keywordNode.Nodes.Count; j++)
+                KeywordNode keywordNode = tempKeywords[i];
+                for (int j = 0; j < keywordNode.Sentences.Count; j++)
                 {
-                    Node node = keywordNode.Nodes[j];
-                    if (node.CoveredBy == currentConceptNo)
-                        if (!temp_Nodes.Contains(node))
-                            temp_Nodes.Add(node);
+                    Sentence sentence = keywordNode.Sentences[j];
+                    if (sentence.CoveredByConceptNumber == currentConceptNo)
+                        if (!tempSentences.Contains(sentence))
+                            tempSentences.Add(sentence);
                 }
             }
-            return new OptimalConcept(currentConceptNo, gain, temp_keywords, temp_Nodes);
+            return new OptimalConcept(currentConceptNo, gain, tempKeywords, tempSentences);
         }
     }
 }

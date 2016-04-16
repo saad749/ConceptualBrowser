@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 
 namespace ConceptualBrowser.Business.Entities
 {
-    public class Node
+    public class Sentence
     {
-        public string Word { get; set; }
-        public int CoveredBy { get; set; } = 1;
-        public int Number { get; set; }
+        public int SentenceIndex { get; set; } //Renamed from Word to SentenceIndex
+        public int CoveredByConceptNumber { get; set; } = 1;
         public Rank Rank { get; set; }
         public int KeywordNumber { get; set; }
         public string KeywordString { get; set; }
 
 
-        public Node()
+        public Sentence()
         {
 
         }
 
-        public Node(string word, int coveredBy, int number, Rank rank)
+        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank)
         {
-            Word = word;
-            CoveredBy = coveredBy;
-            Number = number;
+            SentenceIndex = sentenceIndex;
+            CoveredByConceptNumber = coveredByConceptNumber;
             Rank = rank;
             rank.CalculateRank();
         }
