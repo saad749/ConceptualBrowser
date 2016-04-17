@@ -225,7 +225,7 @@ namespace ConceptualBrowser.Business.Entities
                         if (gain > max)
                         {
                             max = gain;
-                            highestEquivalentRectangle.equate(temp1);
+                            highestEquivalentRectangle.Equate(temp1);
                             kk = pair[0];
                             uu = pair[1];
                         }
