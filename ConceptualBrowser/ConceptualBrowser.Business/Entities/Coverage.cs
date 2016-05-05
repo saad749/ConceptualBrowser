@@ -158,20 +158,39 @@ namespace ConceptualBrowser.Business.Entities
             List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
             //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
-            foreach (KeywordNode keyword in keywords)
+            //foreach (KeywordNode keyword in keywords)
+            //{
+            //    //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
+            //    List<Sentence> sentences = keyword.Sentences;
+            //    foreach (Sentence sentence in sentences)
+            //    {
+            //        //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
+            //        if (sentence.CoveredByConceptNumber < 0)
+            //        {
+            //            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+            //            return indexes;
+            //        }
+            //    }
+            //}
+            int i = 0;
+            while (i < (keywords.Count * 100))
             {
-                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
-                List<Sentence> sentences = keyword.Sentences;
-                foreach (Sentence sentence in sentences)
+                Random random = new Random();
+
+                int randomKeywordIndex = random.Next(0, keywords.Count);
+                int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
+
+                if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
                 {
-                    //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
-                    if (sentence.CoveredByConceptNumber < 0)
-                    {
-                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-                        return indexes;
-                    }
+                    int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
+                        keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
+
+                    return indexes;
                 }
+
+                i++;
             }
+            
             return null;
         }
 
