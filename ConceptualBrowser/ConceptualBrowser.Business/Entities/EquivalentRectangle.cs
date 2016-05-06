@@ -205,6 +205,10 @@ namespace ConceptualBrowser.Business.Entities
             TupleCount = temp.TupleCount;
         }
 
+        /// <summary>
+        /// (TupleCount == Sentences.Count * Keywords.Count) This is the Rectangle definition
+        /// </summary>
+        /// <returns></returns>
         public bool IsRectangle()
         {
             return (TupleCount == Sentences.Count * Keywords.Count);

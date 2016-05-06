@@ -236,11 +236,11 @@ namespace ConceptualBrowser.Business.Entities
             /*#######################################################*/
             for (; !conceptExtracted;)
             {
-                double max = -10000;
+                double max = -10000; //Why arbitarary high negative value?
                 EquivalentRectangle highestEquivalentRectangle = new EquivalentRectangle();
                 double gain = -1;
-                int kk = -1;
-                int uu = -1;
+                int tempKeywordIndex = -1;
+                int tempSentenceIndex = -1;
                 int[] pr = { keywordIndex, sentenceIndex };//list of originally calculate tuples
                 Pairs.Add(pr);
                 for (int t = 0; t < tuple.Count; t++)
@@ -254,8 +254,8 @@ namespace ConceptualBrowser.Business.Entities
                         {
                             max = gain;
                             highestEquivalentRectangle.Equate(temp1);
-                            kk = pair[0];
-                            uu = pair[1];
+                            tempKeywordIndex = pair[0];
+                            tempSentenceIndex = pair[1];
                         }
                         temp1 = temp2.Clone();
                     }
@@ -266,37 +266,38 @@ namespace ConceptualBrowser.Business.Entities
                     List<KeywordNode> tempKeywords = new List<KeywordNode> { tempKeyword };
 
                     //List<Sentence> tempSentences = new List<Sentence>();
-                    List<Sentence> tempSentences = tempKeyword.Sentences.Where(w => w.SentenceIndex == sentenceIndex).ToList(); // Shouldnt we add all the sentences?? Although this doesnt makes a difference!
+                    List<Sentence> tempSentences = tempKeyword.Sentences.Where(w => w.SentenceIndex == sentenceIndex).ToList(); // Shouldnt we add all the sentences?? Although this doesnt makes a difference! //It doesnt matters because each keyword will have the same sentenceIndex only Once. So no real need to of ToList();
                     //LogHelper.PrintSentence(tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u), "ExtractOptimalConcept - ");
                     //Sentence sentence = tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u);// getURLNodeHasNo(u);
                     //tempSentences.Add(sentence);
 
 
 
-                    List<int[]> tupple = new List<int[]>();
-                    tupple.Add(new int[] { keywordIndex, sentenceIndex });
+                    List<int[]> tempTuple = new List<int[]>();//Should be a temp tupple
+                    tempTuple.Add(new int[] { keywordIndex, sentenceIndex });
                     CurrentConcept++;
-                    this.BinaryRelation.MarkAsCovered(tupple, CurrentConcept);
+                    this.BinaryRelation.MarkAsCovered(tempTuple, CurrentConcept);
                     AddToCoverage(new OptimalConcept(CurrentConcept, -1, tempKeywords, tempSentences));
-                    conceptExtracted = true;
+                    conceptExtracted = true; //BREAKS THE LOOP!
                 }
                 else
                 {
-                    if (!highestEquivalentRectangle.IsRectangle())
+                    if (!highestEquivalentRectangle.IsRectangle()) 
                     {
                         temp1 = highestEquivalentRectangle.Clone();
                         temp2 = highestEquivalentRectangle.Clone();
-                        tuple = highestEquivalentRectangle.ConvertToElementaryRelation(kk, uu);
-                        keywordIndex = kk; sentenceIndex = uu;
+                        tuple = highestEquivalentRectangle.ConvertToElementaryRelation(tempKeywordIndex, tempSentenceIndex);
+                        keywordIndex = tempKeywordIndex;
+                        sentenceIndex = tempSentenceIndex; //WILL RE ITERTATE WITH NEW Keyword and SentenceIndex
                     }
                     else
                     {
-                        List<int[]> tup = new List<int[]>();
-                        tup.AddRange(highestEquivalentRectangle.CalculateHighestTuples());
+                        List<int[]> tempTuple = new List<int[]>();
+                        tempTuple.AddRange(highestEquivalentRectangle.CalculateHighestTuples());
                         CurrentConcept++;
-                        this.BinaryRelation.MarkAsCovered(tup, CurrentConcept);
+                        this.BinaryRelation.MarkAsCovered(tempTuple, CurrentConcept);
                         AddToCoverage(highestEquivalentRectangle.ConvertToConcept(this.BinaryRelation, CurrentConcept, gain));
-                        conceptExtracted = true;
+                        conceptExtracted = true; //BREAKS THE LOOP!
                     }//end of else
                 }
             }//end of for(!conceptExtracted)
