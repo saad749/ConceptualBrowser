@@ -42,7 +42,9 @@ namespace ConceptualBrowser.Business.Common
 
                 this.sentences.Add(new Sentence(i, Constant.NotCovered, rank));
             }
-            
+
+
+            //Console.WriteLine("Total Sentences: " + sentenceStringList.Count);
             Coverage coverage = new Coverage(stemmer, emptyWords);
             //Why on Earth Should I send Sentence String List and Create Sentences from Sentences With Delimeters? Doesnt Sounds right!
             //Experiment Shows there is no difference, if we have Sentences created from sentenceStringList of sentencesWithDelimeters.
@@ -51,6 +53,11 @@ namespace ConceptualBrowser.Business.Common
             
 
             List<OptimalConcept> optimals = coverage.ExtractAll();
+
+            //Console.WriteLine("Total Sentences Not Covered: " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count(s => s.CoveredByConceptNumber == -1));
+            //Console.WriteLine("Total Sentences : " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count());
+            //Console.WriteLine("Total Keywords : " + coverage.BinaryRelation.Keywords.Count());
+
             List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
             return optimalTree;
 

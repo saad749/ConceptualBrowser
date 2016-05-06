@@ -9,7 +9,7 @@ namespace ConceptualBrowser.Business.Entities
     public class Sentence
     {
         public int SentenceIndex { get; set; } //Renamed from Word to SentenceIndex
-        public int CoveredByConceptNumber { get; set; } = 1;
+        public int CoveredByConceptNumber { get; set; } = -1; // A signle sentence can be covered by multiple concepts; Why 1 only??
         public Rank Rank { get; set; }
         public int KeywordNumber { get; set; }
         public string KeywordString { get; set; }

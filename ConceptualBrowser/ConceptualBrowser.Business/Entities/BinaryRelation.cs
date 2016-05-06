@@ -16,7 +16,15 @@ namespace ConceptualBrowser.Business.Entities
         public List<RootNode> Roots { get; set; } = new List<RootNode>();
         public List<string> PrimaryConceptsName { get; set; } = new List<string>();
 
+
+        public int KeywordsSentencesSum { get; set; }
+
+        //int d = 0; Duplicate coverage statistical counter. Not Required. Just for testing
+
         private readonly IStemmer Stemmer;
+
+        public int TotalUniqueCovered { get; set; }
+
 
         public BinaryRelation(IStemmer stemmer)
         {
@@ -100,6 +108,12 @@ namespace ConceptualBrowser.Business.Entities
                 int[] pair = tuples[i];
                 KeywordNode keyword = Keywords[pair[0]];
                 //LogHelper.PrintKeyword(keyword, "Marked As Covered: ");
+                if (keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CoveredByConceptNumber == -1) //THis Part is important as it is used for Randomizations!
+                {
+                    TotalUniqueCovered++;
+                    //Console.WriteLine("Unique Cover" + TotalUniqueCovered);
+                }
+
                 keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CoveredByConceptNumber = current;
             }
         }

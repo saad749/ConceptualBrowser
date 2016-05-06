@@ -31,6 +31,8 @@ namespace ConceptualBrowser.Business.Entities
 
         public void CreateBinaryRelation(List<string> sentenceStringList, List<Sentence> sentences)
         {
+            int tempTotalWords = 0;
+
             Sentences = sentences;
             TotalSentences = sentences.Count;
             BinaryRelation = new BinaryRelation(TotalSentences, Stemmer);
@@ -38,12 +40,17 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < sentenceStringList.Count; i++)
             {
                 List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
-
+                tempTotalWords += wordsList.Count;
                 BinaryRelation.AppendToBinaryRelation(wordsList, sentences[i]);
             }
 
+            Console.WriteLine("Total WOrds: " + tempTotalWords);
+
             this.KeywordsRank();
             this.AddHighestRankKeywords();
+
+            BinaryRelation.KeywordsSentencesSum = BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count();
+            Console.WriteLine("KeywordsSentencesSum: " + BinaryRelation.KeywordsSentencesSum);
         }
 
         public void KeywordsRank()
@@ -158,39 +165,41 @@ namespace ConceptualBrowser.Business.Entities
             List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
             //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
-            //foreach (KeywordNode keyword in keywords)
-            //{
-            //    //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
-            //    List<Sentence> sentences = keyword.Sentences;
-            //    foreach (Sentence sentence in sentences)
-            //    {
-            //        //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
-            //        if (sentence.CoveredByConceptNumber < 0)
-            //        {
-            //            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-            //            return indexes;
-            //        }
-            //    }
-            //}
-            int i = 0;
-            while (i < (keywords.Count * 100))
+            foreach (KeywordNode keyword in keywords)
             {
-                Random random = new Random();
-
-                int randomKeywordIndex = random.Next(0, keywords.Count);
-                int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
-
-                if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
+                List<Sentence> sentences = keyword.Sentences;
+                foreach (Sentence sentence in sentences)
                 {
-                    int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
-                        keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
-
-                    return indexes;
+                    //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
+                    if (sentence.CoveredByConceptNumber < 0)
+                    {
+                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+                        return indexes;
+                    }
                 }
-
-                i++;
             }
-            
+            //int i = 0;
+            ////Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
+            //keywords =  keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
+            //while (BinaryRelation.TotalUniqueCovered < BinaryRelation.KeywordsSentencesSum) //(keywords.Count * 100)
+            //{
+            //    Random random = new Random();
+
+            //    int randomKeywordIndex = random.Next(0, keywords.Count);
+            //    int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
+
+            //    if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+            //    {
+            //        int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
+            //            keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
+
+            //        return indexes;
+            //    }
+
+            //    i++;
+            //}
+
             return null;
         }
 
@@ -210,12 +219,12 @@ namespace ConceptualBrowser.Business.Entities
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
             equivalentRectangle.GetEquivalent(binaryRelation); //What it really needs is just BinaryRelation.Keywords.
             equivalentRectangle.GetInverse(Sentences);
-            List<int[]> tuples = equivalentRectangle.convertR_PR(keywordIndex, sentenceIndex);//Continue Exploring Here
+            List<int[]> tuples = equivalentRectangle.ConvertToElementaryRelation(keywordIndex, sentenceIndex);//Continue Exploring Here
             ExtractOptimalConcepts(equivalentRectangle, tuples, keywordIndex, sentenceIndex);
         }
 
         // extract optimal concept that cover the tuple(k,u)
-        public void ExtractOptimalConcepts(EquivalentRectangle equivalentRectangle, List<int[]> tuple, int k, int u)
+        public void ExtractOptimalConcepts(EquivalentRectangle equivalentRectangle, List<int[]> tuple, int keywordIndex, int sentenceIndex)
         {
             //LogHelper.PrintListArray(tuple, "ExtractOptimalConcepts -- List Array - k: " + k + " | u: " + u);
             bool conceptExtracted = false;
@@ -232,14 +241,14 @@ namespace ConceptualBrowser.Business.Entities
                 double gain = -1;
                 int kk = -1;
                 int uu = -1;
-                int[] pr = { k, u };//list of originally calculate tuples
+                int[] pr = { keywordIndex, sentenceIndex };//list of originally calculate tuples
                 Pairs.Add(pr);
                 for (int t = 0; t < tuple.Count; t++)
                 {
                     int[] pair = tuple[t];
                     if (!InPairs(Pairs, pair[0], pair[1]))
                     {
-                        temp1.convertR_PR(pair[0], pair[1]);
+                        temp1.ConvertToElementaryRelation(pair[0], pair[1]);
                         gain = temp1.CalculateEconomy(BinaryRelation);
                         if (gain > max)
                         {
@@ -253,19 +262,19 @@ namespace ConceptualBrowser.Business.Entities
                 }
                 if (highestEquivalentRectangle.Keywords.Count == 0)
                 {
-                    KeywordNode tempKeyword = this.BinaryRelation.Keywords[k];
+                    KeywordNode tempKeyword = this.BinaryRelation.Keywords[keywordIndex];
                     List<KeywordNode> tempKeywords = new List<KeywordNode> { tempKeyword };
 
-                    List<Sentence> tempSentences = new List<Sentence>();
-                    //Console.WriteLine();
+                    //List<Sentence> tempSentences = new List<Sentence>();
+                    List<Sentence> tempSentences = tempKeyword.Sentences.Where(w => w.SentenceIndex == sentenceIndex).ToList(); // Shouldnt we add all the sentences?? Although this doesnt makes a difference!
                     //LogHelper.PrintSentence(tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u), "ExtractOptimalConcept - ");
-                    //Console.WriteLine("U: " + u);
-                    //Console.WriteLine();
-                    Sentence sentence = tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u);// getURLNodeHasNo(u);
-                    tempSentences.Add(sentence);
+                    //Sentence sentence = tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u);// getURLNodeHasNo(u);
+                    //tempSentences.Add(sentence);
+
+
 
                     List<int[]> tupple = new List<int[]>();
-                    tupple.Add(new int[] { k, u });
+                    tupple.Add(new int[] { keywordIndex, sentenceIndex });
                     CurrentConcept++;
                     this.BinaryRelation.MarkAsCovered(tupple, CurrentConcept);
                     AddToCoverage(new OptimalConcept(CurrentConcept, -1, tempKeywords, tempSentences));
@@ -277,8 +286,8 @@ namespace ConceptualBrowser.Business.Entities
                     {
                         temp1 = highestEquivalentRectangle.Clone();
                         temp2 = highestEquivalentRectangle.Clone();
-                        tuple = highestEquivalentRectangle.convertR_PR(kk, uu);
-                        k = kk; u = uu;
+                        tuple = highestEquivalentRectangle.ConvertToElementaryRelation(kk, uu);
+                        keywordIndex = kk; sentenceIndex = uu;
                     }
                     else
                     {

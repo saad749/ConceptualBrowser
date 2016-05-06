@@ -8,7 +8,16 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class EquivalentRectangle
     {
-        public List<EquivalentNode> EquivalentNodes { get; set; } = new List<EquivalentNode>(); //this.urls. will be repalced by this
+        /// <summary>
+        /// Sentence Index, List of KeywordIndices
+        /// Sentences with Keywords List
+        /// </summary>
+        public List<EquivalentNode> Sentences { get; set; } = new List<EquivalentNode>(); //this.urls. will be repalced by this
+
+        /// <summary>
+        /// Keyword Index, List of SentenceIndexes
+        /// Keywords with Sentences List
+        /// </summary>
         public List<EquivalentNode> Keywords { get; set; } = new List<EquivalentNode>();
         public int TupleCount { get; set; }
         public int TotalResults { get; set; }
@@ -21,7 +30,7 @@ namespace ConceptualBrowser.Business.Entities
         /// <param name="binaryRelation"></param>
         public void GetEquivalent(BinaryRelation binaryRelation)
         {
-            EquivalentNodes.Clear();
+            Sentences.Clear();
             for (int i = 0; i < binaryRelation.Keywords.Count; i++)
             {
                 KeywordNode keyword = binaryRelation.Keywords[i];
@@ -34,9 +43,13 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         //	 create inverse of EquivalentR
+        /// <summary>
+        /// This method adds the keywords for each sentence in the Sentences Equivalent Node List.
+        /// </summary>
+        /// <param name="sentences"></param>
         public void GetInverse(List<Sentence> sentences)
         {
-            EquivalentNodes.Clear();
+            Sentences.Clear();
             //Sentence sentence = new Sentence();
 
             foreach (Sentence sentence in sentences)
@@ -47,33 +60,33 @@ namespace ConceptualBrowser.Business.Entities
                 foreach (EquivalentNode equivalentNode in Keywords)
                 {
                     //if (equivalentNode.InNode(sentence.SentenceIndex))
-                    if (equivalentNode.SentenceIndexes.Contains(sentence.SentenceIndex))
+                    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
                         tempKeywordIndexes.Add(equivalentNode.Index);
                 }
                 //EquivalentNode equivalentNode1 = new EquivalentNode(sentence.SentenceIndex, tempKeywords);
-                this.EquivalentNodes.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
+                this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
             }
 
-            TotalResults = EquivalentNodes.Count;
+            TotalResults = Sentences.Count;
         }
 
         //	 convert EquivalentR to elementary relation PR
-        public List<int[]> convertR_PR(int keywordIndex, int sentenceIndex)
+        public List<int[]> ConvertToElementaryRelation(int keywordIndex, int sentenceIndex)
         {
             List<int> imagesSentenceIndex = GetImagesInverse(sentenceIndex);
             List<int> imagesKeywordIndex = GetImages(keywordIndex);
 
-            //elemenate rows of inv not in images of k
-            for (int i = 0; i < EquivalentNodes.Count; i++)
+            //Eliminate rows of inverse(Sentences) not in images of keywords
+            for (int i = 0; i < Sentences.Count; i++)
             {
-                if (!imagesKeywordIndex.Contains(EquivalentNodes[i].Index))
+                if (!imagesKeywordIndex.Contains(Sentences[i].Index))
                 {
-                    EquivalentNodes.RemoveAt(i);
+                    Sentences.RemoveAt(i);
                     --i;
                 }
             }
 
-            //elemenate rows of R not in images of u
+            //Eliminate rows of Keywords not in images of Sentences
             for (int i = 0; i < Keywords.Count; i++)
             {
                 if (!imagesSentenceIndex.Contains(Keywords[i].Index))
@@ -86,61 +99,44 @@ namespace ConceptualBrowser.Business.Entities
             //elemenate tuples of R not in images of k
             foreach (EquivalentNode equivalentNode in Keywords)
             {
-                for (int i = 0; i < equivalentNode.SentenceIndexes.Count; i++)
+                for (int i = 0; i < equivalentNode.Indexes.Count; i++)
                 {
-                    if (!imagesKeywordIndex.Contains(equivalentNode.SentenceIndexes[i]))
+                    if (!imagesKeywordIndex.Contains(equivalentNode.Indexes[i]))
                     {
-                        equivalentNode.SentenceIndexes.RemoveAt(i);
+                        equivalentNode.Indexes.RemoveAt(i);
                         --i;
                     }
                 }
             }
 
             //elemenate tuples of Inv not in images of u
-            foreach (EquivalentNode equivalentNode in EquivalentNodes)
+            foreach (EquivalentNode equivalentNode in Sentences)
             {
-                for (int i = 0; i < equivalentNode.SentenceIndexes.Count; i++)
+                for (int i = 0; i < equivalentNode.Indexes.Count; i++)
                 {
-                    if (!imagesSentenceIndex.Contains(equivalentNode.SentenceIndexes[i]))
+                    if (!imagesSentenceIndex.Contains(equivalentNode.Indexes[i]))
                     {
-                        equivalentNode.SentenceIndexes.RemoveAt(i);
+                        equivalentNode.Indexes.RemoveAt(i);
                         --i;
                     }
                 }
             }
 
-            TupleCount = Keywords.Sum(w => w.SentenceIndexes.Count);
-            TotalResults = EquivalentNodes.Count;
+            TupleCount = Keywords.Sum(w => w.Indexes.Count);
+            TotalResults = Sentences.Count;
             return CalculateHighestTuples();
         }
 
-        //	 return the list of nodes associated with EquivalentNode that has index from inverse of EquivalentR
+        //	 return the list of nodes associated with Sentences that has index from inverse of EquivalentR
         private List<int> GetImagesInverse(int index)
         {
-            EquivalentNode node = GetAtIndex(EquivalentNodes, index);
-            return node.SentenceIndexes;
+            return Sentences.FirstOrDefault(s => s.Index == index).Indexes;
         }
 
-        //	 return EquivalentNode that has index from the list l
-        public EquivalentNode GetAtIndex(List<EquivalentNode> nodes, int index)
-        {
-            EquivalentNode node = new EquivalentNode();
-
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                node = nodes[i];
-                if (node.Index == index)
-                    return node;
-            }
-            return null;
-        }
-
-        //	 return the list of nodes associated with EquivalentNode that has index from EquivalentR
+        //	 return the list of nodes associated with Keywords that has index from EquivalentR
         private List<int> GetImages(int index)
         {
-            EquivalentNode node = new EquivalentNode();
-            node = GetAtIndex(Keywords, index);
-            return node.SentenceIndexes;
+            return Keywords.FirstOrDefault(k => k.Index == index).Indexes;
         }
 
         //	 return the list of tuples that is contained in this EquivalentR
@@ -150,9 +146,9 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < Keywords.Count; i++)
             {
                 EquivalentNode node = Keywords[i];
-                for (int j = 0; j < node.SentenceIndexes.Count; j++)
+                for (int j = 0; j < node.Indexes.Count; j++)
                 {
-                    int[] pair = { node.Index, node.SentenceIndexes[j] };
+                    int[] pair = { node.Index, node.Indexes[j] };
                     tuples.Add(pair);
                 }
             }
@@ -166,14 +162,14 @@ namespace ConceptualBrowser.Business.Entities
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
             List<EquivalentNode> tempNodes = new List<EquivalentNode>();
 
-            for (int i = 0; i < EquivalentNodes.Count; i++)
+            for (int i = 0; i < Sentences.Count; i++)
             {
-                EquivalentNode equivalentNode = EquivalentNodes[i].Clone();
+                EquivalentNode equivalentNode = Sentences[i].Clone();
 
                 tempNodes.Add(equivalentNode);
 
             }
-            equivalentRectangle.EquivalentNodes = tempNodes;
+            equivalentRectangle.Sentences = tempNodes;
 
             List<EquivalentNode> temp_nodes_k = new List<EquivalentNode>();
 
@@ -203,15 +199,15 @@ namespace ConceptualBrowser.Business.Entities
         {
             Keywords = null;
             Keywords = temp.Keywords;
-            EquivalentNodes = null;
-            EquivalentNodes = temp.EquivalentNodes;
+            Sentences = null;
+            Sentences = temp.Sentences;
             TotalResults = temp.TotalResults;
             TupleCount = temp.TupleCount;
         }
 
         public bool IsRectangle()
         {
-            return (TupleCount == EquivalentNodes.Count * Keywords.Count);
+            return (TupleCount == Sentences.Count * Keywords.Count);
         }
 
         //	 convert this EquivalentR to object of type OptimalConcept
