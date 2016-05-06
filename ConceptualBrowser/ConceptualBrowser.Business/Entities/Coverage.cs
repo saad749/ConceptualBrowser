@@ -139,7 +139,30 @@ namespace ConceptualBrowser.Business.Entities
 
         public List<OptimalConcept> ExtractAll()
         {
-            int[] next = this.NextNonCovered(BinaryRelation);
+            //Parallel.For(0, 4, e => {
+
+                int[] next = this.NextNonCovered(BinaryRelation);
+                ExtractConcepts(next);
+            //});
+
+            //ExtractConcepts(next);
+            
+
+            OptimalConcepts.OrderByDescending(o => o.Gain);
+
+            //this.AddToHeap();
+
+            for (int i = 0; i < OptimalConcepts.Count; i++)
+                OptimalConcepts[i].SetConceptName(this.BinaryRelation);
+
+
+            OptimalConcepts = OptimalConcepts.GroupBy(o => o.ConceptName).Select(g => g.First()).ToList();
+
+            return OptimalConcepts;
+        }
+
+        private void ExtractConcepts(int[] next)
+        {
             //Console.WriteLine();
             while (next != null)
             {
@@ -147,14 +170,14 @@ namespace ConceptualBrowser.Business.Entities
                 this.ExtractOptimalConcept(this.BinaryRelation, next[0], next[1]);
                 next = this.NextNonCovered(this.BinaryRelation);
             }
-            this.Sort();
+        }
+
+        private void AddToHeap()
+        {
             for (int i = 0; i < OptimalConcepts.Count; i++)
                 AddToHeapOfConcepts(i, (OptimalConcepts[i].ConceptNumber));
-
-            for (int i = 0; i < OptimalConcepts.Count; i++)
-                OptimalConcepts[i].SetConceptName(this.BinaryRelation);
-            return OptimalConcepts;
         }
+
 
         //get the next non covered tuple in the BR
         //It is a simple method, that goes through all the keywords in the binary relation and chooses that one that is yet not covered.
@@ -165,40 +188,40 @@ namespace ConceptualBrowser.Business.Entities
             List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
             //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
-            foreach (KeywordNode keyword in keywords)
-            {
-                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
-                List<Sentence> sentences = keyword.Sentences;
-                foreach (Sentence sentence in sentences)
-                {
-                    //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
-                    if (sentence.CoveredByConceptNumber < 0)
-                    {
-                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-                        return indexes;
-                    }
-                }
-            }
-            //int i = 0;
-            ////Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
-            //keywords =  keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
-            //while (BinaryRelation.TotalUniqueCovered < BinaryRelation.KeywordsSentencesSum) //(keywords.Count * 100)
+            //foreach (KeywordNode keyword in keywords)
             //{
-            //    Random random = new Random();
-
-            //    int randomKeywordIndex = random.Next(0, keywords.Count);
-            //    int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
-
-            //    if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+            //    //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
+            //    List<Sentence> sentences = keyword.Sentences;
+            //    foreach (Sentence sentence in sentences)
             //    {
-            //        int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
-            //            keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
-
-            //        return indexes;
+            //        //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
+            //        if (sentence.CoveredByConceptNumber < 0)
+            //        {
+            //            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+            //            return indexes;
+            //        }
             //    }
-
-            //    i++;
             //}
+            int i = 0;
+            //Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
+            keywords = keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
+            while (BinaryRelation.TotalUniqueCovered < BinaryRelation.KeywordsSentencesSum) //(keywords.Count * 100)
+            {
+                Random random = new Random();
+
+                int randomKeywordIndex = random.Next(0, keywords.Count);
+                int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
+
+                if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+                {
+                    int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
+                        keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
+
+                    return indexes;
+                }
+
+                i++;
+            }
 
             return null;
         }
@@ -219,7 +242,7 @@ namespace ConceptualBrowser.Business.Entities
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
             equivalentRectangle.GetEquivalent(binaryRelation); //What it really needs is just BinaryRelation.Keywords.
             equivalentRectangle.GetInverse(Sentences);
-            List<int[]> tuples = equivalentRectangle.ConvertToElementaryRelation(keywordIndex, sentenceIndex);//Continue Exploring Here
+            List<int[]> tuples = equivalentRectangle.ConvertToElementaryRelation(keywordIndex, sentenceIndex);
             ExtractOptimalConcepts(equivalentRectangle, tuples, keywordIndex, sentenceIndex);
         }
 
@@ -308,6 +331,10 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < tuples.Count; i++)
             {
                 int[] pair = tuples[i];
+
+                if (pair == null)//This is a parallelization CHeck!
+                    continue;
+
                 if (pair[0] == k && pair[1] == u)
                     return true;
             }
@@ -324,6 +351,7 @@ namespace ConceptualBrowser.Business.Entities
         // sort the list of concepts depende on the gain of each one
         private void Sort()
         {
+            OptimalConcepts = OptimalConcepts.Where(o => o != null).ToList();//This is a parallelization CHeck!
             /*********************Bubble sort*********************/
             int index = -1;
             for (int j = 0; j < this.OptimalConcepts.Count; j++)

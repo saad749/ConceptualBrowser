@@ -160,26 +160,26 @@ namespace ConceptualBrowser.Business.Entities
         {
 
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
-            List<EquivalentNode> tempNodes = new List<EquivalentNode>();
+            List<EquivalentNode> tempSentences = new List<EquivalentNode>();
 
             for (int i = 0; i < Sentences.Count; i++)
             {
                 EquivalentNode equivalentNode = Sentences[i].Clone();
 
-                tempNodes.Add(equivalentNode);
+                tempSentences.Add(equivalentNode);
 
             }
-            equivalentRectangle.Sentences = tempNodes;
+            equivalentRectangle.Sentences = tempSentences;
 
-            List<EquivalentNode> temp_nodes_k = new List<EquivalentNode>();
+            List<EquivalentNode> tempKeywords = new List<EquivalentNode>();
 
             for (int i = 0; i < Keywords.Count; i++)
             {
                 EquivalentNode equivalentNode = new EquivalentNode();
                 equivalentNode = Keywords[i].Clone();
-                temp_nodes_k.Add(equivalentNode);
+                tempKeywords.Add(equivalentNode);
             }
-            equivalentRectangle.Keywords = temp_nodes_k;
+            equivalentRectangle.Keywords = tempKeywords;
             TupleCount = equivalentRectangle.TupleCount;
             TotalResults = equivalentRectangle.TotalResults;
 

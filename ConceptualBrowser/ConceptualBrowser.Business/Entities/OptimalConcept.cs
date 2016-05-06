@@ -83,6 +83,8 @@ namespace ConceptualBrowser.Business.Entities
                     }
                 }
             }
+
+
             if (!found)
             {
                 binaryRelation.ResetRootNodes();
