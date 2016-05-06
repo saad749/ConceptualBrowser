@@ -188,40 +188,40 @@ namespace ConceptualBrowser.Business.Entities
             List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
             //Console.WriteLine("KeywordsCount: " + keywords.Count);
 
-            //foreach (KeywordNode keyword in keywords)
-            //{
-            //    //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
-            //    List<Sentence> sentences = keyword.Sentences;
-            //    foreach (Sentence sentence in sentences)
-            //    {
-            //        //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
-            //        if (sentence.CoveredByConceptNumber < 0)
-            //        {
-            //            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-            //            return indexes;
-            //        }
-            //    }
-            //}
-            int i = 0;
-            //Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
-            keywords = keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
-            while (BinaryRelation.TotalUniqueCovered < BinaryRelation.KeywordsSentencesSum) //(keywords.Count * 100)
+            foreach (KeywordNode keyword in keywords)
             {
-                Random random = new Random();
-
-                int randomKeywordIndex = random.Next(0, keywords.Count);
-                int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
-
-                if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
+                List<Sentence> sentences = keyword.Sentences;
+                foreach (Sentence sentence in sentences)
                 {
-                    int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
-                        keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
-
-                    return indexes;
+                    //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
+                    if (sentence.CoveredByConceptNumber < 0)
+                    {
+                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+                        return indexes;
+                    }
                 }
-
-                i++;
             }
+            //int i = 0;
+            ////Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
+            //keywords = keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
+            //while (BinaryRelation.TotalUniqueCovered < (1.0 * BinaryRelation.KeywordsSentencesSum)) //(keywords.Count * 100)
+            //{
+            //    Random random = new Random();
+
+            //    int randomKeywordIndex = random.Next(0, keywords.Count);
+            //    int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
+
+            //    if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
+            //    {
+            //        int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
+            //            keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
+
+            //        return indexes;
+            //    }
+
+            //    i++;
+            //}
 
             return null;
         }

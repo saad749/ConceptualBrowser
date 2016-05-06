@@ -18,6 +18,15 @@ namespace ConceptualBrowser.Business.Common
         List<Sentence> sentences = new List<Sentence>();
         public List<OptimalConceptTreeItem> Extract(String text, string languageCode)
         {
+
+            PerformanceMonitor monitor = new PerformanceMonitor
+            {
+                Checkpoints = new List<Tuple<string, long>>(),
+                Stopwatch = new Stopwatch()
+            };
+            monitor.Stopwatch.Start();
+            monitor.Checkpoints.Add(new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedTicks));
+
             IStemmer stemmer;
             IEmptyWords emptyWords;
             try
@@ -29,11 +38,14 @@ namespace ConceptualBrowser.Business.Common
             {
                 throw ex;
             }
+
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedTicks));
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
             //List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
             List<String> sentenceStringList = textAnalyzer.GetSentences(text);
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedTicks));
 
-            
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
             for (int i = 0; i < sentenceStringList.Count;i++)
             {
                 int[] ranks = new int[] { i + 1, i + 1};
@@ -42,17 +54,36 @@ namespace ConceptualBrowser.Business.Common
 
                 this.sentences.Add(new Sentence(i, Constant.NotCovered, rank));
             }
-
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
 
             //Console.WriteLine("Total Sentences: " + sentenceStringList.Count);
             Coverage coverage = new Coverage(stemmer, emptyWords);
             //Why on Earth Should I send Sentence String List and Create Sentences from Sentences With Delimeters? Doesnt Sounds right!
             //Experiment Shows there is no difference, if we have Sentences created from sentenceStringList of sentencesWithDelimeters.
             //But Why to have more sentences??? With Deliemters give 82, without gives 42!!
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
             coverage.CreateBinaryRelation(sentenceStringList, this.sentences);
-            
-
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedTicks));
             List<OptimalConcept> optimals = coverage.ExtractAll();
+            monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedTicks));
+
+
+
+            monitor.Stopwatch.Stop();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
+            foreach (var tuple in monitor.Checkpoints)
+            {
+                sb.Append(tuple.Item1);
+                sb.Append("\t");
+                sb.Append(tuple.Item2);
+                sb.AppendLine();
+            }
+            File.AppendAllText("PerformanceLog.txt", sb.ToString());
+
 
             //Console.WriteLine("Total Sentences Not Covered: " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count(s => s.CoveredByConceptNumber == -1));
             //Console.WriteLine("Total Sentences : " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count());
@@ -64,31 +95,17 @@ namespace ConceptualBrowser.Business.Common
 
             //Fragments of Commented code to Imrpove Readbility. The code is commented to be able to be easily Reused when needed
             //PrintBinaryRelation(coverage.BinaryRelation);
-            //PerformanceMonitor monitor = new PerformanceMonitor
-            //{
-            //    Checkpoints = new List<Tuple<string, long>>(),
-            //    Stopwatch = new Stopwatch()
-            //};
-            //monitor.Stopwatch.Start();
-            //monitor.Checkpoints.Add(new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedTicks));
-            //monitor.Stopwatch.Stop();
-            //StringBuilder sb = new StringBuilder();
-            //foreach (var tuple in monitor.Checkpoints)
-            //{
-            //    sb.Append(tuple.Item1);
-            //    sb.Append("\t");
-            //    sb.Append(tuple.Item2);
-            //    sb.AppendLine();
-            //}
-            //File.WriteAllText("PerformanceLog.txt", sb.ToString());
+
+           
+            
+            
+           
+            
+            
+            
+            
+            
+            
 
             //List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
             //List<String> sentenceStringList = textAnalyzer.GetSentences(text);

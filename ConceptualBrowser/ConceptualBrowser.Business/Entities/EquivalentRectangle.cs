@@ -49,25 +49,39 @@ namespace ConceptualBrowser.Business.Entities
         /// <param name="sentences"></param>
         public void GetInverse(List<Sentence> sentences)
         {
+            //Parallel Block
             Sentences.Clear();
-            //Sentence sentence = new Sentence();
-
-            foreach (Sentence sentence in sentences)
-            {
-                //sentence = sentence;
+            List<EquivalentNode> SentencesCopy = new List<EquivalentNode>(Sentences);
+            object sync = new object();
+            Parallel.ForEach(sentences, sentence => {
                 List<int> tempKeywordIndexes = new List<int>();
 
                 foreach (EquivalentNode equivalentNode in Keywords)
                 {
-                    //if (equivalentNode.InNode(sentence.SentenceIndex))
                     if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
                         tempKeywordIndexes.Add(equivalentNode.Index);
                 }
-                //EquivalentNode equivalentNode1 = new EquivalentNode(sentence.SentenceIndex, tempKeywords);
-                this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
-            }
-
+                lock (sync)
+                {
+                    SentencesCopy.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
+                }
+            });
+            Sentences = new List<EquivalentNode>(SentencesCopy);
             TotalResults = Sentences.Count;
+
+            //SerialBlock
+            //Sentences.Clear();
+            //foreach (Sentence sentence in sentences)
+            //{
+            //    List<int> tempKeywordIndexes = new List<int>();
+            //    foreach (EquivalentNode equivalentNode in Keywords)
+            //    {
+            //        if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
+            //            tempKeywordIndexes.Add(equivalentNode.Index);
+            //    }
+            //    this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
+            //}
+            //TotalResults = Sentences.Count;
         }
 
         //	 convert EquivalentR to elementary relation PR
@@ -79,7 +93,7 @@ namespace ConceptualBrowser.Business.Entities
             //Eliminate rows of inverse(Sentences) not in images of keywords
             for (int i = 0; i < Sentences.Count; i++)
             {
-                if (!imagesKeywordIndex.Contains(Sentences[i].Index))
+                if (!imagesKeywordIndex.Contains(Sentences[i].Index)) 
                 {
                     Sentences.RemoveAt(i);
                     --i;
