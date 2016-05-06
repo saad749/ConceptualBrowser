@@ -10,6 +10,7 @@ namespace ConceptualBrowser.Business.Entities
     {
         public int Index { get; set; }
         public List<int> Indexes { get; set; } = new List<int>();
+        
 
         public EquivalentNode()
         {
