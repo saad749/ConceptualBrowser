@@ -19,8 +19,7 @@ namespace ConceptualBrowser.Business.Entities
         /// Keywords with Sentences List
         /// </summary>
         public List<EquivalentNode> Keywords { get; set; } = new List<EquivalentNode>();
-
-        public Dictionary<int, HashSet<int>> KeywordsWithSentences { get; set; } = new Dictionary<int, HashSet<int>>();
+       
 
         public int TupleCount { get; set; }
         public int TotalResults { get; set; }
@@ -59,7 +58,7 @@ namespace ConceptualBrowser.Business.Entities
                 List<int> tempSentenceIndexes = keyword.Sentences.Select(t => t.SentenceIndex).ToList();
                 EquivalentNode nodes = new EquivalentNode(i, tempSentenceIndexes);
                 Keywords.Add(nodes);
-                KeywordsWithSentences.Add(i, new HashSet<int>(tempSentenceIndexes));
+                //KeywordsWithSentences.Add(i, new HashSet<int>(tempSentenceIndexes));
                 
 
             }
@@ -76,31 +75,24 @@ namespace ConceptualBrowser.Business.Entities
         {
             //Parallel Block
             Sentences.Clear();
-            List<EquivalentNode> SentencesCopy = new List<EquivalentNode>(Sentences);
+            List<EquivalentNode> sentencesCopy = new List<EquivalentNode>(Sentences);
             object sync = new object();
-            Parallel.ForEach(sentences, sentence => {
+            Parallel.ForEach(sentences, sentence =>
+            {
                 List<int> tempKeywordIndexes = new List<int>();
 
-                //foreach (EquivalentNode equivalentNode in Keywords)
-                //{
-                //    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
-                //        tempKeywordIndexes.Add(equivalentNode.Index);
-                    
-                //}
-
-                foreach (var item in KeywordsWithSentences)
+                foreach (EquivalentNode equivalentNode in Keywords)
                 {
-                    if (item.Value.Contains(sentence.SentenceIndex))
-                    {
-                        tempKeywordIndexes.Add(item.Key);
-                    }
+                    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
+                        tempKeywordIndexes.Add(equivalentNode.Index);
+
                 }
                 lock (sync)
                 {
-                    SentencesCopy.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
+                    sentencesCopy.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
                 }
             });
-            Sentences = new List<EquivalentNode>(SentencesCopy);
+            Sentences = new List<EquivalentNode>(sentencesCopy);
             TotalResults = Sentences.Count;
 
             //SerialBlock

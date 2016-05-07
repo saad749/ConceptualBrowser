@@ -17,7 +17,7 @@ namespace ConceptualBrowser.Business.Entities
         public List<int[]> Pairs { get; set; } = new List<int[]>();
         public int CurrentConcept { get; set; } = -1;
         public List<OptimalConcept> OptimalConcepts { get; set; } = new List<OptimalConcept>();
-        public ConceptTree HeapConcepts { get; set; } = new ConceptTree(1000);
+        public ConceptTree HeapConcepts { get; set; } //= new ConceptTree(1000);
 
         public IStemmer Stemmer { get; set; }
         public IEmptyWords EmptyWordsRoot { get; set; }
@@ -139,24 +139,19 @@ namespace ConceptualBrowser.Business.Entities
 
         public List<OptimalConcept> ExtractAll()
         {
-            //Parallel.For(0, 4, e => {
+            int[] next = this.NextNonCovered(BinaryRelation);
+            ExtractConcepts(next);
 
-                int[] next = this.NextNonCovered(BinaryRelation);
-                ExtractConcepts(next);
-            //});
+            //OptimalConcepts = OptimalConcepts.OrderByDescending(o => o.Gain).ToList();
+            this.Sort(); // Changing the sort method can have consequences on correct output compared to master branch
 
-            //ExtractConcepts(next);
-            
 
-            OptimalConcepts.OrderByDescending(o => o.Gain);
-
-            //this.AddToHeap();
-
+            HeapConcepts = new ConceptTree(OptimalConcepts.Count);
             for (int i = 0; i < OptimalConcepts.Count; i++)
-                OptimalConcepts[i].SetConceptName(this.BinaryRelation);
+                AddToHeapOfConcepts(i, (OptimalConcepts[i].ConceptNumber));
 
-
-            OptimalConcepts = OptimalConcepts.GroupBy(o => o.ConceptName).Select(g => g.First()).ToList();
+            foreach (OptimalConcept optimalConcept in OptimalConcepts)
+                optimalConcept.SetConceptName(this.BinaryRelation);
 
             return OptimalConcepts;
         }
@@ -171,13 +166,6 @@ namespace ConceptualBrowser.Business.Entities
                 next = this.NextNonCovered(this.BinaryRelation);
             }
         }
-
-        private void AddToHeap()
-        {
-            for (int i = 0; i < OptimalConcepts.Count; i++)
-                AddToHeapOfConcepts(i, (OptimalConcepts[i].ConceptNumber));
-        }
-
 
         //get the next non covered tuple in the BR
         //It is a simple method, that goes through all the keywords in the binary relation and chooses that one that is yet not covered.
@@ -332,9 +320,6 @@ namespace ConceptualBrowser.Business.Entities
             {
                 int[] pair = tuples[i];
 
-                if (pair == null)//This is a parallelization CHeck!
-                    continue;
-
                 if (pair[0] == k && pair[1] == u)
                     return true;
             }
@@ -351,7 +336,6 @@ namespace ConceptualBrowser.Business.Entities
         // sort the list of concepts depende on the gain of each one
         private void Sort()
         {
-            OptimalConcepts = OptimalConcepts.Where(o => o != null).ToList();//This is a parallelization CHeck!
             /*********************Bubble sort*********************/
             int index = -1;
             for (int j = 0; j < this.OptimalConcepts.Count; j++)
