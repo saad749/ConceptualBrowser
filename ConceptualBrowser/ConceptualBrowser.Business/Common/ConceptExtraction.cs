@@ -75,6 +75,9 @@ namespace ConceptualBrowser.Business.Common
 
             monitor.Stopwatch.Stop();
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
             foreach (var tuple in monitor.Checkpoints)
             {
                 sb.Append(tuple.Item1);
@@ -82,7 +85,7 @@ namespace ConceptualBrowser.Business.Common
                 sb.Append(tuple.Item2);
                 sb.AppendLine();
             }
-            File.WriteAllText("PerformanceLog.txt", sb.ToString());
+            File.AppendAllText("PerformanceLog.txt", sb.ToString());
 
             return optimalTree;
         }

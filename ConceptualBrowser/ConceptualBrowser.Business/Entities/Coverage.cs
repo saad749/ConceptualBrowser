@@ -168,7 +168,7 @@ namespace ConceptualBrowser.Business.Entities
 
             this.Sort();
 
-
+            HeapConcepts = new ConceptTree(OptimalConcepts.Count);
             for (int i = 0; i < OptimalConcepts.Count; i++)
                 AddToHeapOfConcepts(i, (OptimalConcepts[i].ConceptNumber));
 
