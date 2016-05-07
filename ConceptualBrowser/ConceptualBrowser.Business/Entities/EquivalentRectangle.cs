@@ -84,6 +84,9 @@ namespace ConceptualBrowser.Business.Entities
             foreach (Sentence sentence in sentences)
             {
                 List<int> tempKeywordIndexes = new List<int>();
+                //Added Keywords to the Sentence List while creating Binary Relation This avoids going through each keywords and checking all the sentences that 
+                //IF a given sentence index is available in the list or not.
+                //THis is visible in the line below and the commented out code
                 tempKeywordIndexes = sentence.KeywordNodes.Select(k => k.KeywordIndex).ToList();
                 //foreach (EquivalentNode equivalentNode in Keywords)
                 //{
