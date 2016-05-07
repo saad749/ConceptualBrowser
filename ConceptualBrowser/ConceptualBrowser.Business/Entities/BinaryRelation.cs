@@ -45,35 +45,45 @@ namespace ConceptualBrowser.Business.Entities
 
         public void AppendToBinaryRelation(List<String> words, Sentence sentence)
         {
+            sentence.KeywordNodes = new List<KeywordNode>();
             foreach (string word in words)
             {
                 //These temporary Variables are SUPER VARIABLES. DONT EVEN THINK TO REMOVE THEM. THIS WILL SKIP A LOT OF
                 //CONCEPTS. AND CAN TAKE FOR EVER TO UNDERSTAND!!!
-                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.CoveredByConceptNumber, sentence.Rank); // Why to create a tempSentence? -s refers to this variable
+                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.CoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes); // Why to create a tempSentence? -s refers to this variable
                 String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
 
                 String stem = Stemmer.Stem(tempWord.ToLower());//-k
                 RootNode root = new RootNode();
 
-                if (Keywords.Any(v => v.Keyword == stem))
+                //USE By Reference
+                KeywordNode keyword = Keywords.FirstOrDefault(v => v.Keyword == stem);
+
+                if (keyword != null)
                 {
                     //If the stram of the word already exists in the List of keywords with the Binary Relations Then 
 
                     //KeywordNode tempKeywordNode = Keywords.FirstOrDefault(v => v.Keyword == stem);
-                    if (!Keywords.FirstOrDefault(v => v.Keyword == stem).Sentences.Any( n => n.SentenceIndex == tempSentence.SentenceIndex)) 
+                    if (!keyword.Sentences.Any( n => n.SentenceIndex == tempSentence.SentenceIndex)) 
                     {
                         //If the word exists in the list of key words, then it checks if the word has any sentences that has a sentenceIndex
-                        //that matches the sentence that word was found in... THEN
+                        //that matches the sentence that word was found in (if not its probably repeated in the same sentence and ignored)... THEN
                         //Increase the Rank of the Keyword
                         //For some reason if the word doesnt exists in Roots List of Binary Relation, then Add it to Binary Relation .. Word or Stem??
                         //Add the sentence to the list of the sentences to the Keyword that has the stem of this word
 
-                        Keywords.FirstOrDefault(v => v.Keyword == stem).KeywordRank++; 
+                        keyword.KeywordRank++; 
                         root = Roots.FirstOrDefault(r => r.Root.Equals(stem, StringComparison.OrdinalIgnoreCase));
                         if (!root.ExistsInOriginalWords(tempWord))//-k
                             root.OriginalWords.Add(tempWord);//-k
-                        Keywords.FirstOrDefault(v => v.Keyword == stem).Sentences.Add(tempSentence); //Referencing issue may be???//-s
+
+                        //tempSentence.KeywordNodes.Add(keyword);//Addition for Speed
+                        sentence.KeywordNodes.Add(keyword);
+                        keyword.Sentences.Add(tempSentence); //Referencing issue may be???//-s
+
+                        
+                        
                     }
                 }
                 else
@@ -90,6 +100,9 @@ namespace ConceptualBrowser.Business.Entities
                     Roots.Add(root);
 
                     KeywordNode temp = new KeywordNode(stem, Keywords.Count, 1, sentences);
+
+                    //tempSentence.KeywordNodes.Add(temp);//Addition for Speed - By Reference!!
+                    sentence.KeywordNodes.Add(temp);
                     Keywords.Add(temp);
                 }
             }

@@ -14,6 +14,9 @@ namespace ConceptualBrowser.Business.Entities
         public int KeywordNumber { get; set; }
         public string KeywordString { get; set; }
 
+        public List<KeywordNode> KeywordNodes { get; set; }
+
+
 
         public Sentence()
         {
@@ -26,6 +29,22 @@ namespace ConceptualBrowser.Business.Entities
             CoveredByConceptNumber = coveredByConceptNumber;
             Rank = rank;
             rank.CalculateRank();
+        }
+
+        /// <summary>
+        /// Constructor to Allow cross referencing the keywords that occur in this sentence
+        /// </summary>
+        /// <param name="sentenceIndex"></param>
+        /// <param name="coveredByConceptNumber"></param>
+        /// <param name="rank"></param>
+        /// <param name="keywords"></param>
+        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, List<KeywordNode> keywords)
+        {
+            SentenceIndex = sentenceIndex;
+            CoveredByConceptNumber = coveredByConceptNumber;
+            Rank = rank;
+            rank.CalculateRank();
+            KeywordNodes = keywords;
         }
     }
 }

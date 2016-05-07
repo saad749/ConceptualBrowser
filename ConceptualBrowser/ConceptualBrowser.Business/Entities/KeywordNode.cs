@@ -20,6 +20,8 @@ namespace ConceptualBrowser.Business.Entities
         /// Sentences in which the word occured
         /// </summary>
         public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
+
+        //public HashSet<int> SentenceIndexes { get; set; }
         /// <summary>
         /// Number of times this Keyword appeared in the text.
         /// </summary>
@@ -31,10 +33,12 @@ namespace ConceptualBrowser.Business.Entities
             KeywordIndex = number;
             KeywordRank = rank;
             Sentences = sentences;
+            //SentenceIndexes = new HashSet<int>(sentences.Select(s => s.SentenceIndex).ToList());
         }
 
         public bool ContainsSentenceIndex(int sentenceIndex)
         {
+            //return SentenceIndexes.Contains(sentenceIndex);
             return Sentences.Any(n => n.SentenceIndex == sentenceIndex);
         }
     }

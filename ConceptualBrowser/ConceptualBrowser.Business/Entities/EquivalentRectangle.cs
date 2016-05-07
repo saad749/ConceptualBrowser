@@ -19,7 +19,9 @@ namespace ConceptualBrowser.Business.Entities
         /// Keywords with Sentences List
         /// </summary>
         public List<EquivalentNode> Keywords { get; set; } = new List<EquivalentNode>();
-       
+
+        public Dictionary<int, HashSet<int>> KeywordsSentencesDictionary { get; set; } = new Dictionary<int, HashSet<int>>();
+
 
         public int TupleCount { get; set; }
         public int TotalResults { get; set; }
@@ -32,24 +34,6 @@ namespace ConceptualBrowser.Business.Entities
         /// <param name="binaryRelation"></param>
         public void GetEquivalent(BinaryRelation binaryRelation)
         {
-            //Parallel Block - Gains lower than just Parallelizing Get Inverse
-            //Sentences.Clear();
-            //List<EquivalentNode> KeywordsCopy = new List<EquivalentNode>(Keywords);
-            //object sync = new object();
-            //Parallel.For(0, binaryRelation.Keywords.Count, i =>
-            //{
-            //    KeywordNode keyword = binaryRelation.Keywords[i];
-            //    List<int> tempSentenceIndexes = keyword.Sentences.Select(t => t.SentenceIndex).ToList();
-            //    EquivalentNode nodes = new EquivalentNode(i, tempSentenceIndexes);
-            //    lock (sync)
-            //    {
-            //        KeywordsCopy.Add(nodes);
-            //    }
-            //});
-            //Keywords = new List<EquivalentNode>(KeywordsCopy);
-            //TupleCount = binaryRelation.GetTupleCount();
-            //TotalResults = binaryRelation.TotalResults;
-
             //Serial Block
             Sentences.Clear();
             for (int i = 0; i < binaryRelation.Keywords.Count; i++)
@@ -58,7 +42,7 @@ namespace ConceptualBrowser.Business.Entities
                 List<int> tempSentenceIndexes = keyword.Sentences.Select(t => t.SentenceIndex).ToList();
                 EquivalentNode nodes = new EquivalentNode(i, tempSentenceIndexes);
                 Keywords.Add(nodes);
-                //KeywordsWithSentences.Add(i, new HashSet<int>(tempSentenceIndexes));
+                //KeywordsSentencesDictionary.Add(i, keyword.SentenceIndexes);
                 
 
             }
@@ -73,41 +57,44 @@ namespace ConceptualBrowser.Business.Entities
         /// <param name="sentences"></param>
         public void GetInverse(List<Sentence> sentences)
         {
-            //Parallel Block
-            Sentences.Clear();
-            List<EquivalentNode> sentencesCopy = new List<EquivalentNode>(Sentences);
-            object sync = new object();
-            Parallel.ForEach(sentences, sentence =>
-            {
-                List<int> tempKeywordIndexes = new List<int>();
-
-                foreach (EquivalentNode equivalentNode in Keywords)
-                {
-                    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
-                        tempKeywordIndexes.Add(equivalentNode.Index);
-
-                }
-                lock (sync)
-                {
-                    sentencesCopy.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
-                }
-            });
-            Sentences = new List<EquivalentNode>(sentencesCopy);
-            TotalResults = Sentences.Count;
-
-            //SerialBlock
+            //Parallel Block                                                                                      
             //Sentences.Clear();
-            //foreach (Sentence sentence in sentences)
+            //List<EquivalentNode> sentencesCopy = new List<EquivalentNode>(Sentences);
+            //object sync = new object();
+            //Parallel.ForEach(sentences, sentence =>
             //{
             //    List<int> tempKeywordIndexes = new List<int>();
-            //    foreach (EquivalentNode equivalentNode in Keywords)
+            //    tempKeywordIndexes = sentence.KeywordNodes.Select(k => k.KeywordIndex).ToList();
+            //    //foreach (EquivalentNode equivalentNode in Keywords)
+            //    //{
+            //    //    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
+            //    //        tempKeywordIndexes.Add(equivalentNode.Index);
+
+            //    //}
+            //    lock (sync)
             //    {
-            //        if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
-            //            tempKeywordIndexes.Add(equivalentNode.Index);
+            //        sentencesCopy.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
             //    }
-            //    this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
-            //}
+            //});
+            //Sentences = new List<EquivalentNode>(sentencesCopy);
             //TotalResults = Sentences.Count;
+
+            //SerialBlock
+            Sentences.Clear();
+            foreach (Sentence sentence in sentences)
+            {
+                List<int> tempKeywordIndexes = new List<int>();
+                tempKeywordIndexes = sentence.KeywordNodes.Select(k => k.KeywordIndex).ToList();
+                //foreach (EquivalentNode equivalentNode in Keywords)
+                //{
+                //    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
+                //        tempKeywordIndexes.Add(equivalentNode.Index);
+                //}
+                this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
+            }
+            TotalResults = Sentences.Count;
+
+
         }
 
         //	 convert EquivalentR to elementary relation PR
