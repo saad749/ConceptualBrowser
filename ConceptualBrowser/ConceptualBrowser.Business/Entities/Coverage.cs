@@ -120,8 +120,8 @@ namespace ConceptualBrowser.Business.Entities
 
         public List<OptimalConcept> ExtractAll()
         {
-            int[] next = this.NextNonCovered(BinaryRelation);
-            ExtractConcepts(next);
+            //int[] next = this.NextNonCovered(BinaryRelation);
+            ExtractConcepts();
 
             //OptimalConcepts = OptimalConcepts.OrderByDescending(o => o.Gain).ToList();
             this.Sort(); // Changing the sort method can have consequences on correct output compared to master branch
@@ -137,62 +137,26 @@ namespace ConceptualBrowser.Business.Entities
             return OptimalConcepts;
         }
 
-        private void ExtractConcepts(int[] next)
+        private void ExtractConcepts()
         {
-            //Console.WriteLine();
-            while (next != null)
-            {
-                //Console.WriteLine("Next: " + next[0] + " | " + next [1]);
-                this.ExtractOptimalConcept(this.BinaryRelation, next[0], next[1]);
-                next = this.NextNonCovered(this.BinaryRelation);
-            }
-        }
+                List<KeywordNode> keywords = BinaryRelation.Keywords.ToList();
 
-        //get the next non covered tuple in the BR
-        //It is a simple method, that goes through all the keywords in the binary relation and chooses that one that is yet not covered.
-        //We can Apply Randomization here!!
-        public int[] NextNonCovered(BinaryRelation binaryRelation)
-        {
-            //List<KeywordNode> keywords = binaryRelation.Keywords.Values.ToList();
-            List<KeywordNode> keywords = binaryRelation.Keywords.ToList();
-            //Console.WriteLine("KeywordsCount: " + keywords.Count);
-
-            foreach (KeywordNode keyword in keywords)
-            {
-                //LogHelper.PrintKeyword(keyword, "NextNonCovered - ");
-                List<Sentence> sentences = keyword.Sentences;
-                foreach (Sentence sentence in sentences)
+                foreach (KeywordNode keyword in keywords)
                 {
-                    //LogHelper.PrintSentence(sentence, "NextNonCovered - ");
-                    if (sentence.CoveredByConceptNumber < 0)
+                    List<Sentence> sentences = keyword.Sentences;
+                    foreach (Sentence sentence in sentences)
                     {
-                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-                        return indexes;
+                        if (sentence.CoveredByConceptNumber < 0)
+                        {
+                            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+                            if (indexes != null)
+                            {
+                                this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
+                            }
+                        }
                     }
                 }
-            }
-            //int i = 0;
-            ////Console.WriteLine("Total Unique: " + BinaryRelation.TotalUniqueCovered + "  Total Sentences: " + TotalSentences);
-            //keywords = keywords.Where(k => k.Sentences.Any(s => s.CoveredByConceptNumber == -1)).ToList(); // This slows down but will surely complete the coverage
-            //while (BinaryRelation.TotalUniqueCovered < (1.0 * BinaryRelation.KeywordsSentencesSum)) //(keywords.Count * 100)
-            //{
-            //    Random random = new Random();
 
-            //    int randomKeywordIndex = random.Next(0, keywords.Count);
-            //    int randomSentenceIndex = random.Next(0, keywords[randomKeywordIndex].Sentences.Count);
-
-            //    if (keywords[randomKeywordIndex].Sentences[randomSentenceIndex].CoveredByConceptNumber < 0)
-            //    {
-            //        int[] indexes = { keywords[randomKeywordIndex].KeywordIndex,
-            //            keywords[randomKeywordIndex].Sentences[randomSentenceIndex].SentenceIndex };
-
-            //        return indexes;
-            //    }
-
-            //    i++;
-            //}
-
-            return null;
         }
 
         // get the elements that are contained in the optimal rectangles of pr(k,u)
