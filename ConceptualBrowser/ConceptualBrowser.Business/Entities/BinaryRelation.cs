@@ -56,7 +56,7 @@ namespace ConceptualBrowser.Business.Entities
 
                 String stem = Stemmer.Stem(tempWord.ToLower());//-k
                 RootNode root = new RootNode();
-
+                
                 //USE By Reference
                 KeywordNode keyword = Keywords.FirstOrDefault(v => v.Keyword == stem);
 

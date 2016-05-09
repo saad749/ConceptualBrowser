@@ -10,7 +10,7 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class Coverage
     {
-        public int MaxRank { get; set; } = 200; //C# 6.0 allows property initializers// WHY 200?????
+        public int MaxRank { get; set; } = 2; //2 because the value can never be mroe than 1 //C# 6.0 allows property initializers// WHY 200?????
         public List<Sentence> Sentences { get; set; }
         public int TotalSentences { get; set; }
         public BinaryRelation BinaryRelation { get; set; }
@@ -68,56 +68,37 @@ namespace ConceptualBrowser.Business.Entities
 
         private void AddHighestRankKeywords()
         {
-            List<string> usedKeywords = new List<string>();
-            List<Sentence> namedSentences = new List<Sentence>();
-
             double max = MaxRank;
             int KeywordNo = -1;
             String keywordString = null;
-            //List<KeywordNode> keywords = BinaryRelation.Keywords.Values.ToList();
-            List<KeywordNode> keywords = BinaryRelation.Keywords.ToList();
-
-            for (int t = 0; t < keywords.Count; t++)
+            
+            for (int i = 0; i < Sentences.Count; i++)
             {
-                List<Sentence> sentences = keywords[t].Sentences;
-
-                for (int i = 0; i < sentences.Count; i++)
+                Sentence sentence = Sentences[i];
+                for (int j = 0; j < sentence.KeywordNodes.Count; j++)
                 {
-                    Sentence sentence = sentences[i];
-                    if (!InNamedList(namedSentences, sentence))
-                    {
-                        for (int j = 0; j < keywords.Count; j++)
-                        {
-                            KeywordNode keywordNode = BinaryRelation.Keywords[j];
-                            if (keywordNode.ContainsSentenceIndex(sentence.SentenceIndex))
+                    KeywordNode keywordNode = sentence.KeywordNodes[j];
+
+                            if (keywordNode.KeywordRank < max)
                             {
-                                if (!usedKeywords.Contains(keywordNode.Keyword))
-                                    if (keywordNode.KeywordRank < max)
-                                    {
-                                        max = keywordNode.KeywordRank;
-                                        KeywordNo = keywordNode.KeywordIndex;
-                                        keywordString = keywordNode.Keyword;
-                                    }
+                                max = keywordNode.KeywordRank;
+                                KeywordNo = keywordNode.KeywordIndex;
+                                keywordString = keywordNode.Keyword;
                             }
-                        }
-                        if (keywordString == null)
-                        {
-                            usedKeywords.Clear();
-                            max = MaxRank;
-                            KeywordNo = -1;
-                            keywordString = null;
-                            i--;
-                        }
-                        else
-                        {
-                            sentence.KeywordNumber = KeywordNo;
-                            String key = (BinaryRelation.GetRootNode(keywordString)).getMaxLengthWord();
-                            sentence.KeywordString = key;
-                            max = MaxRank;
-                            usedKeywords.Add(keywordString);
-                            namedSentences.Add(sentence);
-                        }
-                    }
+                }
+                if (keywordString == null)
+                {
+                    max = MaxRank;
+                    KeywordNo = -1;
+                    keywordString = null;
+                    i--;
+                }
+                else
+                {
+                    sentence.KeywordNumber = KeywordNo;
+                    String key = (BinaryRelation.GetRootNode(keywordString)).getMaxLengthWord();
+                    sentence.KeywordString = key;
+                    max = MaxRank;
                 }
             }
         }
