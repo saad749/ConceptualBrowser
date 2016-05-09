@@ -149,10 +149,7 @@ namespace ConceptualBrowser.Business.Entities
                         if (sentence.CoveredByConceptNumber < 0)
                         {
                             int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-                            if (indexes != null)
-                            {
-                                this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
-                            }
+                            this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
                         }
                     }
                 }
