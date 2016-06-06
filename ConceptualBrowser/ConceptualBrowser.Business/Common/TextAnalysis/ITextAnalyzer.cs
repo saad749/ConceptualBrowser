@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConceptualBrowser.Business
 {
-    interface ITextAnalyzer
+    public interface ITextAnalyzer
     {
         List<String> GetSentencesWithDelimiters(string text);
         List<String> GetSentences(string text);

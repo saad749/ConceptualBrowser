@@ -6,7 +6,7 @@ using ConceptualBrowser.Business.Common.Stemmer;
 
 namespace ConceptualBrowser.Business
 {
-    class TextAnalyzer : ITextAnalyzer
+    public class TextAnalyzer : ITextAnalyzer
     {
         public IStemmer Stemmer { get; set; }
         public IEmptyWords EmptyWords { get; set; }
@@ -15,6 +15,11 @@ namespace ConceptualBrowser.Business
         {
             Stemmer = stemmer;
             EmptyWords = emptywords;
+        }
+
+        public TextAnalyzer()
+        {
+            
         }
         public List<String> GetSentences(string text)
         {

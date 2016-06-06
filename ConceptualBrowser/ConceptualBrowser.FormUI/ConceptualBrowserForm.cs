@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ConceptualBrowser.Business;
 using ConceptualBrowser.Business.Common;
 using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Entities;
@@ -109,20 +110,28 @@ namespace ConceptualBrowser.FormUI
                 treeViewBrowser.SelectedNode = e.Node;
                 OptimalConceptTreeItem optimal = OptimalTree.Find(t => t.Id == (int)e.Node.Tag);
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
+                //List<int> coveringSentenceNumbers = optimal.OptimalConcept.Keywords.SelectMany(n => n.Sentences).Select(s => s.CoveredByConceptNumber).ToList();
+                //List<int> distinctSentences = coveringSentenceNumbers.
+                List<int> distinctSentence = coveringSentenceNumbers
+                                                      .GroupBy(p => p)
+                                                      .Select(g => g.First())
+                                                      .ToList();
 
-                List<String> sentences = FileText.Split(new char[] { '.', ',', ';' }).ToList();
+                ITextAnalyzer textAnalyzer = new TextAnalyzer();
+                List<String> sentences = textAnalyzer.GetSentences(FileText);
+                //List<String> sentences = FileText.Split(new char[] { '.', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 txtText.Text = String.Empty;
 
                 for (int i = 0; i < sentences.Count; i++)
                 {
                     if (coveringSentenceNumbers.Contains(i))
                     {
-                        AppendText(txtText, sentences[i], Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 12.0F, FontStyle.Bold));
+                        AppendText(txtText, i + ": " + sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 11.0F, FontStyle.Regular));
                     }
-                    else
-                    {
-                        AppendText(txtText, sentences[i], Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
-                    }
+                    //else if(sentences.Count < 100)
+                    //{
+                    //    AppendText(txtText, sentences[i], Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                    //}
                 }
                 
             }

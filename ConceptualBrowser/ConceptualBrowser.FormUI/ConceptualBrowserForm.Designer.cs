@@ -177,6 +177,7 @@
             // 
             // labelLanguage
             // 
+            this.labelLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLanguage.AutoSize = true;
             this.labelLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelLanguage.Location = new System.Drawing.Point(806, 30);
@@ -187,6 +188,7 @@
             // 
             // cmbLanguage
             // 
+            this.cmbLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLanguage.FormattingEnabled = true;
             this.cmbLanguage.Items.AddRange(new object[] {
@@ -203,7 +205,7 @@
             "nor",
             "ita",
             "por",
-            "rom",
+            "ron",
             "rus"});
             this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
             this.cmbLanguage.Name = "cmbLanguage";
