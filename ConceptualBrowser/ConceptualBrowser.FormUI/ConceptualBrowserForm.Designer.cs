@@ -47,6 +47,7 @@
             this.txtText = new System.Windows.Forms.RichTextBox();
             this.labelLanguage = new System.Windows.Forms.Label();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
+            this.optimalConceptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -76,20 +77,22 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
             // exportMenuItem
             // 
+            this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optimalConceptsToolStripMenuItem});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // encodingToolStripMenuItem
@@ -212,6 +215,13 @@
             this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
             this.cmbLanguage.TabIndex = 6;
             // 
+            // optimalConceptsToolStripMenuItem
+            // 
+            this.optimalConceptsToolStripMenuItem.Name = "optimalConceptsToolStripMenuItem";
+            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
+            this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -257,6 +267,7 @@
         private System.Windows.Forms.ToolStripMenuItem uTF8ToolStripMenuItem;
         private System.Windows.Forms.Label labelLanguage;
         private System.Windows.Forms.ComboBox cmbLanguage;
+        private System.Windows.Forms.ToolStripMenuItem optimalConceptsToolStripMenuItem;
     }
 }
 

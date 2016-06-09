@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -193,5 +194,12 @@ namespace ConceptualBrowser.FormUI
             aNSIToolStripMenuItem.Checked = false;
         }
 
+        private void optimalConceptsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string[] lines = OptimalTree.Select(c => c.OptimalConcept.ConceptName).ToArray();
+            string fileName = "exported_concepts.txt";
+            File.WriteAllLines(fileName, lines);
+            Process.Start(fileName);
+        }
     }
 }
