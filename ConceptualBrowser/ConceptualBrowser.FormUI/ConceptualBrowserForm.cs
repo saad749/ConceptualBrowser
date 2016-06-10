@@ -22,6 +22,7 @@ namespace ConceptualBrowser.FormUI
         public List<OptimalConceptTreeItem> OptimalTree { get; set; }
         public string FileText { get; set; }
         public Encoding Encoding { get; set; } = Encoding.Default;
+        public Stopwatch Stopwatch { get; set; }
 
 
         public ConceptualBrowserForm()
@@ -44,13 +45,18 @@ namespace ConceptualBrowser.FormUI
                 {
                     FileText = ReadFile(fileName);
                     txtText.Text = FileText;
+                    txtSummary.Text = "";
 
                     //Also Take Language by User Input
                     Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedItem.ToString();
                     tssLanguage.Text = "Language: " + Langauge;
+
+                    Stopwatch = new Stopwatch();
+                    Stopwatch.Start();
                     ConceptExtraction ce = new ConceptExtraction();
                     OptimalTree = ce.Extract(FileText, Langauge);
-
+                    Stopwatch.Stop();
+                    tssPerformance.Text = "Time Taken: " + Stopwatch.ElapsedMilliseconds.ToString() + " ms";
 
                     FillNode(OptimalTree, null);
                 }
@@ -111,28 +117,23 @@ namespace ConceptualBrowser.FormUI
                 treeViewBrowser.SelectedNode = e.Node;
                 OptimalConceptTreeItem optimal = OptimalTree.Find(t => t.Id == (int)e.Node.Tag);
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
-                //List<int> coveringSentenceNumbers = optimal.OptimalConcept.Keywords.SelectMany(n => n.Sentences).Select(s => s.CoveredByConceptNumber).ToList();
-                //List<int> distinctSentences = coveringSentenceNumbers.
-                List<int> distinctSentence = coveringSentenceNumbers
-                                                      .GroupBy(p => p)
-                                                      .Select(g => g.First())
-                                                      .ToList();
 
                 ITextAnalyzer textAnalyzer = new TextAnalyzer();
-                List<String> sentences = textAnalyzer.GetSentences(FileText);
-                //List<String> sentences = FileText.Split(new char[] { '.', ',', ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                txtText.Text = String.Empty;
+                List<string> sentences = textAnalyzer.GetSentences(FileText);
+                txtText.Text = "";
+                txtSummary.Text = "";
 
                 for (int i = 0; i < sentences.Count; i++)
                 {
                     if (coveringSentenceNumbers.Contains(i))
                     {
-                        AppendText(txtText, i + ": " + sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 11.0F, FontStyle.Regular));
+                        AppendText(txtText, sentences[i] + ".", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold));
+                        AppendText(txtSummary, i + ": " + sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
                     }
-                    //else if(sentences.Count < 100)
-                    //{
-                    //    AppendText(txtText, sentences[i], Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
-                    //}
+                    else
+                    {
+                        AppendText(txtText, sentences[i] + ".", Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                    }
                 }
                 
             }
@@ -141,14 +142,6 @@ namespace ConceptualBrowser.FormUI
         private string ReadFile(string path)
         {
             return File.ReadAllText(path, Encoding);
-
-            //using (var reader = new StreamReader(path))
-            //{
-            //    // Make sure you read from the file or it won't be able
-            //    // to guess the encoding
-            //    var file = reader.ReadToEnd();
-            //    Console.WriteLine(reader.CurrentEncoding);
-            //}
         }
 
         public static void AppendText(RichTextBox box, string text, Color color, Font font)
@@ -159,15 +152,6 @@ namespace ConceptualBrowser.FormUI
             box.SelectionLength = text.Length;
             box.SelectionColor = color;
             box.SelectionFont = font;
-
-            //box.SelectionStart = box.TextLength;
-            //box.SelectionLength = 0;
-
-            //box.SelectionColor = color;
-            //box.SelectionFont = font;
-            //box.AppendText(text);
-            //box.SelectionColor = box.ForeColor;
-            //box.SelectionFont = new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular);
         }
 
         private void unicodeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -201,5 +185,6 @@ namespace ConceptualBrowser.FormUI
             File.WriteAllLines(fileName, lines);
             Process.Start(fileName);
         }
+
     }
 }

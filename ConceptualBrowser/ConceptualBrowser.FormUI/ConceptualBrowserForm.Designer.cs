@@ -34,6 +34,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimalConceptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,12 +43,13 @@
             this.treeViewBrowser = new System.Windows.Forms.TreeView();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tssLanguage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tssPerformance = new System.Windows.Forms.ToolStripStatusLabel();
             this.ctxMenuTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddToStopWords = new System.Windows.Forms.ToolStripMenuItem();
             this.txtText = new System.Windows.Forms.RichTextBox();
             this.labelLanguage = new System.Windows.Forms.Label();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
-            this.optimalConceptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtSummary = new System.Windows.Forms.RichTextBox();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -77,7 +79,7 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
@@ -86,13 +88,20 @@
             this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optimalConceptsToolStripMenuItem});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exportMenuItem.Text = "E&xport";
+            // 
+            // optimalConceptsToolStripMenuItem
+            // 
+            this.optimalConceptsToolStripMenuItem.Name = "optimalConceptsToolStripMenuItem";
+            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
+            this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // encodingToolStripMenuItem
@@ -141,7 +150,8 @@
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLanguage});
+            this.tssLanguage,
+            this.tssPerformance});
             this.statusStrip.Location = new System.Drawing.Point(0, 659);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1008, 22);
@@ -153,6 +163,12 @@
             this.tssLanguage.Name = "tssLanguage";
             this.tssLanguage.Size = new System.Drawing.Size(151, 17);
             this.tssLanguage.Text = "Language: Not Yet Selected";
+            // 
+            // tssPerformance
+            // 
+            this.tssPerformance.Name = "tssPerformance";
+            this.tssPerformance.Size = new System.Drawing.Size(74, 17);
+            this.tssPerformance.Text = "Time Taken: ";
             // 
             // ctxMenuTreeView
             // 
@@ -172,9 +188,9 @@
             this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtText.Location = new System.Drawing.Point(291, 55);
+            this.txtText.Location = new System.Drawing.Point(291, 356);
             this.txtText.Name = "txtText";
-            this.txtText.Size = new System.Drawing.Size(717, 601);
+            this.txtText.Size = new System.Drawing.Size(717, 300);
             this.txtText.TabIndex = 4;
             this.txtText.Text = "";
             // 
@@ -215,18 +231,22 @@
             this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
             this.cmbLanguage.TabIndex = 6;
             // 
-            // optimalConceptsToolStripMenuItem
+            // txtSummary
             // 
-            this.optimalConceptsToolStripMenuItem.Name = "optimalConceptsToolStripMenuItem";
-            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
-            this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
+            this.txtSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSummary.Location = new System.Drawing.Point(291, 56);
+            this.txtSummary.Name = "txtSummary";
+            this.txtSummary.Size = new System.Drawing.Size(717, 294);
+            this.txtSummary.TabIndex = 7;
+            this.txtSummary.Text = "";
             // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.txtSummary);
             this.Controls.Add(this.cmbLanguage);
             this.Controls.Add(this.labelLanguage);
             this.Controls.Add(this.txtText);
@@ -268,6 +288,8 @@
         private System.Windows.Forms.Label labelLanguage;
         private System.Windows.Forms.ComboBox cmbLanguage;
         private System.Windows.Forms.ToolStripMenuItem optimalConceptsToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox txtSummary;
+        private System.Windows.Forms.ToolStripStatusLabel tssPerformance;
     }
 }
 
