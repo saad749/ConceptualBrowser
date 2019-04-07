@@ -40,6 +40,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     return new RomanianStemmer();
                 case "rus":
                     return new RussianStemmer();
+                case "arb":
+                    return new ArabicStemmer();
                 default:
                     return null;
 

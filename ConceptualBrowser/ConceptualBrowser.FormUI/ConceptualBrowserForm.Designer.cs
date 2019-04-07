@@ -204,7 +204,8 @@
             "ita",
             "por",
             "rom",
-            "rus"});
+            "rus",
+            "arb"});
             this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(121, 21);

@@ -56,6 +56,7 @@
     <Compile Include="Common\Helpers\LogHelper.cs" />
     <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Performance\PerformanceMonitor.cs" />
+    <Compile Include="Common\Stemmer\ArabicStemmer.cs" />
     <Compile Include="Common\Stemmer\CzechStemmer.cs" />
     <Compile Include="Common\Stemmer\DanishStemmer.cs" />
     <Compile Include="Common\Stemmer\DutchStemmer.cs" />
