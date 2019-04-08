@@ -114,7 +114,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     {"por", new Tuple<string, Encoding> ("PortugueseStopWords_FullListFromInternet.txt", Encoding.Unicode)},
                     {"rom", new Tuple<string, Encoding> ("RomanianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
                     {"rus", new Tuple<string, Encoding> ("RussianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
-                    {"arb", new Tuple<string, Encoding> ("arabic-stop-words-750.txt", Encoding.Unicode)}
+                    {"arb", new Tuple<string, Encoding> ("arabic-stop-words-750.txt", Encoding.Unicode)},
+                    {"none", new Tuple<string, Encoding> (null, Encoding.Unicode)}
                 };
 
                 try
@@ -135,13 +136,15 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
         public void LoadEmptyWordsFromFile()
         {
-            EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName, Encoding).ToList();
+            if(File.Exists(EmptyWordsFilePath))
+                EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName, Encoding).ToList();
         }
 
         public void AppendEmptyWordsToFile(string word)
         {
             string root = Stemmer.Stem(word);
-            File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding);
+            if (File.Exists(EmptyWordsFilePath))
+                File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding);
         }
 
         public bool IsEmptyWord(string word)

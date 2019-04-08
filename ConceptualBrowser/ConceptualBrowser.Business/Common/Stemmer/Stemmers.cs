@@ -42,6 +42,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     return new RussianStemmer();
                 case "arb":
                     return new ArabicStemmer();
+                case "none":
+                    return new NoStemmer();
                 default:
                     return null;
 

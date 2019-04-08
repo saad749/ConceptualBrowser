@@ -72,6 +72,7 @@
     <Compile Include="Common\Stemmer\IStemmer.cs" />
     <Compile Include="Common\Stemmer\ItalianStemmer.cs" />
     <Compile Include="Common\Stemmer\NorwegianStemmer.cs" />
+    <Compile Include="Common\Stemmer\NoStemmer.cs" />
     <Compile Include="Common\Stemmer\PortugueseStemmer.cs" />
     <Compile Include="Common\Stemmer\RomanianStemmer.cs" />
     <Compile Include="Common\Stemmer\RussianStemmer.cs" />

@@ -12,7 +12,7 @@ namespace ConceptualBrowser.Business.Common
         public string DetectLanguage(string sampleText)
         {
             var factory = new RankedLanguageIdentifierFactory();
-            var identifier = factory.Load("Core14.profile.xml");
+            var identifier = factory.Load("Assets/Core14.profile.xml");
             var languages = identifier.Identify(sampleText);
             var mostCertainLanguage = languages.FirstOrDefault();
 

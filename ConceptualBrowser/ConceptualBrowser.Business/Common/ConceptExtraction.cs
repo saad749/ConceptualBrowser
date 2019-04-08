@@ -24,7 +24,7 @@ namespace ConceptualBrowser.Business.Common
                 Stopwatch = new Stopwatch()
             };
             monitor.Stopwatch.Start();
-            monitor.Checkpoints.Add( new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add( new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedMilliseconds));
 
             IStemmer stemmer;
             IEmptyWords emptyWords;
@@ -41,12 +41,12 @@ namespace ConceptualBrowser.Business.Common
             
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
             List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
             List<String> sentences = textAnalyzer.GetSentences(text);
-            monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));
             for (int i = 0; i < sentencesWithDelimiters.Count;i++)
             {
                 int[] ranks = new int[] { i + 1, i + 1};
@@ -55,19 +55,19 @@ namespace ConceptualBrowser.Business.Common
 
                 nodes.Add(new Node(i + "", -1, i, rank));
             }
-            monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
             Coverage coverage = new Coverage(stemmer, emptyWords);
             coverage.CreateBinaryRelation(sentences, nodes, false);
             //PrintBinaryRelation(coverage.BinaryRelation);
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
 
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
             List<OptimalConcept> optimals = coverage.ExtractAll();
-            monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedTicks));
+            monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
 
 
             List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
