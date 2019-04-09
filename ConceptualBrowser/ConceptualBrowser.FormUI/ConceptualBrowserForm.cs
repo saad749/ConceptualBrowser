@@ -55,6 +55,20 @@ namespace ConceptualBrowser.FormUI
                     Stopwatch.Start();
                     ConceptExtraction ce = new ConceptExtraction();
                     OptimalTree = ce.Extract(FileText, Langauge);
+
+                    var optimals = OptimalTree.Select(x => x.OptimalConcept);
+                    List<Sentence> sentences = new List<Sentence>();
+                    foreach (var optimal in optimals)
+                    {
+                        Sentence sentence = optimal.Sentences[0];
+                        sentences.Add(sentence);
+                    }
+
+                    File.WriteAllLines("mySentences", sentences);
+                    //return sentences;
+
+
+
                     Stopwatch.Stop();
                     tssPerformance.Text = "Time Taken: " + Stopwatch.ElapsedMilliseconds.ToString() + " ms";
 
