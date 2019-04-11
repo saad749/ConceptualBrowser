@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConceptualBrowser.Business.Common.Helpers;
+using System.ComponentModel;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -118,10 +119,10 @@ namespace ConceptualBrowser.Business.Entities
             return false;
         }
 
-        public List<OptimalConcept> ExtractAll()
+        public List<OptimalConcept> ExtractAll(double coveragePercentage, BackgroundWorker backgroundWorker)
         {
             //int[] next = this.NextNonCovered(BinaryRelation);
-            ExtractConcepts();
+            ExtractConcepts(coveragePercentage, backgroundWorker);
 
             //OptimalConcepts = OptimalConcepts.OrderByDescending(o => o.Gain).ToList();
             this.Sort(); // Changing the sort method can have consequences on correct output compared to master branch
@@ -137,22 +138,31 @@ namespace ConceptualBrowser.Business.Entities
             return OptimalConcepts;
         }
 
-        private void ExtractConcepts()
+        private void ExtractConcepts(double coveragePercentage, BackgroundWorker backgroundWorker)
         {
-                List<KeywordNode> keywords = BinaryRelation.Keywords.ToList();
+            List<KeywordNode> keywords = BinaryRelation.Keywords.ToList();
+            var sentencesCount = keywords.SelectMany(x => x.Sentences).Count(); 
 
-                foreach (KeywordNode keyword in keywords)
+            foreach (KeywordNode keyword in keywords)
+            {
+                List<Sentence> sentences = keyword.Sentences;
+                foreach (Sentence sentence in sentences)
                 {
-                    List<Sentence> sentences = keyword.Sentences;
-                    foreach (Sentence sentence in sentences)
+                    if (sentence.CoveredByConceptNumber < 0)
                     {
-                        if (sentence.CoveredByConceptNumber < 0)
-                        {
-                            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-                            this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
-                        }
+                        int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
+                        this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
                     }
+                    var coveredSentences = keywords.SelectMany(x => x.Sentences).Count(x => x.CoveredByConceptNumber >= 0);
+                    backgroundWorker.ReportProgress((int)(coveredSentences / (sentencesCount * coveragePercentage) * 100));
+                    if (coveredSentences / (double)sentencesCount > coveragePercentage)
+                        break;
                 }
+
+                var coverage = keywords.SelectMany(x => x.Sentences).Count(x => x.CoveredByConceptNumber >= 0);
+                if (coverage / (double)sentencesCount > coveragePercentage)
+                    break;
+            }
 
         }
 

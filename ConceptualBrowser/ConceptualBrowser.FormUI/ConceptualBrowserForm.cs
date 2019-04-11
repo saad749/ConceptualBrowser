@@ -23,6 +23,7 @@ namespace ConceptualBrowser.FormUI
         public string FileText { get; set; }
         public Encoding Encoding { get; set; } = Encoding.Default;
         public Stopwatch Stopwatch { get; set; }
+        public double CoveragePercentage { get; set; }
 
 
         public ConceptualBrowserForm()
@@ -30,10 +31,12 @@ namespace ConceptualBrowser.FormUI
             InitializeComponent();
             cmbLanguage.SelectedIndex = 0;
             this.tsAddToStopWords.Click += new EventHandler(AddToStopWords);
+            cmbCoveragePercentage.SelectedIndex = 19;
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
         {
+            fileToolStripMenuItem.Enabled = false;
             treeViewBrowser.Nodes.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
@@ -51,28 +54,17 @@ namespace ConceptualBrowser.FormUI
                     Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedItem.ToString();
                     tssLanguage.Text = "Language: " + Langauge;
 
-                    Stopwatch = new Stopwatch();
-                    Stopwatch.Start();
-                    ConceptExtraction ce = new ConceptExtraction();
-                    OptimalTree = ce.Extract(FileText, Langauge);
+                    CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
+                    tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
 
-                    var optimals = OptimalTree.Select(x => x.OptimalConcept);
-                    List<Sentence> sentences = new List<Sentence>();
-                    foreach (var optimal in optimals)
-                    {
-                        Sentence sentence = optimal.Sentences[0];
-                        sentences.Add(sentence);
-                    }
+                    pbMain.Maximum = 100;
+                    pbMain.Minimum = 0;
+                    pbMain.Value = 5;
 
-                    File.WriteAllLines("mySentences", sentences);
-                    //return sentences;
+                    
 
-
-
-                    Stopwatch.Stop();
-                    tssPerformance.Text = "Time Taken: " + Stopwatch.ElapsedMilliseconds.ToString() + " ms";
-
-                    FillNode(OptimalTree, null);
+                    bgwExtraction.RunWorkerAsync();
+                    
                 }
                 catch (IOException ex)
                 {
@@ -88,6 +80,8 @@ namespace ConceptualBrowser.FormUI
 
             }
         }
+
+
 
         private void FillNode(List<OptimalConceptTreeItem> optimals, TreeNode node)
         {
@@ -200,5 +194,53 @@ namespace ConceptualBrowser.FormUI
             Process.Start(fileName);
         }
 
+        private void bgwExtraction_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Stopwatch = new Stopwatch();
+            Stopwatch.Start();
+
+            var backgroundWorker = sender as BackgroundWorker;
+            ConceptExtraction ce = new ConceptExtraction();
+            OptimalTree = ce.Extract(FileText, Langauge, CoveragePercentage, backgroundWorker);
+
+            var optimals = OptimalTree.Select(x => x.OptimalConcept);
+            List<Sentence> sentences = new List<Sentence>();
+            foreach (var optimal in optimals)
+            {
+                Sentence sentence = optimal.Sentences[0];
+                sentences.Add(sentence);
+            }
+
+            File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
+
+            Stopwatch.Stop();
+            
+
+            
+        }
+
+        private void bgwExtraction_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbMain.Value = e.ProgressPercentage > 100 ? 100 : e.ProgressPercentage;
+        }
+
+        private void bgwExtraction_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            FillNode(OptimalTree, null);
+            pbMain.Value = 100;
+            var timeTaken = "";
+            var ms = Stopwatch.ElapsedMilliseconds;
+
+            if (ms > 60000)
+                timeTaken = (ms / (double)60000) + " minutes";
+            else if (ms > 1000)
+                timeTaken = (ms / (double)1000) + " seconds";
+            else
+                timeTaken = ms + " ms";
+
+            tssPerformance.Text = "Time Taken: " + timeTaken;
+            MessageBox.Show("Extraction Completed!", "Success!");
+            fileToolStripMenuItem.Enabled = true;
+        }
     }
 }

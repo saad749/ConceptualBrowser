@@ -57,6 +57,7 @@
     <Compile Include="Common\Helpers\LogHelper.cs" />
     <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Performance\PerformanceMonitor.cs" />
+    <Compile Include="Common\Stemmer\ArabicStemmer.cs" />
     <Compile Include="Common\Stemmer\CzechStemmer.cs" />
     <Compile Include="Common\Stemmer\DanishStemmer.cs" />
     <Compile Include="Common\Stemmer\DutchStemmer.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Common\Stemmer\IStemmer.cs" />
     <Compile Include="Common\Stemmer\ItalianStemmer.cs" />
     <Compile Include="Common\Stemmer\NorwegianStemmer.cs" />
+    <Compile Include="Common\Stemmer\NoStemmer.cs" />
     <Compile Include="Common\Stemmer\PortugueseStemmer.cs" />
     <Compile Include="Common\Stemmer\RomanianStemmer.cs" />
     <Compile Include="Common\Stemmer\RussianStemmer.cs" />

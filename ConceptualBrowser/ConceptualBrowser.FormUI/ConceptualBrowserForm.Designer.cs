@@ -50,6 +50,12 @@
             this.labelLanguage = new System.Windows.Forms.Label();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
             this.txtSummary = new System.Windows.Forms.RichTextBox();
+            this.lblCoveragePercentage = new System.Windows.Forms.Label();
+            this.cmbCoveragePercentage = new System.Windows.Forms.ComboBox();
+            this.tssCoveragePercentage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.bgwExtraction = new System.ComponentModel.BackgroundWorker();
+            this.pbMain = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -79,7 +85,7 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
@@ -88,7 +94,7 @@
             this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.optimalConceptsToolStripMenuItem});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
             // optimalConceptsToolStripMenuItem
@@ -101,7 +107,7 @@
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // encodingToolStripMenuItem
@@ -151,7 +157,10 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssLanguage,
-            this.tssPerformance});
+            this.tssPerformance,
+            this.tssCoveragePercentage,
+            this.toolStripStatusLabel1,
+            this.pbMain});
             this.statusStrip.Location = new System.Drawing.Point(0, 659);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1008, 22);
@@ -167,8 +176,8 @@
             // tssPerformance
             // 
             this.tssPerformance.Name = "tssPerformance";
-            this.tssPerformance.Size = new System.Drawing.Size(74, 17);
-            this.tssPerformance.Text = "Time Taken: ";
+            this.tssPerformance.Size = new System.Drawing.Size(96, 17);
+            this.tssPerformance.Text = "Time Taken: N/A";
             // 
             // ctxMenuTreeView
             // 
@@ -225,7 +234,9 @@
             "ita",
             "por",
             "ron",
-            "rus"});
+            "rus",
+            "arb",
+            "none"});
             this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
@@ -241,11 +252,80 @@
             this.txtSummary.TabIndex = 7;
             this.txtSummary.Text = "";
             // 
+            // lblCoveragePercentage
+            // 
+            this.lblCoveragePercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCoveragePercentage.AutoSize = true;
+            this.lblCoveragePercentage.Location = new System.Drawing.Point(588, 30);
+            this.lblCoveragePercentage.Name = "lblCoveragePercentage";
+            this.lblCoveragePercentage.Size = new System.Drawing.Size(53, 13);
+            this.lblCoveragePercentage.TabIndex = 8;
+            this.lblCoveragePercentage.Text = "Coverage";
+            // 
+            // cmbCoveragePercentage
+            // 
+            this.cmbCoveragePercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbCoveragePercentage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCoveragePercentage.FormattingEnabled = true;
+            this.cmbCoveragePercentage.Items.AddRange(new object[] {
+            "5",
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "35",
+            "40",
+            "45",
+            "50",
+            "55",
+            "60",
+            "65",
+            "70",
+            "75",
+            "80",
+            "85",
+            "90",
+            "95",
+            "100"});
+            this.cmbCoveragePercentage.Location = new System.Drawing.Point(660, 28);
+            this.cmbCoveragePercentage.Name = "cmbCoveragePercentage";
+            this.cmbCoveragePercentage.Size = new System.Drawing.Size(121, 21);
+            this.cmbCoveragePercentage.TabIndex = 9;
+            // 
+            // tssCoveragePercentage
+            // 
+            this.tssCoveragePercentage.Name = "tssCoveragePercentage";
+            this.tssCoveragePercentage.Size = new System.Drawing.Size(147, 17);
+            this.tssCoveragePercentage.Text = "Coverage Percentage: N/A";
+            // 
+            // bgwExtraction
+            // 
+            this.bgwExtraction.WorkerReportsProgress = true;
+            this.bgwExtraction.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwExtraction_DoWork);
+            this.bgwExtraction.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwExtraction_ProgressChanged);
+            this.bgwExtraction.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwExtraction_RunWorkerCompleted);
+            // 
+            // pbMain
+            // 
+            this.pbMain.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.pbMain.Name = "pbMain";
+            this.pbMain.Size = new System.Drawing.Size(500, 16);
+            this.pbMain.Step = 1;
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(97, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.cmbCoveragePercentage);
+            this.Controls.Add(this.lblCoveragePercentage);
             this.Controls.Add(this.txtSummary);
             this.Controls.Add(this.cmbLanguage);
             this.Controls.Add(this.labelLanguage);
@@ -290,6 +370,12 @@
         private System.Windows.Forms.ToolStripMenuItem optimalConceptsToolStripMenuItem;
         private System.Windows.Forms.RichTextBox txtSummary;
         private System.Windows.Forms.ToolStripStatusLabel tssPerformance;
+        private System.Windows.Forms.Label lblCoveragePercentage;
+        private System.Windows.Forms.ComboBox cmbCoveragePercentage;
+        private System.Windows.Forms.ToolStripStatusLabel tssCoveragePercentage;
+        private System.ComponentModel.BackgroundWorker bgwExtraction;
+        private System.Windows.Forms.ToolStripProgressBar pbMain;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 
