@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +10,17 @@ namespace ConceptualBrowser.Business.Entities
     public class Sentence
     {
         public int SentenceIndex { get; set; } //Renamed from Word to SentenceIndex
+        [JsonIgnore]
         public int CoveredByConceptNumber { get; set; } = -1; // A signle sentence can be covered by multiple concepts; Why 1 only??
+        [JsonIgnore]
         public Rank Rank { get; set; }
+        [JsonIgnore]
         public int KeywordNumber { get; set; }
+        [JsonIgnore]
         public string KeywordString { get; set; }
-
+        [JsonIgnore]
         public List<KeywordNode> KeywordNodes { get; set; }
+        public string OriginalSentence { get; set; }
 
 
 
@@ -23,10 +29,11 @@ namespace ConceptualBrowser.Business.Entities
 
         }
 
-        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank)
+        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, string originalSentence)
         {
             SentenceIndex = sentenceIndex;
             CoveredByConceptNumber = coveredByConceptNumber;
+            OriginalSentence = originalSentence.Trim();
             Rank = rank;
             rank.CalculateRank();
         }
@@ -38,10 +45,11 @@ namespace ConceptualBrowser.Business.Entities
         /// <param name="coveredByConceptNumber"></param>
         /// <param name="rank"></param>
         /// <param name="keywords"></param>
-        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, List<KeywordNode> keywords)
+        public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, List<KeywordNode> keywords, string originalSentence)
         {
             SentenceIndex = sentenceIndex;
             CoveredByConceptNumber = coveredByConceptNumber;
+            OriginalSentence = originalSentence.Trim();
             Rank = rank;
             rank.CalculateRank();
             KeywordNodes = keywords;

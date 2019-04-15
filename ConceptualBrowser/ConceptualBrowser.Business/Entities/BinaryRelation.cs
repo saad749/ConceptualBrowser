@@ -50,7 +50,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 //These temporary Variables are SUPER VARIABLES. DONT EVEN THINK TO REMOVE THEM. THIS WILL SKIP A LOT OF
                 //CONCEPTS. AND CAN TAKE FOR EVER TO UNDERSTAND!!!
-                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.CoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes); // Why to create a tempSentence? -s refers to this variable
+                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.CoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence); // Why to create a tempSentence? -s refers to this variable
                 String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
 

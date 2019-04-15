@@ -44,6 +44,9 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tssLanguage = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssPerformance = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tssCoveragePercentage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.pbMain = new System.Windows.Forms.ToolStripProgressBar();
             this.ctxMenuTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddToStopWords = new System.Windows.Forms.ToolStripMenuItem();
             this.txtText = new System.Windows.Forms.RichTextBox();
@@ -52,10 +55,8 @@
             this.txtSummary = new System.Windows.Forms.RichTextBox();
             this.lblCoveragePercentage = new System.Windows.Forms.Label();
             this.cmbCoveragePercentage = new System.Windows.Forms.ComboBox();
-            this.tssCoveragePercentage = new System.Windows.Forms.ToolStripStatusLabel();
             this.bgwExtraction = new System.ComponentModel.BackgroundWorker();
-            this.pbMain = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.optimalConceptsWithObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -92,7 +93,8 @@
             // exportMenuItem
             // 
             this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optimalConceptsToolStripMenuItem});
+            this.optimalConceptsToolStripMenuItem,
+            this.optimalConceptsWithObjectsToolStripMenuItem});
             this.exportMenuItem.Name = "exportMenuItem";
             this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportMenuItem.Text = "E&xport";
@@ -100,7 +102,7 @@
             // optimalConceptsToolStripMenuItem
             // 
             this.optimalConceptsToolStripMenuItem.Name = "optimalConceptsToolStripMenuItem";
-            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
             this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
             // 
@@ -178,6 +180,25 @@
             this.tssPerformance.Name = "tssPerformance";
             this.tssPerformance.Size = new System.Drawing.Size(96, 17);
             this.tssPerformance.Text = "Time Taken: N/A";
+            // 
+            // tssCoveragePercentage
+            // 
+            this.tssCoveragePercentage.Name = "tssCoveragePercentage";
+            this.tssCoveragePercentage.Size = new System.Drawing.Size(147, 17);
+            this.tssCoveragePercentage.Text = "Coverage Percentage: N/A";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(97, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            // 
+            // pbMain
+            // 
+            this.pbMain.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.pbMain.Name = "pbMain";
+            this.pbMain.Size = new System.Drawing.Size(500, 16);
+            this.pbMain.Step = 1;
             // 
             // ctxMenuTreeView
             // 
@@ -293,12 +314,6 @@
             this.cmbCoveragePercentage.Size = new System.Drawing.Size(121, 21);
             this.cmbCoveragePercentage.TabIndex = 9;
             // 
-            // tssCoveragePercentage
-            // 
-            this.tssCoveragePercentage.Name = "tssCoveragePercentage";
-            this.tssCoveragePercentage.Size = new System.Drawing.Size(147, 17);
-            this.tssCoveragePercentage.Text = "Coverage Percentage: N/A";
-            // 
             // bgwExtraction
             // 
             this.bgwExtraction.WorkerReportsProgress = true;
@@ -306,18 +321,12 @@
             this.bgwExtraction.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwExtraction_ProgressChanged);
             this.bgwExtraction.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwExtraction_RunWorkerCompleted);
             // 
-            // pbMain
+            // optimalConceptsWithObjectsToolStripMenuItem
             // 
-            this.pbMain.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(500, 16);
-            this.pbMain.Step = 1;
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(97, 17);
-            this.toolStripStatusLabel1.Spring = true;
+            this.optimalConceptsWithObjectsToolStripMenuItem.Name = "optimalConceptsWithObjectsToolStripMenuItem";
+            this.optimalConceptsWithObjectsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.optimalConceptsWithObjectsToolStripMenuItem.Text = "Optimal Concepts with Objects";
+            this.optimalConceptsWithObjectsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsWithObjectsToolStripMenuItem_Click);
             // 
             // ConceptualBrowserForm
             // 
@@ -376,6 +385,7 @@
         private System.ComponentModel.BackgroundWorker bgwExtraction;
         private System.Windows.Forms.ToolStripProgressBar pbMain;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripMenuItem optimalConceptsWithObjectsToolStripMenuItem;
     }
 }
 

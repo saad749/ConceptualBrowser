@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,14 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class OptimalConcept
     {
+        public string ConceptName { get; set; }
         public int ConceptNumber { get; set; }
         public double Gain { get; set; }
-        public List<KeywordNode> Keywords { get; set; }
         public List<Sentence> Sentences { get; set; }
+        [JsonIgnore]
+        public List<KeywordNode> Keywords { get; set; }
+        [JsonIgnore]
         public NodeTree NodesTree { get; set; } = null;
-        public string ConceptName { get; set; }
 
         public OptimalConcept(int conceptNumber, double gain, List<KeywordNode> keywords, List<Sentence> sentences)
         {

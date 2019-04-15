@@ -52,7 +52,7 @@ namespace ConceptualBrowser.Business.Common
                 int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
                 Rank rank = new Rank(2, ranks, totals);
 
-                this.sentences.Add(new Sentence(i, Constant.NotCovered, rank));
+                this.sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
             }
             monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));
 
@@ -64,7 +64,8 @@ namespace ConceptualBrowser.Business.Common
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
             coverage.CreateBinaryRelation(sentenceStringList, this.sentences);
             monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedMilliseconds))
+                ;
             List<OptimalConcept> optimals = coverage.ExtractAll(coveragePercentage, backgroundWorker);
             monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
 
@@ -204,7 +205,7 @@ namespace ConceptualBrowser.Business.Common
                 int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
                 Rank rank = new Rank(2, ranks, totals);
 
-                this.sentences.Add(new Sentence(i, Constant.NotCovered, rank));
+                this.sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
             }
             monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedTicks));
 

@@ -13,6 +13,7 @@ using ConceptualBrowser.Business;
 using ConceptualBrowser.Business.Common;
 using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Entities;
+using Newtonsoft.Json;
 
 namespace ConceptualBrowser.FormUI
 {
@@ -241,6 +242,15 @@ namespace ConceptualBrowser.FormUI
             tssPerformance.Text = "Time Taken: " + timeTaken;
             MessageBox.Show("Extraction Completed!", "Success!");
             fileToolStripMenuItem.Enabled = true;
+        }
+
+        private void optimalConceptsWithObjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
+            var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
+            string fileName = "exported_concepts_with_objects.json";
+            File.WriteAllText(fileName, json);
+            Process.Start(fileName);
         }
     }
 }
