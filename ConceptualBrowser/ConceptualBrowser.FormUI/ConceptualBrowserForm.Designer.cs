@@ -57,6 +57,11 @@
             this.lblCoveragePercentage = new System.Windows.Forms.Label();
             this.cmbCoveragePercentage = new System.Windows.Forms.ComboBox();
             this.bgwExtraction = new System.ComponentModel.BackgroundWorker();
+            this.txtKeywords = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -154,11 +159,9 @@
             // 
             // treeViewBrowser
             // 
-            this.treeViewBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.treeViewBrowser.Location = new System.Drawing.Point(0, 55);
+            this.treeViewBrowser.Location = new System.Drawing.Point(12, 78);
             this.treeViewBrowser.Name = "treeViewBrowser";
-            this.treeViewBrowser.Size = new System.Drawing.Size(285, 601);
+            this.treeViewBrowser.Size = new System.Drawing.Size(273, 272);
             this.treeViewBrowser.TabIndex = 1;
             this.treeViewBrowser.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewBrowser_NodeMouseClick);
             // 
@@ -225,9 +228,9 @@
             this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtText.Location = new System.Drawing.Point(291, 356);
+            this.txtText.Location = new System.Drawing.Point(291, 377);
             this.txtText.Name = "txtText";
-            this.txtText.Size = new System.Drawing.Size(717, 300);
+            this.txtText.Size = new System.Drawing.Size(717, 279);
             this.txtText.TabIndex = 4;
             this.txtText.Text = "";
             // 
@@ -274,9 +277,9 @@
             // 
             this.txtSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSummary.Location = new System.Drawing.Point(291, 56);
+            this.txtSummary.Location = new System.Drawing.Point(291, 78);
             this.txtSummary.Name = "txtSummary";
-            this.txtSummary.Size = new System.Drawing.Size(717, 294);
+            this.txtSummary.Size = new System.Drawing.Size(717, 272);
             this.txtSummary.TabIndex = 7;
             this.txtSummary.Text = "";
             // 
@@ -328,11 +331,63 @@
             this.bgwExtraction.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwExtraction_ProgressChanged);
             this.bgwExtraction.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwExtraction_RunWorkerCompleted);
             // 
+            // txtKeywords
+            // 
+            this.txtKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtKeywords.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtKeywords.Location = new System.Drawing.Point(12, 377);
+            this.txtKeywords.Name = "txtKeywords";
+            this.txtKeywords.Size = new System.Drawing.Size(273, 279);
+            this.txtKeywords.TabIndex = 10;
+            this.txtKeywords.Text = "";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 59);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Concept Tree";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(288, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Summary";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 361);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Keywords";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(288, 361);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(28, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Text";
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtKeywords);
             this.Controls.Add(this.cmbCoveragePercentage);
             this.Controls.Add(this.lblCoveragePercentage);
             this.Controls.Add(this.txtSummary);
@@ -386,6 +441,11 @@
         private System.Windows.Forms.ToolStripProgressBar pbMain;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem optimalConceptsWithObjectsToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox txtKeywords;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 

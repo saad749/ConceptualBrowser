@@ -87,7 +87,17 @@ namespace ConceptualBrowser.FormUI
                     pbMain.Minimum = 0;
                     pbMain.Value = 5;
 
-                    
+                    if (Langauge == "arb")
+                    {
+                        txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
+                        txtText.SelectionAlignment = HorizontalAlignment.Right;
+                    }
+                    else
+                    {
+                        txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                        txtText.SelectionAlignment = HorizontalAlignment.Left;
+                    }
+
 
                     bgwExtraction.RunWorkerAsync();
                     
@@ -151,11 +161,13 @@ namespace ConceptualBrowser.FormUI
                 treeViewBrowser.SelectedNode = e.Node;
                 OptimalConceptTreeItem optimal = OptimalTree.Find(t => t.Id == (int)e.Node.Tag);
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
+                List<string> keywords = optimal.OptimalConcept.Keywords.Select(k => k.Keyword).ToList();
 
                 ITextAnalyzer textAnalyzer = new TextAnalyzer();
                 List<string> sentences = textAnalyzer.GetSentences(FileText);
                 txtText.Text = "";
                 txtSummary.Text = "";
+                txtKeywords.Text = string.Join(Environment.NewLine, keywords.ToArray());
 
                 for (int i = 0; i < sentences.Count; i++)
                 {
