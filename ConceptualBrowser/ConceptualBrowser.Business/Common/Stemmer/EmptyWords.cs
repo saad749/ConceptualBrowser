@@ -136,14 +136,14 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
         public void LoadEmptyWordsFromFile()
         {
-            if (File.Exists(EmptyWordsFilePath))
+            if (File.Exists(EmptyWordsFilePath + FileName))
                 EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName, Encoding).ToList();
         }
 
         public void AppendEmptyWordsToFile(string word)
         {
             string root = Stemmer.Stem(word);
-            if (File.Exists(EmptyWordsFilePath))
+            if (File.Exists(EmptyWordsFilePath + FileName))
                 File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding);
         }
 

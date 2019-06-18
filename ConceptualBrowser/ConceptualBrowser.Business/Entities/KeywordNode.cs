@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,7 @@ namespace ConceptualBrowser.Business.Entities
         /// <summary>
         /// Sentences in which the word occured
         /// </summary>
+        [JsonIgnore]
         public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
 
         //public HashSet<int> SentenceIndexes { get; set; }

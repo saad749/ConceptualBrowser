@@ -13,7 +13,6 @@ namespace ConceptualBrowser.Business.Entities
         public int ConceptNumber { get; set; }
         public double Gain { get; set; }
         public List<Sentence> Sentences { get; set; }
-        [JsonIgnore]
         public List<KeywordNode> Keywords { get; set; }
         [JsonIgnore]
         public NodeTree NodesTree { get; set; } = null;
