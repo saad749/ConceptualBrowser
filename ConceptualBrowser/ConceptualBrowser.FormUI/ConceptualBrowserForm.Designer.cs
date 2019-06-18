@@ -35,6 +35,7 @@
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optimalConceptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optimalConceptsWithObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@
             this.lblCoveragePercentage = new System.Windows.Forms.Label();
             this.cmbCoveragePercentage = new System.Windows.Forms.ComboBox();
             this.bgwExtraction = new System.ComponentModel.BackgroundWorker();
-            this.optimalConceptsWithObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -86,7 +86,7 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
@@ -96,7 +96,7 @@
             this.optimalConceptsToolStripMenuItem,
             this.optimalConceptsWithObjectsToolStripMenuItem});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
             // optimalConceptsToolStripMenuItem
@@ -106,10 +106,17 @@
             this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
             this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
             // 
+            // optimalConceptsWithObjectsToolStripMenuItem
+            // 
+            this.optimalConceptsWithObjectsToolStripMenuItem.Name = "optimalConceptsWithObjectsToolStripMenuItem";
+            this.optimalConceptsWithObjectsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.optimalConceptsWithObjectsToolStripMenuItem.Text = "Optimal Concepts with Objects";
+            this.optimalConceptsWithObjectsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsWithObjectsToolStripMenuItem_Click);
+            // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // encodingToolStripMenuItem
@@ -125,23 +132,23 @@
             // unicodeToolStripMenuItem
             // 
             this.unicodeToolStripMenuItem.Name = "unicodeToolStripMenuItem";
-            this.unicodeToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.unicodeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unicodeToolStripMenuItem.Text = "Unicode";
             this.unicodeToolStripMenuItem.Click += new System.EventHandler(this.unicodeToolStripMenuItem_Click);
             // 
             // aNSIToolStripMenuItem
             // 
-            this.aNSIToolStripMenuItem.Checked = true;
-            this.aNSIToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aNSIToolStripMenuItem.Name = "aNSIToolStripMenuItem";
-            this.aNSIToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.aNSIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aNSIToolStripMenuItem.Text = "ANSI";
             this.aNSIToolStripMenuItem.Click += new System.EventHandler(this.aNSIToolStripMenuItem_Click);
             // 
             // uTF8ToolStripMenuItem
             // 
+            this.uTF8ToolStripMenuItem.Checked = true;
+            this.uTF8ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.uTF8ToolStripMenuItem.Name = "uTF8ToolStripMenuItem";
-            this.uTF8ToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.uTF8ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.uTF8ToolStripMenuItem.Text = "UTF-8";
             this.uTF8ToolStripMenuItem.Click += new System.EventHandler(this.uTF8ToolStripMenuItem_Click);
             // 
@@ -178,7 +185,7 @@
             // tssPerformance
             // 
             this.tssPerformance.Name = "tssPerformance";
-            this.tssPerformance.Size = new System.Drawing.Size(96, 17);
+            this.tssPerformance.Size = new System.Drawing.Size(94, 17);
             this.tssPerformance.Text = "Time Taken: N/A";
             // 
             // tssCoveragePercentage
@@ -190,7 +197,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(97, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(99, 17);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // pbMain
@@ -320,13 +327,6 @@
             this.bgwExtraction.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwExtraction_DoWork);
             this.bgwExtraction.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwExtraction_ProgressChanged);
             this.bgwExtraction.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwExtraction_RunWorkerCompleted);
-            // 
-            // optimalConceptsWithObjectsToolStripMenuItem
-            // 
-            this.optimalConceptsWithObjectsToolStripMenuItem.Name = "optimalConceptsWithObjectsToolStripMenuItem";
-            this.optimalConceptsWithObjectsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            this.optimalConceptsWithObjectsToolStripMenuItem.Text = "Optimal Concepts with Objects";
-            this.optimalConceptsWithObjectsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsWithObjectsToolStripMenuItem_Click);
             // 
             // ConceptualBrowserForm
             // 

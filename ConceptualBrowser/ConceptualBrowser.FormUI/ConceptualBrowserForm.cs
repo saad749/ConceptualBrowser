@@ -30,9 +30,34 @@ namespace ConceptualBrowser.FormUI
         public ConceptualBrowserForm()
         {
             InitializeComponent();
-            cmbLanguage.SelectedIndex = 0;
+            
             this.tsAddToStopWords.Click += new EventHandler(AddToStopWords);
             cmbCoveragePercentage.SelectedIndex = 19;
+
+            var items = new[] {
+                new { Text = "Auto-Detect", Value = "Auto-Detect" },
+                new { Text = "English", Value = "eng" },
+                new { Text = "French", Value = "fra" },
+                new { Text = "Spanish", Value = "spa" },
+                new { Text = "Czech", Value = "ces" },
+                new { Text = "Danish", Value = "dan" },
+                new { Text = "Dutch", Value = "nld" },
+                new { Text = "Finnish", Value = "fin" },
+                new { Text = "German", Value = "deu" },
+                new { Text = "Hungarian", Value = "hun" },
+                new { Text = "Norwegian", Value = "nor" },
+                new { Text = "Italian", Value = "ita" },
+                new { Text = "Portuguese", Value = "por" },
+                new { Text = "Romanian", Value = "ron" },
+                new { Text = "Russian", Value = "rus" },
+                new { Text = "Arabic", Value = "arb" },
+                new { Text = "None", Value = "none" }
+            };
+
+            cmbLanguage.DisplayMember = "Text";
+            cmbLanguage.ValueMember = "Value";
+            cmbLanguage.DataSource = items;
+            cmbLanguage.SelectedIndex = 15;
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
@@ -52,7 +77,7 @@ namespace ConceptualBrowser.FormUI
                     txtSummary.Text = "";
 
                     //Also Take Language by User Input
-                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedItem.ToString();
+                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
                     tssLanguage.Text = "Language: " + Langauge;
 
                     CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
