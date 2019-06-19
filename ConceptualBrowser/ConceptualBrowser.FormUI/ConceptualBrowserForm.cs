@@ -75,6 +75,7 @@ namespace ConceptualBrowser.FormUI
                     FileText = ReadFile(fileName);
                     txtText.Text = FileText;
                     txtSummary.Text = "";
+                    txtKeywords.Text = "";
 
                     //Also Take Language by User Input
                     Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
