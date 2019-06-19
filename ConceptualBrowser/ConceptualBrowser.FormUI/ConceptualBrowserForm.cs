@@ -91,11 +91,17 @@ namespace ConceptualBrowser.FormUI
                     {
                         txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
                         txtText.SelectionAlignment = HorizontalAlignment.Right;
+                        txtKeywords.RightToLeft = RightToLeft.Yes;
+                        txtText.RightToLeft = RightToLeft.Yes;
+                        txtSummary.RightToLeft = RightToLeft.Yes;
                     }
                     else
                     {
                         txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
                         txtText.SelectionAlignment = HorizontalAlignment.Left;
+                        txtKeywords.RightToLeft = RightToLeft.No;
+                        txtText.RightToLeft = RightToLeft.No;
+                        txtSummary.RightToLeft = RightToLeft.No;
                     }
 
 
@@ -174,7 +180,8 @@ namespace ConceptualBrowser.FormUI
                     if (coveringSentenceNumbers.Contains(i))
                     {
                         AppendText(txtText, sentences[i] + ".", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold));
-                        AppendText(txtSummary, i + ": " + sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                        AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold));
+                        AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
                     }
                     else
                     {
