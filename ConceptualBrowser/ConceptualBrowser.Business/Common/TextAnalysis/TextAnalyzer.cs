@@ -23,11 +23,8 @@ namespace ConceptualBrowser.Business
         }
         public List<String> GetSentences(string text)
         {
-            List<String> sentences = new List<string>();
             char[] delimiters = new char[] { '.'};
-
-            sentences = text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
-
+            List<string> sentences = text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).ToList();
             return sentences;
         }
 
