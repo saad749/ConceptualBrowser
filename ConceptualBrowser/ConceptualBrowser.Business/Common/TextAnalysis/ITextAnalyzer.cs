@@ -11,5 +11,6 @@ namespace ConceptualBrowser.Business
         List<String> GetSentencesWithDelimiters(string text);
         List<String> GetSentences(string text);
         List<string> Tokenizer(string sentence);
+        string RemoveDiacritics(string InputStr);
     }
 }

@@ -62,6 +62,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.cmbFont = new System.Windows.Forms.ComboBox();
+            this.lblFont = new System.Windows.Forms.Label();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -240,7 +242,7 @@
             this.labelLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLanguage.AutoSize = true;
             this.labelLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelLanguage.Location = new System.Drawing.Point(806, 30);
+            this.labelLanguage.Location = new System.Drawing.Point(835, 30);
             this.labelLanguage.Name = "labelLanguage";
             this.labelLanguage.Size = new System.Drawing.Size(55, 13);
             this.labelLanguage.TabIndex = 5;
@@ -269,9 +271,9 @@
             "rus",
             "arb",
             "none"});
-            this.cmbLanguage.Location = new System.Drawing.Point(875, 27);
+            this.cmbLanguage.Location = new System.Drawing.Point(896, 27);
             this.cmbLanguage.Name = "cmbLanguage";
-            this.cmbLanguage.Size = new System.Drawing.Size(121, 21);
+            this.cmbLanguage.Size = new System.Drawing.Size(100, 21);
             this.cmbLanguage.TabIndex = 6;
             // 
             // txtSummary
@@ -289,7 +291,7 @@
             // 
             this.lblCoveragePercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCoveragePercentage.AutoSize = true;
-            this.lblCoveragePercentage.Location = new System.Drawing.Point(588, 30);
+            this.lblCoveragePercentage.Location = new System.Drawing.Point(706, 30);
             this.lblCoveragePercentage.Name = "lblCoveragePercentage";
             this.lblCoveragePercentage.Size = new System.Drawing.Size(53, 13);
             this.lblCoveragePercentage.TabIndex = 8;
@@ -321,9 +323,9 @@
             "90",
             "95",
             "100"});
-            this.cmbCoveragePercentage.Location = new System.Drawing.Point(660, 28);
+            this.cmbCoveragePercentage.Location = new System.Drawing.Point(765, 27);
             this.cmbCoveragePercentage.Name = "cmbCoveragePercentage";
-            this.cmbCoveragePercentage.Size = new System.Drawing.Size(121, 21);
+            this.cmbCoveragePercentage.Size = new System.Drawing.Size(64, 21);
             this.cmbCoveragePercentage.TabIndex = 9;
             // 
             // bgwExtraction
@@ -381,11 +383,46 @@
             this.label4.TabIndex = 14;
             this.label4.Text = "Text";
             // 
+            // cmbFont
+            // 
+            this.cmbFont.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbFont.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFont.FormattingEnabled = true;
+            this.cmbFont.Items.AddRange(new object[] {
+            "8",
+            "10",
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "32",
+            "48"});
+            this.cmbFont.Location = new System.Drawing.Point(640, 27);
+            this.cmbFont.Name = "cmbFont";
+            this.cmbFont.Size = new System.Drawing.Size(60, 21);
+            this.cmbFont.TabIndex = 16;
+            this.cmbFont.SelectedIndexChanged += new System.EventHandler(this.CmbFont_SelectedIndexChanged);
+            // 
+            // lblFont
+            // 
+            this.lblFont.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFont.AutoSize = true;
+            this.lblFont.Location = new System.Drawing.Point(606, 30);
+            this.lblFont.Name = "lblFont";
+            this.lblFont.Size = new System.Drawing.Size(28, 13);
+            this.lblFont.TabIndex = 15;
+            this.lblFont.Text = "Font";
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.Controls.Add(this.cmbFont);
+            this.Controls.Add(this.lblFont);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -449,6 +486,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cmbFont;
+        private System.Windows.Forms.Label lblFont;
     }
 }
 

@@ -25,7 +25,7 @@ namespace ConceptualBrowser.FormUI
         public Encoding Encoding { get; set; } = Encoding.Default;
         public Stopwatch Stopwatch { get; set; }
         public double CoveragePercentage { get; set; }
-
+        public float FontSize { get; set; } = 10.0F;
 
         public ConceptualBrowserForm()
         {
@@ -58,6 +58,7 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.ValueMember = "Value";
             cmbLanguage.DataSource = items;
             cmbLanguage.SelectedIndex = 15;
+            cmbFont.SelectedIndex = 1;
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
@@ -180,13 +181,13 @@ namespace ConceptualBrowser.FormUI
                 {
                     if (coveringSentenceNumbers.Contains(i))
                     {
-                        AppendText(txtText, sentences[i] + ".", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold));
-                        AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Bold));
-                        AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                        AppendText(txtText, sentences[i] + ".", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                     else
                     {
-                        AppendText(txtText, sentences[i] + ".", Color.Black, new Font(FontFamily.GenericSansSerif, 10.0F, FontStyle.Regular));
+                        AppendText(txtText, sentences[i] + ".", Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                 }
                 
@@ -296,6 +297,23 @@ namespace ConceptualBrowser.FormUI
             string fileName = "exported_concepts_with_objects.json";
             File.WriteAllText(fileName, json);
             Process.Start(fileName);
+        }
+
+        private void CmbFont_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(cmbFont.SelectedItem.ToString()))
+                FontSize = (float)Convert.ToDouble(cmbFont.SelectedItem.ToString());
+
+            txtSummary.SelectAll();
+            txtSummary.SelectionFont = new Font(txtSummary.Font.FontFamily, FontSize, txtSummary.Font.Style);
+
+            //txtText.SelectAll();
+            //txtText.SelectionFont = new Font(txtSummary.Font.FontFamily, FontSize, txtSummary.Font.Style);
+
+            treeViewBrowser.Font = new Font(treeViewBrowser.Font.FontFamily, FontSize, treeViewBrowser.Font.Style);
+
+            txtKeywords.SelectAll();
+            txtKeywords.SelectionFont = new Font(txtKeywords.Font.FontFamily, FontSize, txtKeywords.Font.Style);
         }
     }
 }
