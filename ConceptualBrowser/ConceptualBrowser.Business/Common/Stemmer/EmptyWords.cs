@@ -114,7 +114,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     {"por", new Tuple<string, Encoding> ("PortugueseStopWords_FullListFromInternet.txt", Encoding.Unicode)},
                     {"ron", new Tuple<string, Encoding> ("RomanianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
                     {"rus", new Tuple<string, Encoding> ("RussianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
-                    {"arb", new Tuple<string, Encoding> ("arabic-stop-words-750.txt", Encoding.UTF8)},
+                    {"arb", new Tuple<string, Encoding> ("arabic-stopwords-11060.txt", Encoding.UTF8)},
                     {"none", new Tuple<string, Encoding> (null, Encoding.Unicode)}
                 };
 
@@ -149,7 +149,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
         public bool IsEmptyWord(string word)
         {
-            return EmptyWordRoots.Any( w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
+            return EmptyWordRoots.Any(w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
+            //return EmptyWordRoots.Any( w => String.Equals(TextAnalyzer.RemoveDiacritics(word), TextAnalyzer.RemoveDiacritics(w), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

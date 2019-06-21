@@ -42,7 +42,7 @@ namespace ConceptualBrowser.Business.Common
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
             //List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
-            List<String> sentenceStringList = textAnalyzer.GetSentences(textAnalyzer.RemoveDiacritics(text));
+            List<String> sentenceStringList = textAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
             monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
 
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));

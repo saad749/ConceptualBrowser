@@ -235,14 +235,14 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                 Among w = v[k];
                 int i2;
 
-                for (i2 = common; i2 < w.s_size; i2++)
+                for (i2 = common; i2 < w.SearchString.Length; i2++)
                 {
                     if (c + common == l)
                     {
                         diff = -1;
                         break;
                     }
-                    diff = current[c + common] - w.s[i2];
+                    diff = current[c + common] - w.SearchString[i2];
                     if (diff != 0) break;
                     common++;
                 }
@@ -270,10 +270,10 @@ namespace ConceptualBrowser.Business.Common.Stemmer
             while (true)
             {
                 Among w = v[i];
-                if (common_i >= w.s_size)
+                if (common_i >= w.SearchString.Length)
                 {
-                    cursor = c + w.s_size;
-                    if (w.method == null) return w.result;
+                    cursor = c + w.SearchString.Length;
+                    if (w.Action == null) return w.Result;
                     //bool res;
                     //try
                     //{
@@ -293,7 +293,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     //cursor = c + w.s_size;
                     //if (res) return w.result;
                 }
-                i = w.substring_i;
+                i = w.MatchIndex;
                 if (i < 0) return 0;
             }
         }
@@ -316,7 +316,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                 int common = common_i < common_j ? common_i : common_j;
                 Among w = v[k];
                 int i2;
-                for (i2 = w.s_size - 1 - common; i2 >= 0; i2--)
+                for (i2 = w.SearchString.Length - 1 - common; i2 >= 0; i2--)
                 {
                     if (c - common == lb)
                     {
@@ -324,7 +324,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                         break;
                     }
                     //                   diff = current.charAt(c - 1 - common) - w.s[i2];
-                    diff = current[c - 1 - common] - w.s[i2];
+                    diff = current[c - 1 - common] - w.SearchString[i2];
                     if (diff != 0) break;
                     common++;
                 }
@@ -349,10 +349,10 @@ namespace ConceptualBrowser.Business.Common.Stemmer
             while (true)
             {
                 Among w = v[i];
-                if (common_i >= w.s_size)
+                if (common_i >= w.SearchString.Length)
                 {
-                    cursor = c - w.s_size;
-                    if (w.method == null) return w.result;
+                    cursor = c - w.SearchString.Length;
+                    if (w.Action == null) return w.Result;
                     //boolean res;
                     //try 
                     //{
@@ -373,7 +373,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     //cursor = c - w.s_size;
                     //if (res) return w.result;
                 }
-                i = w.substring_i;
+                i = w.MatchIndex;
                 if (i < 0) return 0;
             }
         }

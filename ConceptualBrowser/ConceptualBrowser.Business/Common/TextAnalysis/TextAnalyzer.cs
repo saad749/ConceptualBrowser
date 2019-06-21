@@ -59,7 +59,7 @@ namespace ConceptualBrowser.Business
             return keywords;
         }
 
-        public string RemoveDiacritics(string InputStr)
+        public static string RemoveDiacritics(string InputStr)
         {
             string BasicStr = InputStr.Normalize(NormalizationForm.FormD);
             string TempStr = "";

@@ -61,6 +61,7 @@
     <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Performance\PerformanceMonitor.cs" />
     <Compile Include="Common\Stemmer\ArabicStemmer.cs" />
+    <Compile Include="Common\Stemmer\ArabicStemmerOld.cs" />
     <Compile Include="Common\Stemmer\CzechStemmer.cs" />
     <Compile Include="Common\Stemmer\DanishStemmer.cs" />
     <Compile Include="Common\Stemmer\DutchStemmer.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Common\Stemmer\RomanianStemmer.cs" />
     <Compile Include="Common\Stemmer\RussianStemmer.cs" />
     <Compile Include="Common\Stemmer\SpanishStemmer.cs" />
+    <Compile Include="Common\Stemmer\Stemmer.cs" />
     <Compile Include="Common\Stemmer\StemmerOperations.cs" />
     <Compile Include="Common\Stemmer\Stemmers.cs" />
     <Compile Include="Entities\BinaryRelation.cs" />

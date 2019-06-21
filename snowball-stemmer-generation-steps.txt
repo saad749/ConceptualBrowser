@@ -1,0 +1,12 @@
+gcc -O -o Snowball compiler/*.c
+Snowball algorithms/hungarian.sbl -o runtime/hungarian -ep H_ -utf8
+
+
+gcc -o H_prog q/*.c
+./H_prog voc.txt -o TEMP.txt
+diff output.txt TEMP.txt
+
+
+
+
+Snowball algorithms/arabic.sbl -cs -o runtime/arabic -utf8

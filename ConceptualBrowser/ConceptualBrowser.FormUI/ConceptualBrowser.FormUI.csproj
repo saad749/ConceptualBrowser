@@ -180,6 +180,9 @@
     <Content Include="Assets\arabic-stop-words-750.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\arabic-stopwords-11060.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\browser-logo.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
