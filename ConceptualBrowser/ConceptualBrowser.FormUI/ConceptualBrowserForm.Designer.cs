@@ -36,6 +36,7 @@
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConcepts = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConceptsSimple = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOptimalConceptsDetailed = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,7 +65,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
-            this.tsmiOptimalConceptsDetailed = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -85,6 +86,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFileMenuItem,
+            this.tsmiImport,
             this.exportMenuItem,
             this.exitMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -121,6 +123,13 @@
             this.tsmiOptimalConceptsSimple.Size = new System.Drawing.Size(224, 22);
             this.tsmiOptimalConceptsSimple.Text = "Optimal Concepts - Simple";
             this.tsmiOptimalConceptsSimple.Click += new System.EventHandler(this.tsmiOptimalConceptsSimple_Click);
+            // 
+            // tsmiOptimalConceptsDetailed
+            // 
+            this.tsmiOptimalConceptsDetailed.Name = "tsmiOptimalConceptsDetailed";
+            this.tsmiOptimalConceptsDetailed.Size = new System.Drawing.Size(224, 22);
+            this.tsmiOptimalConceptsDetailed.Text = "Optimal Concepts - Detailed";
+            this.tsmiOptimalConceptsDetailed.Click += new System.EventHandler(this.TsmiOptimalConceptsDetailed_Click);
             // 
             // exitMenuItem
             // 
@@ -418,12 +427,12 @@
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
-            // tsmiOptimalConceptsDetailed
+            // tsmiImport
             // 
-            this.tsmiOptimalConceptsDetailed.Name = "tsmiOptimalConceptsDetailed";
-            this.tsmiOptimalConceptsDetailed.Size = new System.Drawing.Size(224, 22);
-            this.tsmiOptimalConceptsDetailed.Text = "Optimal Concepts - Detailed";
-            this.tsmiOptimalConceptsDetailed.Click += new System.EventHandler(this.TsmiOptimalConceptsDetailed_Click);
+            this.tsmiImport.Name = "tsmiImport";
+            this.tsmiImport.Size = new System.Drawing.Size(180, 22);
+            this.tsmiImport.Text = "&Import";
+            this.tsmiImport.Click += new System.EventHandler(this.TsmiImport_Click);
             // 
             // ConceptualBrowserForm
             // 
@@ -498,6 +507,7 @@
         private System.Windows.Forms.ComboBox cmbFont;
         private System.Windows.Forms.Label lblFont;
         private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConceptsDetailed;
+        private System.Windows.Forms.ToolStripMenuItem tsmiImport;
     }
 }
 

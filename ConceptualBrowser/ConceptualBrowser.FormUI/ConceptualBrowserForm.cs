@@ -59,6 +59,13 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.DataSource = items;
             cmbLanguage.SelectedIndex = 15;
             cmbFont.SelectedIndex = 1;
+
+            if (unicodeToolStripMenuItem.Checked)
+                Encoding = Encoding.Unicode;
+            else if (aNSIToolStripMenuItem.Checked)
+                Encoding = Encoding.ASCII;
+            else if (uTF8ToolStripMenuItem.Checked)
+                Encoding = Encoding.UTF8;
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
@@ -227,7 +234,7 @@ namespace ConceptualBrowser.FormUI
 
         private void uTF8ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Encoding = Encoding.Default;
+            Encoding = Encoding.UTF8;
             ((ToolStripMenuItem)sender).Checked = true;
             unicodeToolStripMenuItem.Checked = false;
             aNSIToolStripMenuItem.Checked = false;
@@ -342,10 +349,82 @@ namespace ConceptualBrowser.FormUI
                 return;
             }
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
-            var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
+            var detailed = new { Concepts = concepts, Text = txtText.Text};
+            var json = JsonConvert.SerializeObject(detailed, Formatting.Indented);
             string fileName = $"exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
-            File.WriteAllText(fileName, json);
+            File.WriteAllText(fileName, json, Encoding);
             Process.Start(fileName);
+        }
+
+        private void TsmiImport_Click(object sender, EventArgs e)
+        {
+            fileToolStripMenuItem.Enabled = false;
+            treeViewBrowser.Nodes.Clear();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.ShowDialog();
+            string fileName = openFileDialog.FileName;
+
+            if (!String.IsNullOrWhiteSpace(fileName))
+            {
+                try
+                {
+                    FileText = ReadFile(fileName);
+                    var conceptsDTO = JsonConvert.DeserializeObject<ConceptsDTO>(FileText);
+                    FileText = conceptsDTO.Text;
+                    txtText.Text = FileText;
+
+                    txtSummary.Text = "";
+                    txtKeywords.Text = "";
+
+                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
+                    tssLanguage.Text = "Language: " + Langauge;
+
+                    if (Langauge == "arb")
+                    {
+                        txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
+                        txtText.SelectionAlignment = HorizontalAlignment.Right;
+                        txtKeywords.RightToLeft = RightToLeft.Yes;
+                        txtText.RightToLeft = RightToLeft.Yes;
+                        txtSummary.RightToLeft = RightToLeft.Yes;
+                    }
+                    else
+                    {
+                        txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                        txtText.SelectionAlignment = HorizontalAlignment.Left;
+                        txtKeywords.RightToLeft = RightToLeft.No;
+                        txtText.RightToLeft = RightToLeft.No;
+                        txtSummary.RightToLeft = RightToLeft.No;
+                    }
+
+                    ConceptExtraction ce = new ConceptExtraction();
+                    OptimalTree = ce.CreateTree(conceptsDTO.Concepts);
+
+                    var optimals = OptimalTree.Select(x => x.OptimalConcept);
+                    List<Sentence> sentences = new List<Sentence>();
+                    foreach (var optimal in optimals)
+                    {
+                        Sentence sentence = optimal.Sentences[0];
+                        sentences.Add(sentence);
+                    }
+
+                    FillNode(OptimalTree, null);
+                    MessageBox.Show("Extraction Completed!", "Success!");
+                    fileToolStripMenuItem.Enabled = true;
+
+                    File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
+
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
+                }
+            }
+        }
+
+        internal class ConceptsDTO
+        {
+            public string Text { get; set; }
+            public List<OptimalConcept> Concepts { get; set; }
         }
     }
 }
