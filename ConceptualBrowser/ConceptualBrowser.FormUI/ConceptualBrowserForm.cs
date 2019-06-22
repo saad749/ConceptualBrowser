@@ -298,7 +298,7 @@ namespace ConceptualBrowser.FormUI
                 timeTaken = ms + " ms";
 
             tssPerformance.Text = "Time Taken: " + timeTaken;
-            MessageBox.Show("Extraction Completed!", "Success!");
+            //MessageBox.Show("Extraction Completed!", "Success!");
             fileToolStripMenuItem.Enabled = true;
         }
 
@@ -408,7 +408,7 @@ namespace ConceptualBrowser.FormUI
                     }
 
                     FillNode(OptimalTree, null);
-                    MessageBox.Show("Extraction Completed!", "Success!");
+                    //MessageBox.Show("Extraction Completed!", "Success!");
                     fileToolStripMenuItem.Enabled = true;
 
                     File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
