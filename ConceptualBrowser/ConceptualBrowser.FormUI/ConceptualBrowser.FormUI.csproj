@@ -210,7 +210,22 @@
     <Content Include="Assets\PortugueseStopWords_FullListFromInternet.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Project Text Samples\Arabic\file1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Project Text Samples\Arabic\Imran Khan.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Project Text Samples\Arabic\الجامع في الحديث لمَعْمَر بن راشد %28الأزديّ ولاءً%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Project Text Samples\Arabic\خطب الأشتر النَّخَعيّ %28مالك بن الحارث%29 ومحاوراته %281%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Project Text Samples\Arabic\شعر الزِّبْرِقان بن بدر الفَزاريّ التَّميميّ %281%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Project Text Samples\Arabic\قرآن كريم.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Project Text Samples\Czech\Czech Wikipedia_Larger_Unicode.txt">
