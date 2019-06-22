@@ -268,7 +268,7 @@ namespace ConceptualBrowser.Business.Entities
                     if (sentence.CoveredByConceptNumber == currentConceptNo)
                     {
                         //This comparison doesn't seems correct and may be the reason for same sentences showing as many times as the count of keywords.
-                        if (!tempSentences.Contains(sentence))
+                        if (!tempSentences.Any(x => x.SentenceIndex == sentence.SentenceIndex))
                             tempSentences.Add(sentence);
                     }
                     
