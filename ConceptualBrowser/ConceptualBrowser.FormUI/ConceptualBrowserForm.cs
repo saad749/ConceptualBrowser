@@ -236,7 +236,7 @@ namespace ConceptualBrowser.FormUI
         private void optimalConceptsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string[] lines = OptimalTree.Select(c => c.OptimalConcept.ConceptName).ToArray();
-            string fileName = "exported_concepts.txt";
+            string fileName = $"exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
             File.WriteAllLines(fileName, lines);
             Process.Start(fileName);
         }
@@ -294,7 +294,7 @@ namespace ConceptualBrowser.FormUI
         {
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
             var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
-            string fileName = "exported_concepts_with_objects.json";
+            string fileName = $"exported_concepts_with_objects_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
             File.WriteAllText(fileName, json);
             Process.Start(fileName);
         }
