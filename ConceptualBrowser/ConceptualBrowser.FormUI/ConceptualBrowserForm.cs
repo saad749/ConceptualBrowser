@@ -70,69 +70,72 @@ namespace ConceptualBrowser.FormUI
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
         {
-            fileToolStripMenuItem.Enabled = false;
-            treeViewBrowser.Nodes.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.ShowDialog();
-            string fileName = openFileDialog.FileName;
-
-            if (!String.IsNullOrWhiteSpace(fileName))
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                fileToolStripMenuItem.Enabled = true;
+            else
             {
-                try
+                fileToolStripMenuItem.Enabled = false;
+                treeViewBrowser.Nodes.Clear();
+
+                string fileName = openFileDialog.FileName;
+
+                if (!String.IsNullOrWhiteSpace(fileName))
                 {
-                    FileText = ReadFile(fileName);
-                    txtText.Text = FileText;
-                    txtSummary.Text = "";
-                    txtKeywords.Text = "";
-
-                    //Also Take Language by User Input
-                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
-                    tssLanguage.Text = "Language: " + Langauge;
-
-                    CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
-                    tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
-
-                    pbMain.Maximum = 100;
-                    pbMain.Minimum = 0;
-                    pbMain.Value = 5;
-
-                    if (Langauge == "arb")
+                    try
                     {
-                        txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
-                        txtText.SelectionAlignment = HorizontalAlignment.Right;
-                        txtKeywords.RightToLeft = RightToLeft.Yes;
-                        txtText.RightToLeft = RightToLeft.Yes;
-                        txtSummary.RightToLeft = RightToLeft.Yes;
+                        FileText = ReadFile(fileName);
+                        txtText.Text = FileText;
+                        txtSummary.Text = "";
+                        txtKeywords.Text = "";
+
+                        //Also Take Language by User Input
+                        Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
+                        tssLanguage.Text = "Language: " + Langauge;
+
+                        CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
+                        tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
+
+                        pbMain.Maximum = 100;
+                        pbMain.Minimum = 0;
+                        pbMain.Value = 5;
+
+                        if (Langauge == "arb")
+                        {
+                            txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
+                            txtText.SelectionAlignment = HorizontalAlignment.Right;
+                            txtKeywords.RightToLeft = RightToLeft.Yes;
+                            txtText.RightToLeft = RightToLeft.Yes;
+                            txtSummary.RightToLeft = RightToLeft.Yes;
+                        }
+                        else
+                        {
+                            txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                            txtText.SelectionAlignment = HorizontalAlignment.Left;
+                            txtKeywords.RightToLeft = RightToLeft.No;
+                            txtText.RightToLeft = RightToLeft.No;
+                            txtSummary.RightToLeft = RightToLeft.No;
+                        }
+
+
+                        bgwExtraction.RunWorkerAsync();
+
                     }
-                    else
+                    catch (IOException ex)
                     {
-                        txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
-                        txtText.SelectionAlignment = HorizontalAlignment.Left;
-                        txtKeywords.RightToLeft = RightToLeft.No;
-                        txtText.RightToLeft = RightToLeft.No;
-                        txtSummary.RightToLeft = RightToLeft.No;
+                        MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
+                    }
+                    catch (KeyNotFoundException ex)
+                    {
+                        MessageBox.Show("The language of text is not supported" + Environment.NewLine
+                            + "Try choosing a different Encoding or choose a supported language" + Environment.NewLine
+                            + "Detected Language is " + Langauge + Environment.NewLine
+                            + ex.Message);
                     }
 
-
-                    bgwExtraction.RunWorkerAsync();
-                    
                 }
-                catch (IOException ex)
-                {
-                    MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
-                }
-                catch (KeyNotFoundException ex)
-                {
-                    MessageBox.Show("The language of text is not supported" + Environment.NewLine
-                        + "Try choosing a different Encoding or choose a supported language" + Environment.NewLine
-                        + "Detected Language is " + Langauge + Environment.NewLine
-                        + ex.Message);
-                }
-
             }
         }
-
-
 
         private void FillNode(List<OptimalConceptTreeItem> optimals, TreeNode node)
         {
@@ -358,65 +361,69 @@ namespace ConceptualBrowser.FormUI
 
         private void TsmiImport_Click(object sender, EventArgs e)
         {
-            fileToolStripMenuItem.Enabled = false;
-            treeViewBrowser.Nodes.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.ShowDialog();
-            string fileName = openFileDialog.FileName;
-
-            if (!String.IsNullOrWhiteSpace(fileName))
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                fileToolStripMenuItem.Enabled = true;
+            else
             {
-                try
+                fileToolStripMenuItem.Enabled = false;
+                treeViewBrowser.Nodes.Clear();
+                string fileName = openFileDialog.FileName;
+
+                if (!String.IsNullOrWhiteSpace(fileName))
                 {
-                    FileText = ReadFile(fileName);
-                    var conceptsDTO = JsonConvert.DeserializeObject<ConceptsDTO>(FileText);
-                    FileText = conceptsDTO.Text;
-                    txtText.Text = FileText;
-
-                    txtSummary.Text = "";
-                    txtKeywords.Text = "";
-
-                    Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
-                    tssLanguage.Text = "Language: " + Langauge;
-
-                    if (Langauge == "arb")
+                    try
                     {
-                        txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
-                        txtText.SelectionAlignment = HorizontalAlignment.Right;
-                        txtKeywords.RightToLeft = RightToLeft.Yes;
-                        txtText.RightToLeft = RightToLeft.Yes;
-                        txtSummary.RightToLeft = RightToLeft.Yes;
+                        FileText = ReadFile(fileName);
+                        var conceptsDTO = JsonConvert.DeserializeObject<ConceptsDTO>(FileText);
+                        FileText = conceptsDTO.Text;
+                        txtText.Text = FileText;
+
+                        txtSummary.Text = "";
+                        txtKeywords.Text = "";
+
+                        Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
+                        tssLanguage.Text = "Language: " + Langauge;
+
+                        if (Langauge == "arb")
+                        {
+                            txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
+                            txtText.SelectionAlignment = HorizontalAlignment.Right;
+                            txtKeywords.RightToLeft = RightToLeft.Yes;
+                            txtText.RightToLeft = RightToLeft.Yes;
+                            txtSummary.RightToLeft = RightToLeft.Yes;
+                        }
+                        else
+                        {
+                            txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                            txtText.SelectionAlignment = HorizontalAlignment.Left;
+                            txtKeywords.RightToLeft = RightToLeft.No;
+                            txtText.RightToLeft = RightToLeft.No;
+                            txtSummary.RightToLeft = RightToLeft.No;
+                        }
+
+                        ConceptExtraction ce = new ConceptExtraction();
+                        OptimalTree = ce.CreateTree(conceptsDTO.Concepts);
+
+                        var optimals = OptimalTree.Select(x => x.OptimalConcept);
+                        List<Sentence> sentences = new List<Sentence>();
+                        foreach (var optimal in optimals)
+                        {
+                            Sentence sentence = optimal.Sentences[0];
+                            sentences.Add(sentence);
+                        }
+
+                        FillNode(OptimalTree, null);
+                        //MessageBox.Show("Extraction Completed!", "Success!");
+                        fileToolStripMenuItem.Enabled = true;
+
+                        File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
+
                     }
-                    else
+                    catch (IOException ex)
                     {
-                        txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
-                        txtText.SelectionAlignment = HorizontalAlignment.Left;
-                        txtKeywords.RightToLeft = RightToLeft.No;
-                        txtText.RightToLeft = RightToLeft.No;
-                        txtSummary.RightToLeft = RightToLeft.No;
+                        MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
                     }
-
-                    ConceptExtraction ce = new ConceptExtraction();
-                    OptimalTree = ce.CreateTree(conceptsDTO.Concepts);
-
-                    var optimals = OptimalTree.Select(x => x.OptimalConcept);
-                    List<Sentence> sentences = new List<Sentence>();
-                    foreach (var optimal in optimals)
-                    {
-                        Sentence sentence = optimal.Sentences[0];
-                        sentences.Add(sentence);
-                    }
-
-                    FillNode(OptimalTree, null);
-                    //MessageBox.Show("Extraction Completed!", "Success!");
-                    fileToolStripMenuItem.Enabled = true;
-
-                    File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
-
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
                 }
             }
         }
@@ -425,6 +432,11 @@ namespace ConceptualBrowser.FormUI
         {
             public string Text { get; set; }
             public List<OptimalConcept> Concepts { get; set; }
+        }
+
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
