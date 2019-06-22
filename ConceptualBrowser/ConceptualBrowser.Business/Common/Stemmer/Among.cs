@@ -4,23 +4,73 @@ using System.Text;
 
 namespace ConceptualBrowser.Business.Common.Stemmer
 {
-    internal class Among
+    public class Among
     {
+        /// <summary>
+        ///   Search string.
+        /// </summary>
+        /// 
+        public string SearchString { get; private set; }
 
-        public readonly int s_size; /* search string */
-        public readonly char[] s; /* search string */
-        public readonly int substring_i; /* index to longest matching substring */
-        public readonly int result; /* result of the lookup */
-        public delegate bool boolDel();
-        public readonly boolDel method; /* method to use if substring matches */
+        /// <summary>
+        ///   Index to longest matching substring.
+        /// </summary>
+        /// 
+        public int MatchIndex { get; private set; }
 
-        public Among(string s, int substring_i, int result, boolDel linkMethod)
+        /// <summary>
+        ///   Result of the lookup.
+        /// </summary>
+        /// 
+        public int Result { get; private set; }
+
+        /// <summary>
+        ///   Action to be invoked.
+        /// </summary>
+        /// 
+        public Func<bool> Action { get; private set; }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Among"/> class.
+        /// </summary>
+        /// 
+        /// <param name="str">The search string.</param>
+        /// <param name="index">The index to the longest matching substring.</param>
+        /// <param name="result">The result of the lookup.</param>
+        /// 
+        public Among(String str, int index, int result)
+            : this(str, index, result, null)
         {
-            this.s_size = s.Length;
-            this.s = s.ToCharArray();
-            this.substring_i = substring_i;
-            this.result = result;
-            this.method = linkMethod;
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Among"/> class.
+        /// </summary>
+        /// 
+        /// <param name="str">The search string.</param>
+        /// <param name="index">The index to the longest matching substring.</param>
+        /// <param name="result">The result of the lookup.</param>
+        /// <param name="action">The action to be performed, if any.</param>
+        /// 
+        public Among(String str, int index, int result, Func<bool> action)
+        {
+            this.SearchString = str;
+            this.MatchIndex = index;
+            this.Result = result;
+            this.Action = action;
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return SearchString;
         }
     }
 }

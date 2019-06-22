@@ -9,22 +9,23 @@ using System.IO;
 using ConceptualBrowser.Business.Common.Performance;
 using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Common.Helpers;
-
+using System.ComponentModel;
 
 namespace ConceptualBrowser.Business.Common
 {
     public class ConceptExtraction
     {
-        List<Node> nodes = new List<Node>();
-        public List<OptimalConceptTreeItem> Extract(String text, string languageCode)
+        List<Sentence> sentences = new List<Sentence>();
+        public List<OptimalConceptTreeItem> Extract(String text, string languageCode, double coveragePercentage, BackgroundWorker backgroundWorker)
         {
+
             PerformanceMonitor monitor = new PerformanceMonitor
             {
                 Checkpoints = new List<Tuple<string, long>>(),
                 Stopwatch = new Stopwatch()
             };
             monitor.Stopwatch.Start();
-            monitor.Checkpoints.Add( new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedMilliseconds));
+            monitor.Checkpoints.Add(new Tuple<string, long>("ConceptExtraction.Extract()", monitor.Stopwatch.ElapsedMilliseconds));
 
             IStemmer stemmer;
             IEmptyWords emptyWords;
@@ -38,39 +39,36 @@ namespace ConceptualBrowser.Business.Common
                 throw ex;
             }
 
-            
-            ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
-
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
-            List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
-            List<String> sentences = textAnalyzer.GetSentences(text);
+            ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
+            //List<String> sentencesWithDelimiters = textAnalyzer.GetSentencesWithDelimiters(text);
+            List<String> sentenceStringList = textAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
             monitor.Checkpoints.Add(new Tuple<string, long>("After Text Analyzing", monitor.Stopwatch.ElapsedMilliseconds));
 
             monitor.Checkpoints.Add(new Tuple<string, long>("Before Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));
-            for (int i = 0; i < sentencesWithDelimiters.Count;i++)
+            for (int i = 0; i < sentenceStringList.Count;i++)
             {
                 int[] ranks = new int[] { i + 1, i + 1};
-                int[] totals = { (sentencesWithDelimiters.Count + 2) / 2, (sentencesWithDelimiters.Count + 2) / 2 };
+                int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
                 Rank rank = new Rank(2, ranks, totals);
 
-                nodes.Add(new Node(i + "", -1, i, rank));
+                this.sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
             }
             monitor.Checkpoints.Add(new Tuple<string, long>("After Initial Node Creation", monitor.Stopwatch.ElapsedMilliseconds));
 
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
+            //Console.WriteLine("Total Sentences: " + sentenceStringList.Count);
             Coverage coverage = new Coverage(stemmer, emptyWords);
-            coverage.CreateBinaryRelation(sentences, nodes, false);
-            //PrintBinaryRelation(coverage.BinaryRelation);
-
+            //Why on Earth Should I send Sentence String List and Create Sentences from Sentences With Delimeters? Doesnt Sounds right!
+            //Experiment Shows there is no difference, if we have Sentences created from sentenceStringList of sentencesWithDelimeters.
+            //But Why to have more sentences??? With Deliemters give 82, without gives 42!!
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
+            coverage.CreateBinaryRelation(sentenceStringList, this.sentences);
             monitor.Checkpoints.Add(new Tuple<string, long>("After Creating Binary Relation", monitor.Stopwatch.ElapsedMilliseconds));
-
-
-            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
-            List<OptimalConcept> optimals = coverage.ExtractAll();
+            monitor.Checkpoints.Add(new Tuple<string, long>("Before ExtractAll", monitor.Stopwatch.ElapsedMilliseconds))
+                ;
+            List<OptimalConcept> optimals = coverage.ExtractAll(coveragePercentage, backgroundWorker);
             monitor.Checkpoints.Add(new Tuple<string, long>("After ExtractAll", monitor.Stopwatch.ElapsedMilliseconds));
 
-
-            List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
 
 
             monitor.Stopwatch.Stop();
@@ -87,7 +85,17 @@ namespace ConceptualBrowser.Business.Common
             }
             File.AppendAllText("PerformanceLog.txt", sb.ToString());
 
+
+            //Console.WriteLine("Total Sentences Not Covered: " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count(s => s.CoveredByConceptNumber == -1));
+            //Console.WriteLine("Total Sentences : " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count());
+            //Console.WriteLine("Total Keywords : " + coverage.BinaryRelation.Keywords.Count());
+
+            List<OptimalConceptTreeItem> optimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
             return optimalTree;
+
+            //Fragments of Commented code to Imrpove Readbility. The code is commented to be able to be easily Reused when needed
+            //PrintBinaryRelation(coverage.BinaryRelation);
+
         }
 
         public List<OptimalConceptTreeItem> CreateTree(List<OptimalConcept> optimals)
@@ -122,8 +130,7 @@ namespace ConceptualBrowser.Business.Common
         {
             //Console.WriteLine();
             //Console.WriteLine("Keywords Dictionary:");
-            //LogHelper.PrintKeywords(binaryRelation.Keywords.Values.ToList());
-
+            //LogHelper.PrintKeywords(binaryRelation.Keywords);
             //Console.WriteLine();
 
             //Console.WriteLine("Total Results: " + binaryRelation.TotalResults);
@@ -134,5 +141,6 @@ namespace ConceptualBrowser.Business.Common
             //Console.WriteLine("Roots in Binary Relations: ");
             //LogHelper.PrintRootNodes(binaryRelation.Roots);
         }
+        
     }
 }

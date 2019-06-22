@@ -38,6 +38,9 @@
       <HintPath>..\packages\NTextCat.0.2.1.30\lib\net40\IvanAkcheurov.NClassify.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NTextCat, Version=0.2.1.30, Culture=neutral, PublicKeyToken=a61413de1d13f8fc, processorArchitecture=MSIL">
       <HintPath>..\packages\NTextCat.0.2.1.30\lib\net40\NTextCat.dll</HintPath>
       <Private>True</Private>
@@ -53,10 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ConceptExtraction.cs" />
+    <Compile Include="Common\Constant.cs" />
     <Compile Include="Common\Helpers\LogHelper.cs" />
     <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Performance\PerformanceMonitor.cs" />
     <Compile Include="Common\Stemmer\ArabicStemmer.cs" />
+    <Compile Include="Common\Stemmer\ArabicStemmerOld.cs" />
     <Compile Include="Common\Stemmer\CzechStemmer.cs" />
     <Compile Include="Common\Stemmer\DanishStemmer.cs" />
     <Compile Include="Common\Stemmer\DutchStemmer.cs" />
@@ -77,6 +82,7 @@
     <Compile Include="Common\Stemmer\RomanianStemmer.cs" />
     <Compile Include="Common\Stemmer\RussianStemmer.cs" />
     <Compile Include="Common\Stemmer\SpanishStemmer.cs" />
+    <Compile Include="Common\Stemmer\Stemmer.cs" />
     <Compile Include="Common\Stemmer\StemmerOperations.cs" />
     <Compile Include="Common\Stemmer\Stemmers.cs" />
     <Compile Include="Entities\BinaryRelation.cs" />
@@ -85,7 +91,7 @@
     <Compile Include="Entities\EquivalentNode.cs" />
     <Compile Include="Entities\EquivalentRectangle.cs" />
     <Compile Include="Entities\KeywordNode.cs" />
-    <Compile Include="Entities\Node.cs" />
+    <Compile Include="Entities\Sentence.cs" />
     <Compile Include="Entities\NodeTree.cs" />
     <Compile Include="Entities\OptimalConcept.cs" />
     <Compile Include="Entities\OptimalConceptTreeItem.cs" />

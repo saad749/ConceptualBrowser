@@ -10,88 +10,107 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class BinaryRelation
     {
-        public Dictionary<int, KeywordNode> Keywords { get; set; }
-
+        public List<KeywordNode> Keywords { get; set; } //Changing Dictionary to List
         public int TotalResults { get; set; }
         public bool Status { get; set; }
         public List<RootNode> Roots { get; set; } = new List<RootNode>();
-        public int MaxRank { get; set; }
         public List<string> PrimaryConceptsName { get; set; } = new List<string>();
 
 
-        public BinaryRelation()
+        public int KeywordsSentencesSum { get; set; }
+
+        //int d = 0; Duplicate coverage statistical counter. Not Required. Just for testing
+
+        private readonly IStemmer Stemmer;
+
+        public int TotalUniqueCovered { get; set; }
+
+
+        public BinaryRelation(IStemmer stemmer)
         {
-            Keywords = new Dictionary<int, KeywordNode>();
+            Keywords = new List<KeywordNode>();
+            Stemmer = stemmer;
         }
 
-        public BinaryRelation(int total, int max)
+        public BinaryRelation(int total, IStemmer stemmer)
         {
             TotalResults = total;
-            Keywords = new Dictionary<int, KeywordNode>();
+            Keywords = new List<KeywordNode>();
+            Stemmer = stemmer;
         }
         public RootNode GetRootNode(String keyword)
         {
-            return Roots.Where(r => r.Root.Equals(keyword, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return Roots.FirstOrDefault(r => r.Root.Equals(keyword, StringComparison.OrdinalIgnoreCase));
         }
 
-        public void AppendToBinaryRelation(List<String> words, Node node, bool rankedDocs)
+        public void AppendToBinaryRelation(List<String> words, Sentence sentence)
         {
-
-            IStemmer stemmer = new EnglishStemmer();
-
-            for (int i = 0; i < words.Count; i++)
+            sentence.KeywordNodes = new List<KeywordNode>();
+            foreach (string word in words)
             {
-                Node tempNode = new Node(node.Word, node.CoveredBy, node.Number, node.Rank);
+                //These temporary Variables are SUPER VARIABLES. DONT EVEN THINK TO REMOVE THEM. THIS WILL SKIP A LOT OF
+                //CONCEPTS. AND CAN TAKE FOR EVER TO UNDERSTAND!!!
+                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.LastCoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence); // Why to create a tempSentence? -s refers to this variable
+                String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
-                String keyword = words[i];
 
-                String stem = stemmer.Stem(keyword.ToLower());
-
+                String stem = Stemmer.Stem(tempWord.ToLower());//-k
                 RootNode root = new RootNode();
+                
+                //USE By Reference
+                KeywordNode keyword = Keywords.FirstOrDefault(v => v.Keyword == stem);
 
-                KeywordNode tempKeywordNode;
-
-                if (Keywords.Values.Any(v => v.Keyword == stem))// Keywords.ContainsKey((stem)))
+                if (keyword != null)
                 {
-                    tempKeywordNode = Keywords.Values.Where(v => v.Keyword == stem).FirstOrDefault();
-                    //if (!keyWord_HashTable.get(keyWord_HashTable.getPosition()).containsURL(node.getURL()))
-                    if (!tempKeywordNode.Nodes.Any( n => n.Word == node.Word)) //.containsURL(node.getURL()))
+                    //If the stram of the word already exists in the List of keywords with the Binary Relations Then 
+
+                    //KeywordNode tempKeywordNode = Keywords.FirstOrDefault(v => v.Keyword == stem);
+                    if (!keyword.Sentences.Any( n => n.SentenceIndex == tempSentence.SentenceIndex)) 
                     {
-                        if (!rankedDocs)
-                        {
-                            //keyWord_HashTable.get(keyWord_HashTable.getPosition()).setKeywordRank(keyWord_HashTable.get(keyWord_HashTable.getPosition()).getKeywordRank() + 1);
-                            tempKeywordNode.KeywordRank++;
-                        }
+                        //If the word exists in the list of key words, then it checks if the word has any sentences that has a sentenceIndex
+                        //that matches the sentence that word was found in (if not its probably repeated in the same sentence and ignored)... THEN
+                        //Increase the Rank of the Keyword
+                        //For some reason if the word doesnt exists in Roots List of Binary Relation, then Add it to Binary Relation .. Word or Stem??
+                        //Add the sentence to the list of the sentences to the Keyword that has the stem of this word
 
-                        root = Roots.Where(r => r.Root.Equals(stem, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        keyword.KeywordRank++; 
+                        root = Roots.FirstOrDefault(r => r.Root.Equals(stem, StringComparison.OrdinalIgnoreCase));
+                        if (!root.ExistsInOriginalWords(tempWord))//-k
+                            root.OriginalWords.Add(tempWord);//-k
 
-                        if (!root.ExistsInOriginalWords(keyword))
-                            root.OriginalWords.Add(keyword);
-                        tempKeywordNode.Nodes.Add(tempNode); //Referencing issue may be???
+                        //tempSentence.KeywordNodes.Add(keyword);//Addition for Speed
+                        sentence.KeywordNodes.Add(keyword);
+                        keyword.Sentences.Add(tempSentence); //Referencing issue may be???//-s
+
+                        
+                        
                     }
-
                 }
                 else
                 {
-                    List<Node> nodes = new List<Node>();
-                    nodes.Add(tempNode);
+                    //If the stem of the word doesnt already exists in the Binary Relation List of Keywords Then
+                    //It creates a Keyword Node and adds it to its list. 
+                    //It also creates a Root node and add it to list
+                    List<Sentence> sentences = new List<Sentence>();
+                    sentences.Add(tempSentence);//-s
                     List<string> orginalWords = new List<string>();
-                    orginalWords.Add(keyword);
+                    orginalWords.Add(tempWord);//-k
 
                     root = new RootNode(stem, orginalWords);
-
                     Roots.Add(root);
 
-                    KeywordNode temp = new KeywordNode(stem, Keywords.Count, 1, nodes);
+                    KeywordNode temp = new KeywordNode(stem, Keywords.Count, 1, sentences);
 
-                    Keywords.Add(Keywords.Count, temp);
+                    //tempSentence.KeywordNodes.Add(temp);//Addition for Speed - By Reference!!
+                    sentence.KeywordNodes.Add(temp);
+                    Keywords.Add(temp);
                 }
             }
         }
 
         public int GetTupleCount()
         {
-            return Keywords.Values.ToList().Sum(k => k.Nodes.Count);
+            return Keywords.ToList().Sum(k => k.Sentences.Count);
         }
 
         public void MarkAsCovered(List<int[]> tuples, int current)
@@ -102,8 +121,14 @@ namespace ConceptualBrowser.Business.Entities
                 int[] pair = tuples[i];
                 KeywordNode keyword = Keywords[pair[0]];
                 //LogHelper.PrintKeyword(keyword, "Marked As Covered: ");
-                //((URLNode)keyword.getURLNodeHasNo(pair[1])).setCoveredBy(current);
-                keyword.Nodes.FirstOrDefault(n => n.Number == pair[1]).CoveredBy = current;
+                if (keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber == -1) //THis Part is important as it is used for Randomizations!
+                {
+                    TotalUniqueCovered++;
+                    //Console.WriteLine("Unique Cover" + TotalUniqueCovered);
+                }
+
+                keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber = current;
+                keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CovertedbyConceptNumbers.Add(current); //Added to keep track of concept numbers
             }
         }
 

@@ -112,9 +112,9 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     {"ita", new Tuple<string, Encoding> ("ItalianStopWords_FullListFromInternet.csv", Encoding.Default)},
                     {"nor", new Tuple<string, Encoding> ("NorwegianStopWords_FullListFromInternet.csv", Encoding.Default)},
                     {"por", new Tuple<string, Encoding> ("PortugueseStopWords_FullListFromInternet.txt", Encoding.Unicode)},
-                    {"rom", new Tuple<string, Encoding> ("RomanianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
+                    {"ron", new Tuple<string, Encoding> ("RomanianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
                     {"rus", new Tuple<string, Encoding> ("RussianStopWords_FullListFromInternet.txt", Encoding.Unicode)},
-                    {"arb", new Tuple<string, Encoding> ("arabic-stop-words-750.txt", Encoding.Unicode)},
+                    {"arb", new Tuple<string, Encoding> ("arabic-stopwords-11060.txt", Encoding.UTF8)},
                     {"none", new Tuple<string, Encoding> (null, Encoding.Unicode)}
                 };
 
@@ -136,20 +136,21 @@ namespace ConceptualBrowser.Business.Common.Stemmer
 
         public void LoadEmptyWordsFromFile()
         {
-            if(File.Exists(EmptyWordsFilePath))
+            if (File.Exists(EmptyWordsFilePath + FileName))
                 EmptyWordRoots = File.ReadAllLines(EmptyWordsFilePath + FileName, Encoding).ToList();
         }
 
         public void AppendEmptyWordsToFile(string word)
         {
             string root = Stemmer.Stem(word);
-            if (File.Exists(EmptyWordsFilePath))
+            if (File.Exists(EmptyWordsFilePath + FileName))
                 File.AppendAllText(EmptyWordsFilePath + FileName, Environment.NewLine + root, Encoding);
         }
 
         public bool IsEmptyWord(string word)
         {
-            return EmptyWordRoots.Any( w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
+            return EmptyWordRoots.Any(w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
+            //return EmptyWordRoots.Any( w => String.Equals(TextAnalyzer.RemoveDiacritics(word), TextAnalyzer.RemoveDiacritics(w), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

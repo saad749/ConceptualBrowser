@@ -44,23 +44,24 @@ namespace ConceptualBrowser.Business.Common.Helpers
         public static void PrintKeyword(KeywordNode keywordNode, string additionalMessage = "")
         {
             Console.Write(additionalMessage);
-            Console.WriteLine("Keyword - Value: " + keywordNode.Keyword + "\t" + keywordNode.Number + "\t" + keywordNode.KeywordRank);
-            PrintNodes(keywordNode.Nodes);
+            Console.WriteLine("Keyword -  Value: " + keywordNode.Keyword + "\t" + keywordNode.KeywordIndex + "\t" + keywordNode.KeywordRank);
+            PrintSentences(keywordNode.Sentences);
         }
-        public static void PrintNodes(List<Node> nodes, string additionalMessage = "")
+        public static void PrintSentences(List<Sentence> sentences, string additionalMessage = "")
         {
             Console.Write(additionalMessage);
-            Console.WriteLine("Nodes: ");
-            foreach (Node node in nodes)
+            Console.WriteLine("Sentences: ");
+            foreach (Sentence node in sentences)
             {
-                PrintNode(node);
+                PrintSentence(node);
             }
         }
-        public static void PrintNode(Node node, string additionalMessage = "")
+        public static void PrintSentence(Sentence sentence, string additionalMessage = "")
         {
             Console.Write(additionalMessage);
-            Console.WriteLine("Word: " + node.Word + "\tNumber: " + node.Number + "\tCoveredBy: " + node.CoveredBy
-                    + "\tKeywordNumber: " + node.KeywordNumber + "\tKeywordString: " + node.KeywordString);
+            Console.WriteLine("Sentence - Word: " + sentence.SentenceIndex + "\tNumber: " + sentence.SentenceIndex 
+                    + "\tCoveredBy: " + sentence.LastCoveredByConceptNumber
+                    + "\tKeywordNumber: " + sentence.KeywordNumber + "\tKeywordString: " + sentence.KeywordString);
         }
 
         public static void PrintListArray(List<int[]> listArray, string additionalMessage = "")

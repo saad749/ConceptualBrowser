@@ -9,7 +9,7 @@ namespace ConceptualBrowser.Business.Entities
     public class NodeTree
     {
         public int HeapSize { get; set; }
-        public List<List<Node>> Heap = new List<List<Node>>(); //Simple List or a Nested List. i.e. A list ontaining lists of strings.
+        public List<List<Sentence>> Heap = new List<List<Sentence>>(); //Simple List or a Nested List. i.e. A list ontaining lists of strings.
         public int Huge { get; set; } = 0; //Minimum Accepted Rank
         public int Step { get; set; }
         public bool IsNewElement { get; set; } = true;
@@ -19,7 +19,7 @@ namespace ConceptualBrowser.Business.Entities
         public NodeTree(int heapSize)
         {
             HeapSize = heapSize;
-            Heap = new List<List<Node>>();
+            Heap = new List<List<Sentence>>();
             InitializeHeap();
         }
 
@@ -27,26 +27,26 @@ namespace ConceptualBrowser.Business.Entities
         {
             for (int i = 0; i <= HeapSize; i++)
             {
-                List<Node> nodes = new List<Node>();
-                Heap.Add(nodes); //or Add?
+                List<Sentence> sentences = new List<Sentence>();
+                Heap.Add(sentences); //or Add?
 
             }
         }
 
-        public void InsertNode(Node node, int step)
+        public void InsertNode(Sentence sentence, int step)
         {
             double j = 0;
             if (step != 0)
                 j = GetRankAt(Parent(step));
-            for (; (step > 0) && (j >= node.Rank.CalRank);)
+            for (; (step > 0) && (j >= sentence.Rank.CalRank);)
             {
-                if (j == node.Rank.CalRank)
+                if (j == sentence.Rank.CalRank)
                 {
-                    List<Node> nodes = new List<Node>();
-                    nodes.AddRange((Heap[Parent(step)]));
+                    List<Sentence> sentences = new List<Sentence>();
+                    sentences.AddRange((Heap[Parent(step)]));
                     Heap.RemoveAt(Parent(step));
-                    nodes.Add(node);
-                    Heap[Parent(step)] = nodes;
+                    sentences.Add(sentence);
+                    Heap[Parent(step)] = sentences;
                     IsNewElement = false;
                     this.TotalNodes++;
                     return;
@@ -59,9 +59,9 @@ namespace ConceptualBrowser.Business.Entities
                         j = GetRankAt(Parent(step));
                 }
             }
-            List<Node> temp = new List<Node>();
-            temp.Add(node);
-            Heap[step] =  temp;
+            List<Sentence> tempSentences = new List<Sentence>();
+            tempSentences.Add(sentence);
+            Heap[step] =  tempSentences;
             this.TotalNodes++;
             this.Height++;
             IsNewElement = true;
@@ -70,11 +70,6 @@ namespace ConceptualBrowser.Business.Entities
         public double GetRankAt(int pos)
         {
             return Heap[pos][0].Rank.CalRank;
-
-            //List<Node> nodes = new List<Node>();
-            //nodes.AddRange(Heap[pos]);
-            //Node node = nodes[0];
-            //return node.Rank.CalRank;
         }
         public int Parent(int i)
         {
