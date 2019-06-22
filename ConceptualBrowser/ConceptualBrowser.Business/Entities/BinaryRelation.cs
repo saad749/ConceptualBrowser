@@ -50,7 +50,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 //These temporary Variables are SUPER VARIABLES. DONT EVEN THINK TO REMOVE THEM. THIS WILL SKIP A LOT OF
                 //CONCEPTS. AND CAN TAKE FOR EVER TO UNDERSTAND!!!
-                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.CoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence); // Why to create a tempSentence? -s refers to this variable
+                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.LastCoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence); // Why to create a tempSentence? -s refers to this variable
                 String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
 
@@ -121,13 +121,14 @@ namespace ConceptualBrowser.Business.Entities
                 int[] pair = tuples[i];
                 KeywordNode keyword = Keywords[pair[0]];
                 //LogHelper.PrintKeyword(keyword, "Marked As Covered: ");
-                if (keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CoveredByConceptNumber == -1) //THis Part is important as it is used for Randomizations!
+                if (keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber == -1) //THis Part is important as it is used for Randomizations!
                 {
                     TotalUniqueCovered++;
                     //Console.WriteLine("Unique Cover" + TotalUniqueCovered);
                 }
 
-                keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CoveredByConceptNumber = current;
+                keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber = current;
+                keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CovertedbyConceptNumbers.Add(current); //Added to keep track of concept numbers
             }
         }
 

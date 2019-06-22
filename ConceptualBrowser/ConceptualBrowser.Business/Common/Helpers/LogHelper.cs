@@ -60,7 +60,7 @@ namespace ConceptualBrowser.Business.Common.Helpers
         {
             Console.Write(additionalMessage);
             Console.WriteLine("Sentence - Word: " + sentence.SentenceIndex + "\tNumber: " + sentence.SentenceIndex 
-                    + "\tCoveredBy: " + sentence.CoveredByConceptNumber
+                    + "\tCoveredBy: " + sentence.LastCoveredByConceptNumber
                     + "\tKeywordNumber: " + sentence.KeywordNumber + "\tKeywordString: " + sentence.KeywordString);
         }
 

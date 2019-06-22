@@ -235,6 +235,11 @@ namespace ConceptualBrowser.FormUI
 
         private void optimalConceptsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (OptimalTree is null)
+            {
+                MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             string[] lines = OptimalTree.Select(c => c.OptimalConcept.ConceptName).ToArray();
             string fileName = $"exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
             File.WriteAllLines(fileName, lines);
@@ -292,6 +297,11 @@ namespace ConceptualBrowser.FormUI
 
         private void optimalConceptsWithObjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(OptimalTree is null)
+            {
+                MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
             var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
             string fileName = $"exported_concepts_with_objects_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";

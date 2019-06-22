@@ -10,8 +10,8 @@ namespace ConceptualBrowser.Business.Entities
     public class Sentence
     {
         public int SentenceIndex { get; set; } //Renamed from Word to SentenceIndex
-        [JsonIgnore]
-        public int CoveredByConceptNumber { get; set; } = -1; // A signle sentence can be covered by multiple concepts; Why 1 only??
+        public int LastCoveredByConceptNumber { get; set; } = -1; // A signle sentence can be covered by multiple concepts; Why 1 only??
+        public List<int> CovertedbyConceptNumbers { get; set; } = new List<int>();
         [JsonIgnore]
         public Rank Rank { get; set; }
         [JsonIgnore]
@@ -32,7 +32,7 @@ namespace ConceptualBrowser.Business.Entities
         public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, string originalSentence)
         {
             SentenceIndex = sentenceIndex;
-            CoveredByConceptNumber = coveredByConceptNumber;
+            LastCoveredByConceptNumber = coveredByConceptNumber;
             OriginalSentence = originalSentence.Trim();
             Rank = rank;
             rank.CalculateRank();
@@ -48,7 +48,7 @@ namespace ConceptualBrowser.Business.Entities
         public Sentence(int sentenceIndex, int coveredByConceptNumber, Rank rank, List<KeywordNode> keywords, string originalSentence)
         {
             SentenceIndex = sentenceIndex;
-            CoveredByConceptNumber = coveredByConceptNumber;
+            LastCoveredByConceptNumber = coveredByConceptNumber;
             OriginalSentence = originalSentence.Trim();
             Rank = rank;
             rank.CalculateRank();

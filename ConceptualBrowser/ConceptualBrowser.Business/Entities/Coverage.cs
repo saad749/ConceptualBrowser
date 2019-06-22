@@ -148,18 +148,18 @@ namespace ConceptualBrowser.Business.Entities
                 List<Sentence> sentences = keyword.Sentences;
                 foreach (Sentence sentence in sentences)
                 {
-                    if (sentence.CoveredByConceptNumber < 0)
+                    if (sentence.LastCoveredByConceptNumber < 0)
                     {
                         int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
                         this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
                     }
-                    var coveredSentences = keywords.SelectMany(x => x.Sentences).Count(x => x.CoveredByConceptNumber >= 0);
+                    var coveredSentences = keywords.SelectMany(x => x.Sentences).Count(x => x.LastCoveredByConceptNumber >= 0);
                     backgroundWorker.ReportProgress((int)(coveredSentences / (sentencesCount * coveragePercentage) * 100));
                     if (coveredSentences / (double)sentencesCount > coveragePercentage)
                         break;
                 }
 
-                var coverage = keywords.SelectMany(x => x.Sentences).Count(x => x.CoveredByConceptNumber >= 0);
+                var coverage = keywords.SelectMany(x => x.Sentences).Count(x => x.LastCoveredByConceptNumber >= 0);
                 if (coverage / (double)sentencesCount > coveragePercentage)
                     break;
             }

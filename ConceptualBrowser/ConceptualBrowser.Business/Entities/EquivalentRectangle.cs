@@ -265,9 +265,9 @@ namespace ConceptualBrowser.Business.Entities
                 for (int j = 0; j < keywordNode.Sentences.Count; j++)
                 {
                     Sentence sentence = keywordNode.Sentences[j];
-                    if (sentence.CoveredByConceptNumber == currentConceptNo)
+                    if (sentence.LastCoveredByConceptNumber == currentConceptNo)
                     {
-                        //This comparison doesn't seems correct and may be the reason for same sentences showing as many times as the count of keywords.
+                        //Comparison fixed to avoid redundant addition of sentences to the same concept.
                         if (!tempSentences.Any(x => x.SentenceIndex == sentence.SentenceIndex))
                             tempSentences.Add(sentence);
                     }
