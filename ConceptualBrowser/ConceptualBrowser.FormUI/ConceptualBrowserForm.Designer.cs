@@ -34,8 +34,8 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optimalConceptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optimalConceptsWithObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOptimalConcepts = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOptimalConceptsSimple = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +64,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
+            this.tsmiOptimalConceptsDetailed = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -93,37 +94,38 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
             // exportMenuItem
             // 
             this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optimalConceptsToolStripMenuItem,
-            this.optimalConceptsWithObjectsToolStripMenuItem});
+            this.tsmiOptimalConcepts,
+            this.tsmiOptimalConceptsSimple,
+            this.tsmiOptimalConceptsDetailed});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
-            // optimalConceptsToolStripMenuItem
+            // tsmiOptimalConcepts
             // 
-            this.optimalConceptsToolStripMenuItem.Name = "optimalConceptsToolStripMenuItem";
-            this.optimalConceptsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            this.optimalConceptsToolStripMenuItem.Text = "Optimal &Concepts";
-            this.optimalConceptsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsToolStripMenuItem_Click);
+            this.tsmiOptimalConcepts.Name = "tsmiOptimalConcepts";
+            this.tsmiOptimalConcepts.Size = new System.Drawing.Size(224, 22);
+            this.tsmiOptimalConcepts.Text = "Optimal &Concepts Only";
+            this.tsmiOptimalConcepts.Click += new System.EventHandler(this.tsmiOptimalConcepts_Click);
             // 
-            // optimalConceptsWithObjectsToolStripMenuItem
+            // tsmiOptimalConceptsSimple
             // 
-            this.optimalConceptsWithObjectsToolStripMenuItem.Name = "optimalConceptsWithObjectsToolStripMenuItem";
-            this.optimalConceptsWithObjectsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            this.optimalConceptsWithObjectsToolStripMenuItem.Text = "Optimal Concepts with Objects";
-            this.optimalConceptsWithObjectsToolStripMenuItem.Click += new System.EventHandler(this.optimalConceptsWithObjectsToolStripMenuItem_Click);
+            this.tsmiOptimalConceptsSimple.Name = "tsmiOptimalConceptsSimple";
+            this.tsmiOptimalConceptsSimple.Size = new System.Drawing.Size(224, 22);
+            this.tsmiOptimalConceptsSimple.Text = "Optimal Concepts - Simple";
+            this.tsmiOptimalConceptsSimple.Click += new System.EventHandler(this.tsmiOptimalConceptsSimple_Click);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitMenuItem.Text = "&Exit";
             // 
             // encodingToolStripMenuItem
@@ -139,14 +141,14 @@
             // unicodeToolStripMenuItem
             // 
             this.unicodeToolStripMenuItem.Name = "unicodeToolStripMenuItem";
-            this.unicodeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unicodeToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.unicodeToolStripMenuItem.Text = "Unicode";
             this.unicodeToolStripMenuItem.Click += new System.EventHandler(this.unicodeToolStripMenuItem_Click);
             // 
             // aNSIToolStripMenuItem
             // 
             this.aNSIToolStripMenuItem.Name = "aNSIToolStripMenuItem";
-            this.aNSIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aNSIToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.aNSIToolStripMenuItem.Text = "ANSI";
             this.aNSIToolStripMenuItem.Click += new System.EventHandler(this.aNSIToolStripMenuItem_Click);
             // 
@@ -155,7 +157,7 @@
             this.uTF8ToolStripMenuItem.Checked = true;
             this.uTF8ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.uTF8ToolStripMenuItem.Name = "uTF8ToolStripMenuItem";
-            this.uTF8ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uTF8ToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.uTF8ToolStripMenuItem.Text = "UTF-8";
             this.uTF8ToolStripMenuItem.Click += new System.EventHandler(this.uTF8ToolStripMenuItem_Click);
             // 
@@ -416,6 +418,13 @@
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
+            // tsmiOptimalConceptsDetailed
+            // 
+            this.tsmiOptimalConceptsDetailed.Name = "tsmiOptimalConceptsDetailed";
+            this.tsmiOptimalConceptsDetailed.Size = new System.Drawing.Size(224, 22);
+            this.tsmiOptimalConceptsDetailed.Text = "Optimal Concepts - Detailed";
+            this.tsmiOptimalConceptsDetailed.Click += new System.EventHandler(this.TsmiOptimalConceptsDetailed_Click);
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -471,7 +480,7 @@
         private System.Windows.Forms.ToolStripMenuItem uTF8ToolStripMenuItem;
         private System.Windows.Forms.Label labelLanguage;
         private System.Windows.Forms.ComboBox cmbLanguage;
-        private System.Windows.Forms.ToolStripMenuItem optimalConceptsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConcepts;
         private System.Windows.Forms.RichTextBox txtSummary;
         private System.Windows.Forms.ToolStripStatusLabel tssPerformance;
         private System.Windows.Forms.Label lblCoveragePercentage;
@@ -480,7 +489,7 @@
         private System.ComponentModel.BackgroundWorker bgwExtraction;
         private System.Windows.Forms.ToolStripProgressBar pbMain;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripMenuItem optimalConceptsWithObjectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConceptsSimple;
         private System.Windows.Forms.RichTextBox txtKeywords;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -488,6 +497,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox cmbFont;
         private System.Windows.Forms.Label lblFont;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConceptsDetailed;
     }
 }
 

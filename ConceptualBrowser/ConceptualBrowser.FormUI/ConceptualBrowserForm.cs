@@ -233,7 +233,7 @@ namespace ConceptualBrowser.FormUI
             aNSIToolStripMenuItem.Checked = false;
         }
 
-        private void optimalConceptsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void tsmiOptimalConcepts_Click(object sender, EventArgs e)
         {
             if (OptimalTree is null)
             {
@@ -295,16 +295,24 @@ namespace ConceptualBrowser.FormUI
             fileToolStripMenuItem.Enabled = true;
         }
 
-        private void optimalConceptsWithObjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void tsmiOptimalConceptsSimple_Click(object sender, EventArgs e)
         {
             if(OptimalTree is null)
             {
                 MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
+            var concepts = OptimalTree.Select(c => new {
+                c.OptimalConcept.ConceptName,
+                Sentences = c.OptimalConcept.Sentences.Select(s => new {
+                    s.OriginalSentence
+                }).ToList(),
+                Keywords = c.OptimalConcept.Keywords.Select(k => new {
+                    k.Keyword
+                }).ToList()
+            }).ToList();
             var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
-            string fileName = $"exported_concepts_with_objects_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            string fileName = $"exported_concepts_simple_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
             File.WriteAllText(fileName, json);
             Process.Start(fileName);
         }
@@ -324,6 +332,20 @@ namespace ConceptualBrowser.FormUI
 
             txtKeywords.SelectAll();
             txtKeywords.SelectionFont = new Font(txtKeywords.Font.FontFamily, FontSize, txtKeywords.Font.Style);
+        }
+
+        private void TsmiOptimalConceptsDetailed_Click(object sender, EventArgs e)
+        {
+            if (OptimalTree is null)
+            {
+                MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
+            var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
+            string fileName = $"exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            File.WriteAllText(fileName, json);
+            Process.Start(fileName);
         }
     }
 }
