@@ -191,13 +191,15 @@ namespace ConceptualBrowser.FormUI
                 {
                     if (coveringSentenceNumbers.Contains(i))
                     {
-                        AppendText(txtText, sentences[i] + ".", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtText, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                     else
                     {
-                        AppendText(txtText, sentences[i] + ".", Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
+                        AppendText(txtText, i + ": ", Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                 }
                 
@@ -437,6 +439,11 @@ namespace ConceptualBrowser.FormUI
         private void ExitMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void TsmiBinaryRelation_Click(object sender, EventArgs e)
+        {
+            Process.Start("matrix.csv");
         }
     }
 }

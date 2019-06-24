@@ -33,6 +33,7 @@
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConcepts = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConceptsSimple = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,7 +66,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
-            this.tsmiImport = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiBinaryRelation = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.ctxMenuTreeView.SuspendLayout();
@@ -100,12 +101,20 @@
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
+            // tsmiImport
+            // 
+            this.tsmiImport.Name = "tsmiImport";
+            this.tsmiImport.Size = new System.Drawing.Size(180, 22);
+            this.tsmiImport.Text = "&Import";
+            this.tsmiImport.Click += new System.EventHandler(this.TsmiImport_Click);
+            // 
             // exportMenuItem
             // 
             this.exportMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiOptimalConcepts,
             this.tsmiOptimalConceptsSimple,
-            this.tsmiOptimalConceptsDetailed});
+            this.tsmiOptimalConceptsDetailed,
+            this.tsmiBinaryRelation});
             this.exportMenuItem.Name = "exportMenuItem";
             this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportMenuItem.Text = "E&xport";
@@ -428,12 +437,12 @@
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
-            // tsmiImport
+            // tsmiBinaryRelation
             // 
-            this.tsmiImport.Name = "tsmiImport";
-            this.tsmiImport.Size = new System.Drawing.Size(180, 22);
-            this.tsmiImport.Text = "&Import";
-            this.tsmiImport.Click += new System.EventHandler(this.TsmiImport_Click);
+            this.tsmiBinaryRelation.Name = "tsmiBinaryRelation";
+            this.tsmiBinaryRelation.Size = new System.Drawing.Size(224, 22);
+            this.tsmiBinaryRelation.Text = "Context Matrix";
+            this.tsmiBinaryRelation.Click += new System.EventHandler(this.TsmiBinaryRelation_Click);
             // 
             // ConceptualBrowserForm
             // 
@@ -509,6 +518,7 @@
         private System.Windows.Forms.Label lblFont;
         private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConceptsDetailed;
         private System.Windows.Forms.ToolStripMenuItem tsmiImport;
+        private System.Windows.Forms.ToolStripMenuItem tsmiBinaryRelation;
     }
 }
 
