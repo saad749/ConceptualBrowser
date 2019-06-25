@@ -146,7 +146,7 @@ namespace ConceptualBrowser.Business.Common
 
             for (int i = 0; i < keywords.Count; i++)
             {
-                matrix[0, i + 1] = keywords[i].Keyword;
+                matrix[0, i + 1] = "\"" + keywords[i].Keyword.Trim() + "\"";
             }
 
             for (int j = 0; j < sentences.Count; j++)
