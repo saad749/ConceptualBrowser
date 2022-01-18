@@ -1,0 +1,16 @@
+If you are a dummy like me, you may have gone to Wikipedia to figure out the MVC paradigm and left even more confused. The Wikipedia page does a fantastic job of outlining all of the theory surrounding MVC, rather than demonstrating it in a way that dummies understand. The MVC paradigm is used extensively in the programming world for applications and programs such as iPhone and Android apps and web applications. There are a lot of systems (CakePHP, Symfony, Code Igniter to name a few) that make use of the MVC layout with PHP for web applications.
+
+Model-View-Controller talks about the three parts that most websites can be broken down into
+
+    Controller – Entry point of the application. Handles IO. PHP files
+    View – Templates displayed to the user. HTML files with PHP
+    Model – Functions that interact with the database or perform complex operations. SQL queries in PHP
+
+Say you go to www.myselfindulgentsite.com/index.php/lovely
+This ends up calling the controller located at “lovely”, which performs any initialization of variables or calls whatever helper libraries/models you may need. After getting data ready, a view is called and displayed with all your controller’s data.
+Perhaps you have a form on www.myselfindulgentsite.com/index.php/lovely, which is submitted with a button named “submit”.
+This calls the same controller located at “lovely”, probably runs a function named “submit” which would validate the data. If the data is cool, it is then passed to a function in a model that stuffs it into a database, before a view is loaded with a success message. If the data is not ok, error messages are passed to the view, and the previously entered data could be displayed….not displayed…corrected and displayed, or whatever you end up coding in.
+
+MVC helps out because you know where to look when it comes to modifying component, and allows multiple people to more easily work on the same component, so one person could be trying out a database query while some person is messing around with the page’s layout. MVC is pretty neat.
+
+The next time a website comes up in conversation, you can now say “That website probably uses MVC!” and amaze everyone. They will ask you questions like “are you a programmer?” and “what horrible website told you that?” to which you can proudly respond “yes”.

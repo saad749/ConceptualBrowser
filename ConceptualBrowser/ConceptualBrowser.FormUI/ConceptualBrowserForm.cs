@@ -195,6 +195,7 @@ namespace ConceptualBrowser.FormUI
                         AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
+                        
                     }
                     else
                     {
@@ -202,7 +203,13 @@ namespace ConceptualBrowser.FormUI
                         AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                 }
-                
+
+                AppendText(txtSummary, Environment.NewLine + 
+                                            "Gain: " + optimal.OptimalConcept.Gain.ToString() + Environment.NewLine +
+                                            "Keywords: " + optimal.OptimalConcept.Keywords.Count.ToString() + Environment.NewLine +
+                                            "Sentences: " + optimal.OptimalConcept.Sentences.Count.ToString() + Environment.NewLine,
+                                            Color.DarkGreen, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+
             }
         }
 
@@ -253,7 +260,7 @@ namespace ConceptualBrowser.FormUI
                 return;
             }
             string[] lines = OptimalTree.Select(c => c.OptimalConcept.ConceptName).ToArray();
-            string fileName = $"exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
+            string fileName = $"Output\\exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
             File.WriteAllLines(fileName, lines);
             Process.Start(fileName);
         }
@@ -267,18 +274,13 @@ namespace ConceptualBrowser.FormUI
             ConceptExtraction ce = new ConceptExtraction();
             OptimalTree = ce.Extract(FileText, Langauge, CoveragePercentage, backgroundWorker);
 
-            var optimals = OptimalTree.Select(x => x.OptimalConcept);
-            List<Sentence> sentences = new List<Sentence>();
-            foreach (var optimal in optimals)
-            {
-                Sentence sentence = optimal.Sentences[0];
-                sentences.Add(sentence);
-            }
+            var MostOptimalConcept = OptimalTree.FirstOrDefault().OptimalConcept;
 
-            File.WriteAllLines("mySentences.txt", sentences.Select(x => x.KeywordString).ToArray());
+            File.WriteAllLines("Output\\mySentences.txt", MostOptimalConcept.Sentences.Select(x => x.OriginalSentence).ToArray());
 
             Stopwatch.Stop();
-            
+
+            var elapsedMilliseconds = Stopwatch.ElapsedMilliseconds;
 
             
         }
@@ -324,7 +326,7 @@ namespace ConceptualBrowser.FormUI
                 }).ToList()
             }).ToList();
             var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
-            string fileName = $"exported_concepts_simple_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            string fileName = $"Output\\exported_concepts_simple_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
             File.WriteAllText(fileName, json);
             Process.Start(fileName);
         }
@@ -356,7 +358,7 @@ namespace ConceptualBrowser.FormUI
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
             var detailed = new { Concepts = concepts, Text = txtText.Text};
             var json = JsonConvert.SerializeObject(detailed, Formatting.Indented);
-            string fileName = $"exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            string fileName = $"Output\\exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
             File.WriteAllText(fileName, json, Encoding);
             Process.Start(fileName);
         }
@@ -443,7 +445,7 @@ namespace ConceptualBrowser.FormUI
 
         private void TsmiBinaryRelation_Click(object sender, EventArgs e)
         {
-            Process.Start("matrix.csv");
+            Process.Start("Output\\matrix.csv");
         }
     }
 }

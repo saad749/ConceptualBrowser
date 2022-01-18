@@ -1,0 +1,120 @@
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	0
+After Text Analyzing	2
+Before Initial Node Creation	2
+After Initial Node Creation	2
+Before Creating Binary Relation	2
+After Creating Binary Relation	6
+Before ExtractAll	6
+After ExtractAll	62
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	0
+After Text Analyzing	6
+Before Initial Node Creation	6
+After Initial Node Creation	6
+Before Creating Binary Relation	6
+After Creating Binary Relation	14
+Before ExtractAll	14
+After ExtractAll	169
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	2
+After Text Analyzing	6889
+Before Initial Node Creation	6889
+After Initial Node Creation	6890
+Before Creating Binary Relation	6890
+After Creating Binary Relation	6912
+Before ExtractAll	6912
+After ExtractAll	7137
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	0
+After Text Analyzing	78478
+Before Initial Node Creation	78993
+After Initial Node Creation	92884
+Before Creating Binary Relation	112505
+After Creating Binary Relation	275954
+Before ExtractAll	275954
+After ExtractAll	276106
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	260710
+After Text Analyzing	260717
+Before Initial Node Creation	260717
+After Initial Node Creation	260717
+Before Creating Binary Relation	260717
+After Creating Binary Relation	260735
+Before ExtractAll	260735
+After ExtractAll	260776
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	2
+After Text Analyzing	27
+Before Initial Node Creation	27
+After Initial Node Creation	27
+Before Creating Binary Relation	27
+After Creating Binary Relation	56
+Before ExtractAll	56
+After ExtractAll	117
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	3
+After Text Analyzing	32
+Before Initial Node Creation	32
+After Initial Node Creation	33
+Before Creating Binary Relation	33
+After Creating Binary Relation	65
+Before ExtractAll	65
+After ExtractAll	159
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	3
+After Text Analyzing	4
+Before Initial Node Creation	4
+After Initial Node Creation	4
+Before Creating Binary Relation	4
+After Creating Binary Relation	18
+Before ExtractAll	18
+After ExtractAll	34
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	0
+After Text Analyzing	29
+Before Initial Node Creation	29
+After Initial Node Creation	29
+Before Creating Binary Relation	29
+After Creating Binary Relation	55
+Before ExtractAll	55
+After ExtractAll	134
+
+
+
+ConceptExtraction.Extract()	0
+Before Text Analyzing	2
+After Text Analyzing	35
+Before Initial Node Creation	35
+After Initial Node Creation	36
+Before Creating Binary Relation	36
+After Creating Binary Relation	85
+Before ExtractAll	85
+After ExtractAll	201

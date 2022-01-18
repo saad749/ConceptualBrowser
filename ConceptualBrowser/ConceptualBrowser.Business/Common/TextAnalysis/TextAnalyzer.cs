@@ -45,7 +45,7 @@ namespace ConceptualBrowser.Business
         {
             List<string> keywords = new List<string>();
             char[] splitChars =
-                new char[] { ',', ' ', '\n', '\t', '©', '-', '<', '>', '/', '\\', '.', '(', ')', '?', '@', '^', '#', '%', '&', '*', '$', '!', ';', ':', '\"', '{', '}', '~', '\'', '[', ']', '“' };
+                new char[] { ',', ' ','\r', '\n', '\t', '©', '-', '<', '>', '/', '\\', '.', '(', ')', '?', '@', '^', '#', '%', '&', '*', '$', '!', ';', ':', '\"', '{', '}', '~', '\'', '[', ']', '“' };
             string[] tokens = sentence.Split(splitChars);
             foreach (String word in tokens)
             {

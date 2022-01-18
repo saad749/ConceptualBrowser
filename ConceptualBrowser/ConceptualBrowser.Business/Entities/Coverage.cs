@@ -154,7 +154,8 @@ namespace ConceptualBrowser.Business.Entities
                         this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
                     }
                     var coveredSentences = keywords.SelectMany(x => x.Sentences).Count(x => x.LastCoveredByConceptNumber >= 0);
-                    backgroundWorker.ReportProgress((int)(coveredSentences / (sentencesCount * coveragePercentage) * 100));
+                    if(backgroundWorker != null)  
+                        backgroundWorker.ReportProgress((int)(coveredSentences / (sentencesCount * coveragePercentage) * 100));
                     if (coveredSentences / (double)sentencesCount > coveragePercentage)
                         break;
                 }

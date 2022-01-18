@@ -84,7 +84,7 @@ namespace ConceptualBrowser.Business.Common
                 sb.Append(tuple.Item2);
                 sb.AppendLine();
             }
-            File.AppendAllText("PerformanceLog.txt", sb.ToString());
+            File.AppendAllText("Output\\PerformanceLog.txt", sb.ToString());
 
 
             //Console.WriteLine("Total Sentences Not Covered: " + coverage.BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count(s => s.CoveredByConceptNumber == -1));
@@ -177,7 +177,7 @@ namespace ConceptualBrowser.Business.Common
                 sb.Append(Environment.NewLine);
             }
 
-            File.WriteAllText("matrix.csv", sb.ToString(), Encoding.UTF8);
+            File.WriteAllText("Output\\matrix.csv", sb.ToString(), Encoding.UTF8);
 
             //Console.WriteLine();
             //Console.WriteLine("Keywords Dictionary:");
