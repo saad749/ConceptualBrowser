@@ -66,6 +66,8 @@ namespace ConceptualBrowser.FormUI
                 Encoding = Encoding.ASCII;
             else if (uTF8ToolStripMenuItem.Checked)
                 Encoding = Encoding.UTF8;
+
+            Directory.CreateDirectory("Output");
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
@@ -116,7 +118,6 @@ namespace ConceptualBrowser.FormUI
                             txtText.RightToLeft = RightToLeft.No;
                             txtSummary.RightToLeft = RightToLeft.No;
                         }
-
 
                         bgwExtraction.RunWorkerAsync();
 
@@ -272,7 +273,9 @@ namespace ConceptualBrowser.FormUI
 
             var backgroundWorker = sender as BackgroundWorker;
             ConceptExtraction ce = new ConceptExtraction();
-            OptimalTree = ce.Extract(FileText, Langauge, CoveragePercentage, backgroundWorker);
+            var optimals = ce.Extract(FileText, Langauge, CoveragePercentage, backgroundWorker);
+
+            OptimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
 
             var MostOptimalConcept = OptimalTree.FirstOrDefault().OptimalConcept;
 
@@ -406,8 +409,7 @@ namespace ConceptualBrowser.FormUI
                             txtSummary.RightToLeft = RightToLeft.No;
                         }
 
-                        ConceptExtraction ce = new ConceptExtraction();
-                        OptimalTree = ce.CreateTree(conceptsDTO.Concepts);
+                        OptimalTree = CreateTree(conceptsDTO.Concepts);
 
                         var optimals = OptimalTree.Select(x => x.OptimalConcept);
                         List<Sentence> sentences = new List<Sentence>();
@@ -446,6 +448,43 @@ namespace ConceptualBrowser.FormUI
         private void TsmiBinaryRelation_Click(object sender, EventArgs e)
         {
             Process.Start("Output\\matrix.csv");
+        }
+
+        public List<OptimalConceptTreeItem> CreateTree(List<OptimalConcept> optimals)
+        {
+            List<OptimalConceptTreeItem> treeItems = new List<OptimalConceptTreeItem>();
+
+            int i = 1;
+            int? parentId = null;
+            // If a tree/heap structure is required
+            /*foreach (OptimalConcept optimal in optimals)
+            {
+                if (i != 0)
+                {
+                    parentId = ((i + 1) - 1) / 2;
+                }
+                treeItems.Add(new OptimalConceptTreeItem()
+                {
+                    Id = i,
+                    ParentId = parentId,
+                    OptimalConcept = optimal
+                });
+                i++;
+            }*/
+
+            //normal list
+            foreach (OptimalConcept optimal in optimals)
+            {
+                treeItems.Add(new OptimalConceptTreeItem()
+                {
+                    Id = i,
+                    ParentId = 0,
+                    OptimalConcept = optimal
+                });
+                i++;
+            }
+
+            return treeItems;
         }
     }
 }

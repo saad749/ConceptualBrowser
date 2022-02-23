@@ -30,10 +30,10 @@ namespace ConceptualBrowser.API.Controllers
             Stopwatch.Start();
 
             ConceptExtraction ce = new ConceptExtraction();
-            List<OptimalConceptTreeItem> OptimalTree = ce.Extract(FileText, "eng", 1, null);
+            var optimals = ce.Extract(FileText, "eng", 1, null);
             Stopwatch.Stop();
 
-            var MostOptimalConcept = OptimalTree.FirstOrDefault().OptimalConcept;
+            var MostOptimalConcept = optimals.FirstOrDefault();
             var elapsedMilliseconds = Stopwatch.ElapsedMilliseconds;
             var summary = MostOptimalConcept.Sentences.Select(x => x.OriginalSentence).ToArray();
 

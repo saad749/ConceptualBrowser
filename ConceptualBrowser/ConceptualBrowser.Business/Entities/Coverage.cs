@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ConceptualBrowser.Business.Common.Helpers;
 using System.ComponentModel;
+using ConceptualBrowser.Business.Common;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -30,22 +31,30 @@ namespace ConceptualBrowser.Business.Entities
             EmptyWordsRoot = emptywords;
         }
 
-        public void CreateBinaryRelation(List<string> sentenceStringList, List<Sentence> sentences)
+        public void CreateBinaryRelation(List<string> sentenceStringList)
         {
             int tempTotalWords = 0;
+            Sentences = new List<Sentence>();
+            for (int i = 0; i < sentenceStringList.Count; i++)
+            {
+                int[] ranks = new int[] { i + 1, i + 1 };
+                int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
+                Rank rank = new Rank(2, ranks, totals);
 
-            Sentences = sentences;
-            TotalSentences = sentences.Count;
+                Sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
+            }
+
+            TotalSentences = Sentences.Count;
             BinaryRelation = new BinaryRelation(TotalSentences, Stemmer);
             ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
             for (int i = 0; i < sentenceStringList.Count; i++)
             {
                 List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
                 tempTotalWords += wordsList.Count;
-                BinaryRelation.AppendToBinaryRelation(wordsList, sentences[i]);
+                BinaryRelation.AppendToBinaryRelation(wordsList, Sentences[i]);
             }
 
-            Console.WriteLine("Total WOrds: " + tempTotalWords);
+            Console.WriteLine("Total Words: " + tempTotalWords);
 
             this.KeywordsRank();
             this.AddHighestRankKeywords();
