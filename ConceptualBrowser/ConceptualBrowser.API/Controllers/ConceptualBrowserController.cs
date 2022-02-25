@@ -12,7 +12,7 @@ using ConceptualBrowser.Business.Entities;
 
 namespace ConceptualBrowser.API.Controllers
 {
-    [Route("api/Summary")]
+    [Route("api/Summarize")]
     [ApiController]
     public class ConceptualBrowserController : ControllerBase
     {
@@ -37,7 +37,7 @@ namespace ConceptualBrowser.API.Controllers
             var elapsedMilliseconds = Stopwatch.ElapsedMilliseconds;
             var summary = MostOptimalConcept.Sentences.Select(x => x.OriginalSentence).ToArray();
 
-            return new JsonResult(new { Summary = summary, Concepts = optimals, timeTaken = elapsedMilliseconds });
+            return new JsonResult(new { Summary = summary, timeTaken = elapsedMilliseconds });
         }
     }
 }

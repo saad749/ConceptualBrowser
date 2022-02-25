@@ -14,9 +14,7 @@ namespace ConceptualBrowser.Business.Entities
         public List<int> CovertedbyConceptNumbers { get; set; } = new List<int>();
         [JsonIgnore]
         public Rank Rank { get; set; }
-        [JsonIgnore]
         public int KeywordNumber { get; set; }
-        [JsonIgnore]
         public string KeywordString { get; set; }
         [JsonIgnore]
         public List<KeywordNode> KeywordNodes { get; set; }
