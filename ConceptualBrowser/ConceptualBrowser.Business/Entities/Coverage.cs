@@ -12,121 +12,17 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class Coverage
     {
-        public int MaxRank { get; set; } = 2; //2 because the value can never be mroe than 1 //C# 6.0 allows property initializers// WHY 200?????
-        public List<Sentence> Sentences { get; set; }
-        public int TotalSentences { get; set; }
         public BinaryRelation BinaryRelation { get; set; }
         public List<int[]> Pairs { get; set; } = new List<int[]>();
         public int CurrentConcept { get; set; } = -1;
         public List<OptimalConcept> OptimalConcepts { get; set; } = new List<OptimalConcept>();
         public ConceptTree HeapConcepts { get; set; } //= new ConceptTree(1000);
 
-        public IStemmer Stemmer { get; set; }
-        public IEmptyWords EmptyWordsRoot { get; set; }
-
-
-        public Coverage(IStemmer stemmer, IEmptyWords emptywords)
+        public Coverage(IStemmer stemmer, IEmptyWords emptyWords, List<String> sentenceList)
         {
-            Stemmer = stemmer;
-            EmptyWordsRoot = emptywords;
+            BinaryRelation = new BinaryRelation(stemmer, emptyWords, sentenceList);
         }
 
-        public void CreateBinaryRelation(List<string> sentenceStringList)
-        {
-            int tempTotalWords = 0;
-            Sentences = new List<Sentence>();
-            for (int i = 0; i < sentenceStringList.Count; i++)
-            {
-                int[] ranks = new int[] { i + 1, i + 1 };
-                int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
-                Rank rank = new Rank(2, ranks, totals);
-
-                Sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
-            }
-
-            TotalSentences = Sentences.Count;
-            BinaryRelation = new BinaryRelation(TotalSentences, Stemmer);
-            ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
-            for (int i = 0; i < sentenceStringList.Count; i++)
-            {
-                List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
-                tempTotalWords += wordsList.Count;
-                BinaryRelation.AppendToBinaryRelation(wordsList, Sentences[i]);
-            }
-
-            Console.WriteLine("Total Words: " + tempTotalWords);
-
-            this.KeywordsRank();
-            this.AddHighestRankKeywords();
-
-            BinaryRelation.KeywordsSentencesSum = BinaryRelation.Keywords.SelectMany(s => s.Sentences).Count();
-            Console.WriteLine("KeywordsSentencesSum: " + BinaryRelation.KeywordsSentencesSum);
-        }
-
-        public void KeywordsRank()
-        {
-            List<KeywordNode> keywords = new List<KeywordNode>();
-            //keywords = BinaryRelation.Keywords.Values.ToList();
-            keywords = BinaryRelation.Keywords.ToList();
-
-            for (int i = 0; i < keywords.Count; i++)
-            {
-                KeywordNode key = keywords[i];
-                key.KeywordRank = (1 / key.KeywordRank); //This changes the keyword rank in the BinaryRelation Keywords List.
-            }   
-        }
-
-        private void AddHighestRankKeywords()
-        {
-            double max = MaxRank;
-            int KeywordNo = -1;
-            String keywordString = null;
-            
-            for (int i = 0; i < Sentences.Count; i++)
-            {
-                Sentence sentence = Sentences[i];
-                for (int j = 0; j < sentence.KeywordNodes.Count; j++)
-                {
-                    KeywordNode keywordNode = sentence.KeywordNodes[j];
-
-                            if (keywordNode.KeywordRank < max)
-                            {
-                                max = keywordNode.KeywordRank;
-                                KeywordNo = keywordNode.KeywordIndex;
-                                keywordString = keywordNode.Keyword;
-                            }
-                }
-                if (keywordString == null)
-                {
-                    max = MaxRank;
-                    KeywordNo = -1;
-                    keywordString = null;
-                    i--;
-                }
-                else
-                {
-                    sentence.KeywordNumber = KeywordNo;
-                    String key = (BinaryRelation.GetRootNode(keywordString)).getMaxLengthWord();
-                    sentence.KeywordString = key;
-                    max = MaxRank;
-                }
-            }
-        }
-
-        public bool InNamedList(List<Sentence> sentences, Sentence sentence)
-        {
-            for (int i = 0; i < sentences.Count; i++)
-            {
-                if (sentences[i].SentenceIndex == sentence.SentenceIndex) //This was a bug from Last Code Conversion //node[i] was node Only
-                {
-                    sentence.KeywordString = sentences[i].KeywordString;
-                    sentence.KeywordNumber = sentences[i].KeywordNumber;
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public List<OptimalConcept> ExtractAll(double coveragePercentage, BackgroundWorker backgroundWorker)
         {
@@ -191,7 +87,7 @@ namespace ConceptualBrowser.Business.Entities
 
             EquivalentRectangle equivalentRectangle = new EquivalentRectangle();
             equivalentRectangle.GetEquivalent(binaryRelation); //What it really needs is just BinaryRelation.Keywords.
-            equivalentRectangle.GetInverse(Sentences);
+            equivalentRectangle.GetInverse(binaryRelation.Sentences);
             List<int[]> tuples = equivalentRectangle.ConvertToElementaryRelation(keywordIndex, sentenceIndex);
             ExtractOptimalConcepts(equivalentRectangle, tuples, keywordIndex, sentenceIndex);
         }

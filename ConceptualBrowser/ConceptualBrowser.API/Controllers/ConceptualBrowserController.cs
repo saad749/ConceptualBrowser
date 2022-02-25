@@ -24,7 +24,7 @@ namespace ConceptualBrowser.API.Controllers
         }
 
         [HttpPost]
-        public JsonResult Summary([FromBody] string FileText)
+        public JsonResult Summarize([FromBody] string FileText)
         {
             Stopwatch Stopwatch = new Stopwatch();
             Stopwatch.Start();
@@ -37,7 +37,7 @@ namespace ConceptualBrowser.API.Controllers
             var elapsedMilliseconds = Stopwatch.ElapsedMilliseconds;
             var summary = MostOptimalConcept.Sentences.Select(x => x.OriginalSentence).ToArray();
 
-            return new JsonResult(new { Summary = summary, timeTaken = elapsedMilliseconds });
+            return new JsonResult(new { Summary = summary, Concepts = optimals, timeTaken = elapsedMilliseconds });
         }
     }
 }

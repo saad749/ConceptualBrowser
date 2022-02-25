@@ -19,22 +19,15 @@ namespace ConceptualBrowser.Business.Common
         List<Sentence> sentences = new List<Sentence>();
         public List<OptimalConcept> Extract(String text, string languageCode, double coveragePercentage, BackgroundWorker backgroundWorker)
         {
-            PerformanceMonitor monitor = new PerformanceMonitor();
-            monitor.Start();
-
             IStemmer stemmer = Stemmers.GetStemmer(languageCode);
             IEmptyWords emptyWords = new EmptyWords(languageCode); 
 
             ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
             List<String> sentenceList = textAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
 
-            Coverage coverage = new Coverage(stemmer, emptyWords);
-
-            coverage.CreateBinaryRelation(sentenceList);
+            Coverage coverage = new Coverage(stemmer, emptyWords, sentenceList);
 
             List<OptimalConcept> optimals = coverage.ExtractAll(coveragePercentage, backgroundWorker);
-
-            monitor.Stop();
 
             return optimals;
         }

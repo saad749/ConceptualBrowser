@@ -57,7 +57,7 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.DisplayMember = "Text";
             cmbLanguage.ValueMember = "Value";
             cmbLanguage.DataSource = items;
-            cmbLanguage.SelectedIndex = 15;
+            cmbLanguage.SelectedIndex = 1;
             cmbFont.SelectedIndex = 1;
 
             if (unicodeToolStripMenuItem.Checked)
@@ -146,10 +146,9 @@ namespace ConceptualBrowser.FormUI
 
             foreach (OptimalConceptTreeItem optimal in optimals.Where(i => i.ParentId == parentID))
             {
-                TreeNode newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName);//, optimal.Name);
+                TreeNode newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName + " (" + optimal.OptimalConcept.Gain + ")");//, optimal.Name);
                 newNode.Tag = optimal.Id;
                 newNode.ContextMenuStrip = ctxMenuTreeView;
-
 
                 FillNode(optimals, newNode);
             }

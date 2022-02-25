@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConceptualBrowser.Business.Common.Helpers;
+using ConceptualBrowser.Business.Common;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -12,32 +13,111 @@ namespace ConceptualBrowser.Business.Entities
     {
         public List<KeywordNode> Keywords { get; set; } //Changing Dictionary to List
         public int TotalResults { get; set; }
-        public bool Status { get; set; }
         public List<RootNode> Roots { get; set; } = new List<RootNode>();
         public List<string> PrimaryConceptsName { get; set; } = new List<string>();
-
-
+        public List<Sentence> Sentences { get; set; }
+        public int TotalSentences { get; set; }
+        public int MaxRank { get; set; } = 2; //2 because the value can never be mroe than 1 //C# 6.0 allows property initializers// WHY 200?????
+        public IEmptyWords EmptyWordsRoot { get; set; }
         public int KeywordsSentencesSum { get; set; }
-
-        //int d = 0; Duplicate coverage statistical counter. Not Required. Just for testing
-
-        private readonly IStemmer Stemmer;
-
+        public IStemmer Stemmer { get; set; }
         public int TotalUniqueCovered { get; set; }
 
-
-        public BinaryRelation(IStemmer stemmer)
+        public BinaryRelation(IStemmer stemmer, IEmptyWords emptyWords, List<String> sentenceList)
         {
             Keywords = new List<KeywordNode>();
             Stemmer = stemmer;
+            EmptyWordsRoot = emptyWords;
+            CreateBinaryRelation(sentenceList);
         }
 
-        public BinaryRelation(int total, IStemmer stemmer)
+        public void CreateBinaryRelation(List<string> sentenceStringList)
         {
-            TotalResults = total;
-            Keywords = new List<KeywordNode>();
-            Stemmer = stemmer;
+            int tempTotalWords = 0;
+            Sentences = new List<Sentence>();
+            for (int i = 0; i < sentenceStringList.Count; i++)
+            {
+                int[] ranks = new int[] { i + 1, i + 1 };
+                int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
+                Rank rank = new Rank(2, ranks, totals);
+
+                Sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
+            }
+
+            TotalSentences = Sentences.Count;
+            //BinaryRelation = new BinaryRelation(TotalSentences, Stemmer);
+            ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
+            for (int i = 0; i < sentenceStringList.Count; i++)
+            {
+                List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
+                tempTotalWords += wordsList.Count;
+                AppendToBinaryRelation(wordsList, Sentences[i]);
+            }
+
+            Console.WriteLine("Total Words: " + tempTotalWords);
+
+            this.KeywordsRank();
+            this.AddHighestRankKeywords();
+
+            KeywordsSentencesSum = Keywords.SelectMany(s => s.Sentences).Count();
+            Console.WriteLine("KeywordsSentencesSum: " + KeywordsSentencesSum);
         }
+
+        public void KeywordsRank()
+        {
+            List<KeywordNode> keywords = new List<KeywordNode>();
+            //keywords = BinaryRelation.Keywords.Values.ToList();
+            keywords = Keywords.ToList();
+
+            for (int i = 0; i < keywords.Count; i++)
+            {
+                KeywordNode key = keywords[i];
+                key.KeywordRank = (1 / key.KeywordRank); //This changes the keyword rank in the BinaryRelation Keywords List.
+            }
+        }
+
+        private void AddHighestRankKeywords()
+        {
+            double max = MaxRank;
+            int KeywordNo = -1;
+            String keywordString = null;
+
+            for (int i = 0; i < Sentences.Count; i++)
+            {
+                Sentence sentence = Sentences[i];
+                for (int j = 0; j < sentence.KeywordNodes.Count; j++)
+                {
+                    KeywordNode keywordNode = sentence.KeywordNodes[j];
+
+                    if (keywordNode.KeywordRank < max)
+                    {
+                        max = keywordNode.KeywordRank;
+                        KeywordNo = keywordNode.KeywordIndex;
+                        keywordString = keywordNode.Keyword;
+                    }
+                }
+                if (keywordString == null)
+                {
+                    max = MaxRank;
+                    KeywordNo = -1;
+                    keywordString = null;
+                    i--;
+                }
+                else
+                {
+                    sentence.KeywordNumber = KeywordNo;
+                    String key = (GetRootNode(keywordString)).getMaxLengthWord();
+                    sentence.KeywordString = key;
+                    max = MaxRank;
+                }
+            }
+        }
+
+
+
+
+
+
         public RootNode GetRootNode(String keyword)
         {
             return Roots.FirstOrDefault(r => r.Root.Equals(keyword, StringComparison.OrdinalIgnoreCase));
