@@ -45,11 +45,11 @@ namespace ConceptualBrowser.Business.Entities
             }
 
             TotalSentences = Sentences.Count;
-            //BinaryRelation = new BinaryRelation(TotalSentences, Stemmer);
             ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
             for (int i = 0; i < sentenceStringList.Count; i++)
             {
                 List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
+                //Word2Vec -- wordsList can be shortened here by using word2vec.
                 tempTotalWords += wordsList.Count;
                 AppendToBinaryRelation(wordsList, Sentences[i]);
             }
