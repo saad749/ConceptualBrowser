@@ -9,17 +9,18 @@ namespace ConceptualBrowser.Business.Entities
 {
     public class Sentence
     {
-        public int SentenceIndex { get; set; } //Renamed from Word to SentenceIndex
-        public int LastCoveredByConceptNumber { get; set; } = -1; // A signle sentence can be covered by multiple concepts; Why 1 only??
+        public int SentenceIndex { get; set; }                                          //Renamed from Word to SentenceIndex
+        public int LastCoveredByConceptNumber { get; set; } = -1;                       // A signle sentence can be covered by multiple concepts; Why 1 only??
         public List<int> CovertedbyConceptNumbers { get; set; } = new List<int>();
-        [JsonIgnore]
-        public Rank Rank { get; set; }
         public int KeywordNumber { get; set; }
         public string KeywordString { get; set; }
-        [JsonIgnore]
-        public List<KeywordNode> KeywordNodes { get; set; }
         public string OriginalSentence { get; set; }
 
+        [JsonIgnore]
+        public List<KeywordNode> KeywordNodes { get; set; }
+        [JsonIgnore]
+        public Rank Rank { get; set; }
+        
 
 
         public Sentence()

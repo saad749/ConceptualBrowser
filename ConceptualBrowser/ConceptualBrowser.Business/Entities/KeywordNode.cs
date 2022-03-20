@@ -16,18 +16,18 @@ namespace ConceptualBrowser.Business.Entities
         /// <summary>
         /// Word Stem of the Words this Keyword Represents
         /// </summary>
-        public string Keyword { get; set; }// name of keywordNode
+        public string Keyword { get; set; } // Name of keywordNode
+        /// <summary>
+        /// Number of times this Keyword appeared in the text.
+        /// </summary>
+        public double KeywordRank { get; set; }
+
+        //public HashSet<int> SentenceIndexes { get; set; }
         /// <summary>
         /// Sentences in which the word occured
         /// </summary>
         [JsonIgnore]
         public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
-
-        //public HashSet<int> SentenceIndexes { get; set; }
-        /// <summary>
-        /// Number of times this Keyword appeared in the text.
-        /// </summary>
-        public double KeywordRank { get; set; } 
 
         public KeywordNode(string keyWord, int number, int rank, List<Sentence> sentences)
         {
