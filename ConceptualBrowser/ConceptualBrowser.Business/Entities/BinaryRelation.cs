@@ -18,16 +18,16 @@ namespace ConceptualBrowser.Business.Entities
         public List<Sentence> Sentences { get; set; }
         public int TotalSentences { get; set; }
         public int MaxRank { get; set; } = 2; //2 because the value can never be mroe than 1 //C# 6.0 allows property initializers// WHY 200?????
-        public IEmptyWords EmptyWordsRoot { get; set; }
         public int KeywordsSentencesSum { get; set; }
-        public IStemmer Stemmer { get; set; }
         public int TotalUniqueCovered { get; set; }
+        public TextAnalyzer TextAnalyzer { get; set; }
 
-        public BinaryRelation(IStemmer stemmer, IEmptyWords emptyWords, List<String> sentenceList)
+        public BinaryRelation(string languageCode, string text)
         {
             Keywords = new List<KeywordNode>();
-            Stemmer = stemmer;
-            EmptyWordsRoot = emptyWords;
+
+            TextAnalyzer = new TextAnalyzer(languageCode);
+            List<String> sentenceList = TextAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
             CreateBinaryRelation(sentenceList);
         }
 
@@ -45,10 +45,9 @@ namespace ConceptualBrowser.Business.Entities
             }
 
             TotalSentences = Sentences.Count;
-            ITextAnalyzer textAnalyzer = new TextAnalyzer(Stemmer, EmptyWordsRoot);
             for (int i = 0; i < sentenceStringList.Count; i++)
             {
-                List<string> wordsList = textAnalyzer.Tokenizer(sentenceStringList[i]);
+                List<string> wordsList = TextAnalyzer.Tokenizer(sentenceStringList[i]);
                 //Word2Vec -- wordsList can be shortened here by using word2vec.
                 tempTotalWords += wordsList.Count;
                 AppendToBinaryRelation(wordsList, Sentences[i]);
@@ -134,7 +133,7 @@ namespace ConceptualBrowser.Business.Entities
                 String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
 
-                String stem = Stemmer.Stem(tempWord.ToLower());//-k
+                String stem = TextAnalyzer.Stem(tempWord.ToLower());//-k
                 RootNode root = new RootNode();
                 
                 //USE By Reference

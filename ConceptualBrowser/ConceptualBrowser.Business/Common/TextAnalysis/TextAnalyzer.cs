@@ -4,24 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using ConceptualBrowser.Business.Common.Stemmer;
+using Iso639;
+using StopWord;
 
 namespace ConceptualBrowser.Business
 {
     public class TextAnalyzer : ITextAnalyzer
     {
+        public Language Language { get; set; }
         public IStemmer Stemmer { get; set; }
-        public IEmptyWords EmptyWords { get; set; }
+        //public IEmptyWords EmptyWords { get; set; }
 
-        public TextAnalyzer(IStemmer stemmer, IEmptyWords emptywords)
+        public TextAnalyzer(string languageCode)
         {
-            Stemmer = stemmer;
-            EmptyWords = emptywords;
+            Language = Language.FromPart3(languageCode);
+            Stemmer = Stemmers.GetStemmer(languageCode);
+            //EmptyWords = emptywords;
+            
         }
 
-        public TextAnalyzer()
-        {
-
-        }
         public List<String> GetSentences(string text)
         {
             char[] delimiters = new char[] { '.' };
@@ -46,20 +47,38 @@ namespace ConceptualBrowser.Business
             List<string> keywords = new List<string>();
             char[] splitChars =
                 new char[] { ',', ' ','\r', '\n', '\t', '©', '-', '<', '>', '/', '\\', '.', '(', ')', '?', '@', '^', '#', '%', '&', '*', '$', '!', ';', ':', '\"', '{', '}', '~', '\'', '[', ']', '“' };
-            string[] tokens = sentence.Split(splitChars);
+
+            string[] tokens = TryRemoveStopWords(sentence).Split(splitChars);
             foreach (String word in tokens)
             {
                 if (word.Length > 1)
                 {
                     String root = Stemmer.Stem(word);
-                    if (!EmptyWords.IsEmptyWord(root) && !EmptyWords.IsEmptyWord(word))
-                        keywords.Add(word);
+                    if (!String.IsNullOrEmpty(TryRemoveStopWords(root)))
+                        keywords.Add(word); //Should we add word or root?
                 }
             }
             return keywords;
         }
 
-        public static string RemoveDiacritics(string InputStr)
+        public string TryRemoveStopWords(string text)
+        {
+            try
+            {
+                return text.RemoveStopWords(Language.Part1);
+            }
+            catch (ArgumentException ex) //The Language is not supported exception
+            {
+                return text;
+            }
+        }
+
+        public string Stem(string word)
+        {
+            return Stemmer.Stem(word);
+        }
+
+        public string RemoveDiacritics(string InputStr)
         {
             string BasicStr = InputStr.Normalize(NormalizationForm.FormD);
             string TempStr = "";
@@ -69,6 +88,11 @@ namespace ConceptualBrowser.Business
                     TempStr += BasicStr[i];
             }
             return TempStr;
+        }
+
+        public string RemoveStopWords(string text)
+        {
+            return text.RemoveStopWords(Language.Part1);
         }
     }
 }

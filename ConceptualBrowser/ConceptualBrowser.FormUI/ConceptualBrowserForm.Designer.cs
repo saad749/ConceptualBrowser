@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConceptualBrowserForm));
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,6 +37,7 @@
             this.tsmiOptimalConcepts = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConceptsSimple = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOptimalConceptsDetailed = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiBinaryRelation = new System.Windows.Forms.ToolStripMenuItem();
             this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.encodingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unicodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,8 +50,6 @@
             this.tssCoveragePercentage = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbMain = new System.Windows.Forms.ToolStripProgressBar();
-            this.ctxMenuTreeView = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddToStopWords = new System.Windows.Forms.ToolStripMenuItem();
             this.txtText = new System.Windows.Forms.RichTextBox();
             this.labelLanguage = new System.Windows.Forms.Label();
             this.cmbLanguage = new System.Windows.Forms.ComboBox();
@@ -66,10 +64,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
-            this.tsmiBinaryRelation = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            this.ctxMenuTreeView.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -97,14 +93,14 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
             // tsmiImport
             // 
             this.tsmiImport.Name = "tsmiImport";
-            this.tsmiImport.Size = new System.Drawing.Size(180, 22);
+            this.tsmiImport.Size = new System.Drawing.Size(124, 22);
             this.tsmiImport.Text = "&Import";
             this.tsmiImport.Click += new System.EventHandler(this.TsmiImport_Click);
             // 
@@ -116,7 +112,7 @@
             this.tsmiOptimalConceptsDetailed,
             this.tsmiBinaryRelation});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
             // tsmiOptimalConcepts
@@ -140,10 +136,17 @@
             this.tsmiOptimalConceptsDetailed.Text = "Optimal Concepts - Detailed";
             this.tsmiOptimalConceptsDetailed.Click += new System.EventHandler(this.TsmiOptimalConceptsDetailed_Click);
             // 
+            // tsmiBinaryRelation
+            // 
+            this.tsmiBinaryRelation.Name = "tsmiBinaryRelation";
+            this.tsmiBinaryRelation.Size = new System.Drawing.Size(224, 22);
+            this.tsmiBinaryRelation.Text = "Context Matrix";
+            this.tsmiBinaryRelation.Click += new System.EventHandler(this.TsmiBinaryRelation_Click);
+            // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exitMenuItem.Text = "&Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
             // 
@@ -232,19 +235,6 @@
             this.pbMain.Name = "pbMain";
             this.pbMain.Size = new System.Drawing.Size(500, 16);
             this.pbMain.Step = 1;
-            // 
-            // ctxMenuTreeView
-            // 
-            this.ctxMenuTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAddToStopWords});
-            this.ctxMenuTreeView.Name = "ctxMenuTreeView";
-            this.ctxMenuTreeView.Size = new System.Drawing.Size(214, 26);
-            // 
-            // tsAddToStopWords
-            // 
-            this.tsAddToStopWords.Name = "tsAddToStopWords";
-            this.tsAddToStopWords.Size = new System.Drawing.Size(213, 22);
-            this.tsAddToStopWords.Text = "Add to Stop/Empty Words";
             // 
             // txtText
             // 
@@ -437,13 +427,6 @@
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
-            // tsmiBinaryRelation
-            // 
-            this.tsmiBinaryRelation.Name = "tsmiBinaryRelation";
-            this.tsmiBinaryRelation.Size = new System.Drawing.Size(224, 22);
-            this.tsmiBinaryRelation.Text = "Context Matrix";
-            this.tsmiBinaryRelation.Click += new System.EventHandler(this.TsmiBinaryRelation_Click);
-            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -474,7 +457,6 @@
             this.menuStripMain.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            this.ctxMenuTreeView.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -490,8 +472,6 @@
         private System.Windows.Forms.ToolStripMenuItem exportMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel tssLanguage;
-        private System.Windows.Forms.ContextMenuStrip ctxMenuTreeView;
-        private System.Windows.Forms.ToolStripMenuItem tsAddToStopWords;
         private System.Windows.Forms.RichTextBox txtText;
         private System.Windows.Forms.ToolStripMenuItem encodingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unicodeToolStripMenuItem;

@@ -19,20 +19,12 @@ namespace ConceptualBrowser.Business.Common
         List<Sentence> sentences = new List<Sentence>();
         public List<OptimalConcept> Extract(String text, string languageCode, double coveragePercentage, BackgroundWorker backgroundWorker)
         {
-            IStemmer stemmer = Stemmers.GetStemmer(languageCode);
-            IEmptyWords emptyWords = new EmptyWords(languageCode); 
-
-            ITextAnalyzer textAnalyzer = new TextAnalyzer(stemmer, emptyWords);
-            List<String> sentenceList = textAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
-
-            Coverage coverage = new Coverage(stemmer, emptyWords, sentenceList);
+            Coverage coverage = new Coverage(languageCode, text);
 
             List<OptimalConcept> optimals = coverage.ExtractAll(coveragePercentage, backgroundWorker);
 
             return optimals;
         }
-
-        
 
         /// <summary>
         /// This method is just to test the values of BR for comparison

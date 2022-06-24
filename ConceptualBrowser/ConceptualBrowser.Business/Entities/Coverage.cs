@@ -18,9 +18,9 @@ namespace ConceptualBrowser.Business.Entities
         public List<OptimalConcept> OptimalConcepts { get; set; } = new List<OptimalConcept>();
         public ConceptTree HeapConcepts { get; set; } //= new ConceptTree(1000);
 
-        public Coverage(IStemmer stemmer, IEmptyWords emptyWords, List<String> sentenceList)
+        public Coverage(string languageCode, string text)
         {
-            BinaryRelation = new BinaryRelation(stemmer, emptyWords, sentenceList);
+            BinaryRelation = new BinaryRelation(languageCode, text);
         }
 
 

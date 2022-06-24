@@ -30,13 +30,11 @@ namespace ConceptualBrowser.FormUI
         public ConceptualBrowserForm()
         {
             InitializeComponent();
-            
-            this.tsAddToStopWords.Click += new EventHandler(AddToStopWords);
             cmbCoveragePercentage.SelectedIndex = 19;
 
             var items = new[] {
                 new { Text = "Auto-Detect", Value = "Auto-Detect" },
-                new { Text = "Arabic", Value = "arb" },
+                new { Text = "Arabic", Value = "ara" },
                 new { Text = "Armenian", Value = "hye" },
                 new { Text = "Basque", Value = "eus" },
                 new { Text = "Catalan", Value = "cat" },
@@ -161,7 +159,6 @@ namespace ConceptualBrowser.FormUI
             {
                 TreeNode newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName + " (" + optimal.OptimalConcept.Gain + ")");//, optimal.Name);
                 newNode.Tag = optimal.Id;
-                newNode.ContextMenuStrip = ctxMenuTreeView;
 
                 FillNode(optimals, newNode);
             }
@@ -176,15 +173,6 @@ namespace ConceptualBrowser.FormUI
             return detection.DetectLanguage(textSample);
         }
 
-        private void AddToStopWords(object sender, EventArgs e)
-        {
-            EmptyWords emptyWords = new EmptyWords(Langauge);
-
-            string text = treeViewBrowser.SelectedNode.Text;
-            emptyWords.AppendEmptyWordsToFile(text);
-
-        }
-
         private void treeViewBrowser_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Node != null)
@@ -194,7 +182,7 @@ namespace ConceptualBrowser.FormUI
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
                 List<string> keywords = optimal.OptimalConcept.Keywords.Select(k => k.Keyword).ToList();
 
-                ITextAnalyzer textAnalyzer = new TextAnalyzer();
+                ITextAnalyzer textAnalyzer = new TextAnalyzer(Langauge);
                 List<string> sentences = textAnalyzer.GetSentences(FileText);
                 txtText.Text = "";
                 txtSummary.Text = "";

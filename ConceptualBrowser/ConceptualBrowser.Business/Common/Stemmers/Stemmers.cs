@@ -8,7 +8,7 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         {
             switch (languageCode)
             {
-                case "arb":
+                case "ara":
                     return new ArabicStemmer();
                 case "hye":
                     return new ArmenianStemmer();
