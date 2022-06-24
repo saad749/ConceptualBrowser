@@ -81,7 +81,6 @@
     <Compile Include="Common\LanguageDetection.cs" />
     <Compile Include="Common\Performance\PerformanceMonitor.cs" />
     <Compile Include="Common\EmptyWords\EmptyWords.cs" />
-    <Compile Include="Common\EmptyWords\EmptyWordsFrench.cs" />
     <Compile Include="Common\EmptyWords\IEmptyWords.cs" />
     <Compile Include="Common\Stemmers\IStemmer.cs" />
     <Compile Include="Common\Stemmers\NoStemmer.cs" />
