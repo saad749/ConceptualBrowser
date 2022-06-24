@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Snowball;
 
 namespace ConceptualBrowser.Business.Common.Stemmer
 {
@@ -12,20 +8,18 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         {
             switch (languageCode)
             {
-                case "eng":
-                    return new EnglishStemmer();
-                case "fra":
-                    return new FrenchStemmer();
-                case "spa":
-                    return new SpanishStemmer();
-                case "ces":
-                    return new CzechStemmer();
+                case "arb":
+                    return new ArabicStemmer();
                 case "dan":
                     return new DanishStemmer();
                 case "nld":
                     return new DutchStemmer();
+                case "eng":
+                    return new EnglishStemmer();
                 case "fin":
                     return new FinnishStemmer();
+                case "fra":
+                    return new FrenchStemmer();
                 case "deu":
                     return new GermanStemmer();
                 case "hun":
@@ -40,8 +34,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     return new RomanianStemmer();
                 case "rus":
                     return new RussianStemmer();
-                case "arb":
-                    return new ArabicStemmer();
+                case "spa":
+                    return new SpanishStemmer();
                 case "none":
                     return new NoStemmer();
                 default:

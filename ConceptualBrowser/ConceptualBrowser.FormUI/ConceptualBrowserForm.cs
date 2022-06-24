@@ -36,21 +36,20 @@ namespace ConceptualBrowser.FormUI
 
             var items = new[] {
                 new { Text = "Auto-Detect", Value = "Auto-Detect" },
-                new { Text = "English", Value = "eng" },
-                new { Text = "French", Value = "fra" },
-                new { Text = "Spanish", Value = "spa" },
-                new { Text = "Czech", Value = "ces" },
+                new { Text = "Arabic", Value = "arb" },
                 new { Text = "Danish", Value = "dan" },
                 new { Text = "Dutch", Value = "nld" },
+                new { Text = "English", Value = "eng" },
                 new { Text = "Finnish", Value = "fin" },
+                new { Text = "French", Value = "fra" },
                 new { Text = "German", Value = "deu" },
                 new { Text = "Hungarian", Value = "hun" },
-                new { Text = "Norwegian", Value = "nor" },
                 new { Text = "Italian", Value = "ita" },
+                new { Text = "Norwegian", Value = "nor" },
                 new { Text = "Portuguese", Value = "por" },
                 new { Text = "Romanian", Value = "ron" },
                 new { Text = "Russian", Value = "rus" },
-                new { Text = "Arabic", Value = "arb" },
+                new { Text = "Spanish", Value = "spa" },
                 new { Text = "None", Value = "none" }
             };
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConceptualBrowser.Business.Common.Stemmer
 {
-    public class NoStemmer : StemmerOperations, IStemmer
+    public class NoStemmer : IStemmer
     {
         public string Stem(string input)
         {
