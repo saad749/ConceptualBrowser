@@ -13,13 +13,14 @@ using ConceptualBrowser.Business;
 using ConceptualBrowser.Business.Common;
 using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Entities;
+using Iso639;
 using Newtonsoft.Json;
 
 namespace ConceptualBrowser.FormUI
 {
     public partial class ConceptualBrowserForm : Form
     {
-        public string Langauge { get; set; }
+        public Language Language { get; set; }
         public List<OptimalConceptTreeItem> OptimalTree { get; set; }
         public string FileText { get; set; }
         public Encoding Encoding { get; set; } = Encoding.Default;
@@ -36,8 +37,10 @@ namespace ConceptualBrowser.FormUI
                 new { Text = "Auto-Detect", Value = "Auto-Detect" },
                 new { Text = "Arabic", Value = "ara" },
                 new { Text = "Armenian", Value = "hye" },
+                new { Text = "Bulgarian", Value = "bul" },
                 new { Text = "Basque", Value = "eus" },
                 new { Text = "Catalan", Value = "cat" },
+                new { Text = "Czech", Value = "ces" },
                 new { Text = "Danish", Value = "dan" },
                 new { Text = "Dutch", Value = "nld" },
                 new { Text = "English", Value = "eng" },
@@ -45,22 +48,28 @@ namespace ConceptualBrowser.FormUI
                 new { Text = "French", Value = "fra" },
                 new { Text = "German", Value = "deu" },
                 new { Text = "Greek", Value = "ell" },
+                new { Text = "Hebrew", Value = "heb" },
                 new { Text = "Hindi", Value = "hin" },
                 new { Text = "Hungarian", Value = "hun" },
                 new { Text = "Indonesian", Value = "ind" },
                 new { Text = "Irish", Value = "gle" },
                 new { Text = "Italian", Value = "ita" },
                 new { Text = "Lithuanian", Value = "lit" },
+                new { Text = "Malay", Value = "msa" },
                 new { Text = "Nepali", Value = "nep" },
                 new { Text = "Norwegian", Value = "nor" },
+                new { Text = "Polish", Value = "pol" },
                 new { Text = "Portuguese", Value = "por" },
                 new { Text = "Romanian", Value = "ron" },
                 new { Text = "Russian", Value = "rus" },
                 new { Text = "Serbian", Value = "srp" },
+                new { Text = "Slovakian", Value = "slk" },
                 new { Text = "Spanish", Value = "spa" },
                 new { Text = "Swedish", Value = "swe" },
                 new { Text = "Tamil", Value = "tam" },
                 new { Text = "Turkish", Value = "tur" },
+                new { Text = "Urdu", Value = "urd" },
+                new { Text = "Vietnamese", Value = "vie" },
                 new { Text = "Yiddish", Value = "yid" },
                 new { Text = "None", Value = "none" }
             };
@@ -68,7 +77,7 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.DisplayMember = "Text";
             cmbLanguage.ValueMember = "Value";
             cmbLanguage.DataSource = items;
-            cmbLanguage.SelectedIndex = 7;
+            cmbLanguage.SelectedIndex = 0;
             cmbFont.SelectedIndex = 1;
 
             if (unicodeToolStripMenuItem.Checked)
@@ -88,70 +97,17 @@ namespace ConceptualBrowser.FormUI
                 fileToolStripMenuItem.Enabled = true;
             else
             {
-                fileToolStripMenuItem.Enabled = false;
-                treeViewBrowser.Nodes.Clear();
-
                 string fileName = openFileDialog.FileName;
-
-                if (!String.IsNullOrWhiteSpace(fileName))
+                if (!String.IsNullOrWhiteSpace(fileName)) 
                 {
-                    try
-                    {
-                        FileText = ReadFile(fileName);
-                        txtText.Text = FileText;
-                        txtSummary.Text = "";
-                        txtKeywords.Text = "";
-
-                        //Also Take Language by User Input
-                        Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
-                        tssLanguage.Text = "Language: " + Langauge;
-
-                        CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
-                        tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
-
-                        pbMain.Maximum = 100;
-                        pbMain.Minimum = 0;
-                        pbMain.Value = 5;
-
-                        if (Langauge == "arb")
-                        {
-                            txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
-                            txtText.SelectionAlignment = HorizontalAlignment.Right;
-                            txtKeywords.RightToLeft = RightToLeft.Yes;
-                            txtText.RightToLeft = RightToLeft.Yes;
-                            txtSummary.RightToLeft = RightToLeft.Yes;
-                        }
-                        else
-                        {
-                            txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
-                            txtText.SelectionAlignment = HorizontalAlignment.Left;
-                            txtKeywords.RightToLeft = RightToLeft.No;
-                            txtText.RightToLeft = RightToLeft.No;
-                            txtSummary.RightToLeft = RightToLeft.No;
-                        }
-
-                        bgwExtraction.RunWorkerAsync();
-
-                    }
-                    catch (IOException ex)
-                    {
-                        MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
-                    }
-                    catch (KeyNotFoundException ex)
-                    {
-                        MessageBox.Show("The language of text is not supported" + Environment.NewLine
-                            + "Try choosing a different Encoding or choose a supported language" + Environment.NewLine
-                            + "Detected Language is " + Langauge + Environment.NewLine
-                            + ex.Message);
-                    }
-
+                    ProcessText(ReadFile(fileName));
                 }
             }
         }
 
         private void FillNode(List<OptimalConceptTreeItem> optimals, TreeNode node)
         {
-            int parentID = (int?) node?.Tag ?? 0;
+            int parentID = (int?)node?.Tag ?? 0;
 
             TreeNodeCollection nodesCollection = node?.Nodes ?? treeViewBrowser.Nodes;
 
@@ -168,9 +124,8 @@ namespace ConceptualBrowser.FormUI
         {
             int sampleStringLength = text.Length > 1000 ? 1000 : text.Length;
             string textSample = text.Substring(0, sampleStringLength);
-            LanguageDetection detection = new LanguageDetection();
-
-            return detection.DetectLanguage(textSample);
+            var detectedLanguage = LanguageDetection.DetectLanguage(textSample).Result;
+            return detectedLanguage;
         }
 
         private void treeViewBrowser_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -182,7 +137,7 @@ namespace ConceptualBrowser.FormUI
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
                 List<string> keywords = optimal.OptimalConcept.Keywords.Select(k => k.Keyword).ToList();
 
-                ITextAnalyzer textAnalyzer = new TextAnalyzer(Langauge);
+                ITextAnalyzer textAnalyzer = new TextAnalyzer(Language.Part3);
                 List<string> sentences = textAnalyzer.GetSentences(FileText);
                 txtText.Text = "";
                 txtSummary.Text = "";
@@ -196,7 +151,7 @@ namespace ConceptualBrowser.FormUI
                         AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
                         AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
-                        
+
                     }
                     else
                     {
@@ -205,7 +160,7 @@ namespace ConceptualBrowser.FormUI
                     }
                 }
 
-                AppendText(txtSummary, Environment.NewLine + 
+                AppendText(txtSummary, Environment.NewLine +
                                             "Gain: " + optimal.OptimalConcept.Gain.ToString() + Environment.NewLine +
                                             "Keywords: " + optimal.OptimalConcept.Keywords.Count.ToString() + Environment.NewLine +
                                             "Sentences: " + optimal.OptimalConcept.Sentences.Count.ToString() + Environment.NewLine,
@@ -232,7 +187,7 @@ namespace ConceptualBrowser.FormUI
         private void unicodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Encoding = Encoding.Unicode;
-            ((ToolStripMenuItem) sender).Checked = true;
+            ((ToolStripMenuItem)sender).Checked = true;
             aNSIToolStripMenuItem.Checked = false;
             uTF8ToolStripMenuItem.Checked = false;
         }
@@ -273,7 +228,7 @@ namespace ConceptualBrowser.FormUI
 
             var backgroundWorker = sender as BackgroundWorker;
             ConceptExtraction ce = new ConceptExtraction();
-            var optimals = ce.Extract(FileText, Langauge, CoveragePercentage, backgroundWorker);
+            var optimals = ce.Extract(FileText, Language.Part3, CoveragePercentage, backgroundWorker);
 
             OptimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
 
@@ -285,7 +240,7 @@ namespace ConceptualBrowser.FormUI
 
             var elapsedMilliseconds = Stopwatch.ElapsedMilliseconds;
 
-            
+
         }
 
         private void bgwExtraction_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -314,17 +269,20 @@ namespace ConceptualBrowser.FormUI
 
         private void tsmiOptimalConceptsSimple_Click(object sender, EventArgs e)
         {
-            if(OptimalTree is null)
+            if (OptimalTree is null)
             {
                 MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var concepts = OptimalTree.Select(c => new {
+            var concepts = OptimalTree.Select(c => new
+            {
                 c.OptimalConcept.ConceptName,
-                Sentences = c.OptimalConcept.Sentences.Select(s => new {
+                Sentences = c.OptimalConcept.Sentences.Select(s => new
+                {
                     s.OriginalSentence
                 }).ToList(),
-                Keywords = c.OptimalConcept.Keywords.Select(k => new {
+                Keywords = c.OptimalConcept.Keywords.Select(k => new
+                {
                     k.Keyword
                 }).ToList()
             }).ToList();
@@ -359,7 +317,7 @@ namespace ConceptualBrowser.FormUI
                 return;
             }
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
-            var detailed = new { Concepts = concepts, Text = txtText.Text};
+            var detailed = new { Concepts = concepts, Text = txtText.Text };
             var json = JsonConvert.SerializeObject(detailed, Formatting.Indented);
             string fileName = $"Output\\exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
             File.WriteAllText(fileName, json, Encoding);
@@ -389,10 +347,10 @@ namespace ConceptualBrowser.FormUI
                         txtSummary.Text = "";
                         txtKeywords.Text = "";
 
-                        Langauge = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString();
-                        tssLanguage.Text = "Language: " + Langauge;
+                        Language = Language.FromPart3(cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString());
+                        tssLanguage.Text = "Language: " + Language.Name;
 
-                        if (Langauge == "arb")
+                        if (Language.Part3 == "ara")
                         {
                             txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
                             txtText.SelectionAlignment = HorizontalAlignment.Right;
@@ -485,6 +443,75 @@ namespace ConceptualBrowser.FormUI
             //}
 
             return treeItems;
+        }
+
+        private void OpenTextBoxMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new TextForm())
+            {
+                DialogResult result = form.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    ProcessText(form.UserText);
+                }
+            }
+        }
+
+        private void ProcessText(string text)
+        {
+            fileToolStripMenuItem.Enabled = false;
+            treeViewBrowser.Nodes.Clear();
+
+            try
+            {
+                FileText = text;
+                txtText.Text = FileText;
+                txtSummary.Text = "";
+                txtKeywords.Text = "";
+
+                //Also Take Language by User Input
+                Language = Language.FromPart3(cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString());
+                tssLanguage.Text = "Language: " + Language.Name;
+
+                CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
+                tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
+
+                pbMain.Maximum = 100;
+                pbMain.Minimum = 0;
+                pbMain.Value = 5;
+
+                if (Language.Part3 == "ara" || Language.Part3 == "urd" || Language.Part3 == "heb" || Language.Part3 == "yid" || Language.Part3 == "fas")
+                {
+                    txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
+                    txtText.SelectionAlignment = HorizontalAlignment.Right;
+                    txtKeywords.RightToLeft = RightToLeft.Yes;
+                    txtText.RightToLeft = RightToLeft.Yes;
+                    txtSummary.RightToLeft = RightToLeft.Yes;
+                }
+                else
+                {
+                    txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                    txtText.SelectionAlignment = HorizontalAlignment.Left;
+                    txtKeywords.RightToLeft = RightToLeft.No;
+                    txtText.RightToLeft = RightToLeft.No;
+                    txtSummary.RightToLeft = RightToLeft.No;
+                }
+
+                bgwExtraction.RunWorkerAsync();
+
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Input Exception" + Environment.NewLine + ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                MessageBox.Show("The language of text is not supported" + Environment.NewLine
+                    + "Try choosing a different Encoding or choose a supported language" + Environment.NewLine
+                    + "Detected Language is " + Language + Environment.NewLine
+                    + ex.Message);
+            }
+
         }
     }
 }

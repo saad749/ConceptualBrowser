@@ -64,6 +64,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
+            this.OpenTextBoxMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -84,6 +85,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFileMenuItem,
+            this.OpenTextBoxMenuItem,
             this.tsmiImport,
             this.exportMenuItem,
             this.exitMenuItem});
@@ -94,14 +96,14 @@
             // openFileMenuItem
             // 
             this.openFileMenuItem.Name = "openFileMenuItem";
-            this.openFileMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.openFileMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openFileMenuItem.Text = "&Open File";
             this.openFileMenuItem.Click += new System.EventHandler(this.openFileMenuItem_Click);
             // 
             // tsmiImport
             // 
             this.tsmiImport.Name = "tsmiImport";
-            this.tsmiImport.Size = new System.Drawing.Size(124, 22);
+            this.tsmiImport.Size = new System.Drawing.Size(180, 22);
             this.tsmiImport.Text = "&Import";
             this.tsmiImport.Click += new System.EventHandler(this.TsmiImport_Click);
             // 
@@ -113,7 +115,7 @@
             this.tsmiOptimalConceptsDetailed,
             this.tsmiBinaryRelation});
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportMenuItem.Text = "E&xport";
             // 
             // tsmiOptimalConcepts
@@ -147,7 +149,7 @@
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitMenuItem.Text = "&Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
             // 
@@ -443,6 +445,13 @@
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
+            // OpenTextBoxMenuItem
+            // 
+            this.OpenTextBoxMenuItem.Name = "OpenTextBoxMenuItem";
+            this.OpenTextBoxMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.OpenTextBoxMenuItem.Text = "Open Textbox";
+            this.OpenTextBoxMenuItem.Click += new System.EventHandler(this.OpenTextBoxMenuItem_Click);
+            // 
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -516,6 +525,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiOptimalConceptsDetailed;
         private System.Windows.Forms.ToolStripMenuItem tsmiImport;
         private System.Windows.Forms.ToolStripMenuItem tsmiBinaryRelation;
+        private System.Windows.Forms.ToolStripMenuItem OpenTextBoxMenuItem;
     }
 }
 

@@ -22,7 +22,7 @@ namespace ConceptualBrowser.Business
 
         public List<String> GetSentences(string text)
         {
-            char[] delimiters = new char[] { '.' };
+            char[] delimiters = new char[] { '.', '۔' };
             List<string> sentences = text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries).ToList();
             return sentences;
         }
@@ -30,7 +30,7 @@ namespace ConceptualBrowser.Business
         public List<String> GetSentencesWithDelimiters(string text)
         {
             List<String> sentences = new List<string>();
-            char[] delimiters = new char[] { '.', ',', ';' };
+            char[] delimiters = new char[] { '.', ',', ';', '۔' };
 
             string pattern = @"(\.|,|;)";
 

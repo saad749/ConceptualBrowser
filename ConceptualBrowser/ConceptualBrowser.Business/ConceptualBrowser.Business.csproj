@@ -1,47 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Common\TextAnalysis\EmptyWords\ara.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\bul.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\cat.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ces.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\dan.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\deu.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ell.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\eng.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\eus.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\fin.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\fra.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\gle.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\heb.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\hin.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\hun.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\hye.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ind.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ita.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\lit.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\msa.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\nep.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\nld.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\nor.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\pol.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\por.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ron.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\rus.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\slk.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\spa.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\srp.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\swe.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\tam.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\tur.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\ukr.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\urd.txt" />
-    <None Remove="Common\TextAnalysis\EmptyWords\vie.txt" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NTextCat">
       <HintPath>..\ConceptualBrowser.FormUI\Assets\NTextCat.dll</HintPath>
@@ -89,6 +58,8 @@
     <EmbeddedResource Include="Common\TextAnalysis\EmptyWords\vie.txt" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Catalyst" Version="1.0.31087" />
+    <PackageReference Include="Catalyst.Models.English" Version="1.0.30952" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Iso639" Version="1.0.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
