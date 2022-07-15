@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using ConceptualBrowser.Business.Common.Stemmer;
+using ConceptualBrowser.Business.Common.TextAnalysis;
 using Iso639;
-using StopWord;
 
 namespace ConceptualBrowser.Business
 {
@@ -13,14 +13,11 @@ namespace ConceptualBrowser.Business
     {
         public Language Language { get; set; }
         public IStemmer Stemmer { get; set; }
-        //public IEmptyWords EmptyWords { get; set; }
 
         public TextAnalyzer(string languageCode)
         {
             Language = Language.FromPart3(languageCode);
             Stemmer = Stemmers.GetStemmer(languageCode);
-            //EmptyWords = emptywords;
-            
         }
 
         public List<String> GetSentences(string text)
@@ -65,7 +62,7 @@ namespace ConceptualBrowser.Business
         {
             try
             {
-                return text.RemoveStopWords(Language.Part1);
+                return text.RemoveStopWords(Language.Part3);
             }
             catch (ArgumentException ex) //The Language is not supported exception
             {
@@ -92,7 +89,7 @@ namespace ConceptualBrowser.Business
 
         public string RemoveStopWords(string text)
         {
-            return text.RemoveStopWords(Language.Part1);
+            return text.RemoveStopWords(Language.Part3);
         }
     }
 }

@@ -222,6 +222,7 @@ namespace ConceptualBrowser.Business.Entities
         // c is the cardinal of the range of R.
         // Remark: The quantity(r / dc) provides a measure of the density of the relation R.
         // The quantity(r - (d + c)) is a measure of the economy of information.
+        // The parameter binaryRelation is not requiredd!!!!
         public double CalculateEconomy(BinaryRelation binaryRelation)
         {
             double num1 = ((double)TupleCount/ (double)(TotalResults * Keywords.Count));

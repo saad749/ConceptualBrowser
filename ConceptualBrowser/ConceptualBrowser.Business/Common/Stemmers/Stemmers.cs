@@ -64,10 +64,8 @@ namespace ConceptualBrowser.Business.Common.Stemmer
                     return new TurkishStemmer();
                 case "yid":
                     return new YiddishStemmer();
-                case "none":
-                    return new NoStemmer();
                 default:
-                    return null;
+                    return new NoStemmer();
 
             }
         }
