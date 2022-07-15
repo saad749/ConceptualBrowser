@@ -75,7 +75,8 @@
             this.encodingToolStripMenuItem});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(1008, 24);
+            this.menuStripMain.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            this.menuStripMain.Size = new System.Drawing.Size(1176, 24);
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
             // 
@@ -185,9 +186,10 @@
             // 
             // treeViewBrowser
             // 
-            this.treeViewBrowser.Location = new System.Drawing.Point(12, 78);
+            this.treeViewBrowser.Location = new System.Drawing.Point(14, 90);
+            this.treeViewBrowser.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.treeViewBrowser.Name = "treeViewBrowser";
-            this.treeViewBrowser.Size = new System.Drawing.Size(273, 272);
+            this.treeViewBrowser.Size = new System.Drawing.Size(318, 313);
             this.treeViewBrowser.TabIndex = 1;
             this.treeViewBrowser.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewBrowser_NodeMouseClick);
             // 
@@ -199,41 +201,42 @@
             this.tssCoveragePercentage,
             this.toolStripStatusLabel1,
             this.pbMain});
-            this.statusStrip.Location = new System.Drawing.Point(0, 659);
+            this.statusStrip.Location = new System.Drawing.Point(0, 762);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1008, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            this.statusStrip.Size = new System.Drawing.Size(1176, 24);
             this.statusStrip.TabIndex = 3;
             this.statusStrip.Text = "statusStrip1";
             // 
             // tssLanguage
             // 
             this.tssLanguage.Name = "tssLanguage";
-            this.tssLanguage.Size = new System.Drawing.Size(151, 17);
+            this.tssLanguage.Size = new System.Drawing.Size(151, 19);
             this.tssLanguage.Text = "Language: Not Yet Selected";
             // 
             // tssPerformance
             // 
             this.tssPerformance.Name = "tssPerformance";
-            this.tssPerformance.Size = new System.Drawing.Size(94, 17);
+            this.tssPerformance.Size = new System.Drawing.Size(94, 19);
             this.tssPerformance.Text = "Time Taken: N/A";
             // 
             // tssCoveragePercentage
             // 
             this.tssCoveragePercentage.Name = "tssCoveragePercentage";
-            this.tssCoveragePercentage.Size = new System.Drawing.Size(147, 17);
+            this.tssCoveragePercentage.Size = new System.Drawing.Size(147, 19);
             this.tssCoveragePercentage.Text = "Coverage Percentage: N/A";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(99, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(182, 19);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // pbMain
             // 
             this.pbMain.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(500, 16);
+            this.pbMain.Size = new System.Drawing.Size(583, 18);
             this.pbMain.Step = 1;
             // 
             // txtText
@@ -241,10 +244,11 @@
             this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtText.Location = new System.Drawing.Point(291, 377);
+            this.txtText.Location = new System.Drawing.Point(340, 435);
+            this.txtText.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtText.Name = "txtText";
             this.txtText.ReadOnly = true;
-            this.txtText.Size = new System.Drawing.Size(717, 279);
+            this.txtText.Size = new System.Drawing.Size(836, 321);
             this.txtText.TabIndex = 4;
             this.txtText.Text = "";
             // 
@@ -252,8 +256,9 @@
             // 
             this.labelLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelLanguage.AutoSize = true;
-            this.labelLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelLanguage.Location = new System.Drawing.Point(835, 30);
+            this.labelLanguage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelLanguage.Location = new System.Drawing.Point(974, 35);
+            this.labelLanguage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLanguage.Name = "labelLanguage";
             this.labelLanguage.Size = new System.Drawing.Size(55, 13);
             this.labelLanguage.TabIndex = 5;
@@ -282,19 +287,21 @@
             "rus",
             "arb",
             "none"});
-            this.cmbLanguage.Location = new System.Drawing.Point(896, 27);
+            this.cmbLanguage.Location = new System.Drawing.Point(1045, 31);
+            this.cmbLanguage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cmbLanguage.Name = "cmbLanguage";
-            this.cmbLanguage.Size = new System.Drawing.Size(100, 21);
+            this.cmbLanguage.Size = new System.Drawing.Size(116, 23);
             this.cmbLanguage.TabIndex = 6;
             // 
             // txtSummary
             // 
             this.txtSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSummary.Location = new System.Drawing.Point(291, 78);
+            this.txtSummary.Location = new System.Drawing.Point(340, 90);
+            this.txtSummary.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtSummary.Name = "txtSummary";
             this.txtSummary.ReadOnly = true;
-            this.txtSummary.Size = new System.Drawing.Size(717, 272);
+            this.txtSummary.Size = new System.Drawing.Size(836, 313);
             this.txtSummary.TabIndex = 7;
             this.txtSummary.Text = "";
             // 
@@ -302,9 +309,10 @@
             // 
             this.lblCoveragePercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCoveragePercentage.AutoSize = true;
-            this.lblCoveragePercentage.Location = new System.Drawing.Point(706, 30);
+            this.lblCoveragePercentage.Location = new System.Drawing.Point(824, 35);
+            this.lblCoveragePercentage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCoveragePercentage.Name = "lblCoveragePercentage";
-            this.lblCoveragePercentage.Size = new System.Drawing.Size(53, 13);
+            this.lblCoveragePercentage.Size = new System.Drawing.Size(57, 15);
             this.lblCoveragePercentage.TabIndex = 8;
             this.lblCoveragePercentage.Text = "Coverage";
             // 
@@ -334,9 +342,10 @@
             "90",
             "95",
             "100"});
-            this.cmbCoveragePercentage.Location = new System.Drawing.Point(765, 27);
+            this.cmbCoveragePercentage.Location = new System.Drawing.Point(892, 31);
+            this.cmbCoveragePercentage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cmbCoveragePercentage.Name = "cmbCoveragePercentage";
-            this.cmbCoveragePercentage.Size = new System.Drawing.Size(64, 21);
+            this.cmbCoveragePercentage.Size = new System.Drawing.Size(74, 23);
             this.cmbCoveragePercentage.TabIndex = 9;
             // 
             // bgwExtraction
@@ -350,47 +359,52 @@
             // 
             this.txtKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtKeywords.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtKeywords.Location = new System.Drawing.Point(12, 377);
+            this.txtKeywords.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtKeywords.Location = new System.Drawing.Point(14, 435);
+            this.txtKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtKeywords.Name = "txtKeywords";
             this.txtKeywords.ReadOnly = true;
-            this.txtKeywords.Size = new System.Drawing.Size(273, 279);
+            this.txtKeywords.Size = new System.Drawing.Size(318, 321);
             this.txtKeywords.TabIndex = 10;
             this.txtKeywords.Text = "";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 59);
+            this.label1.Location = new System.Drawing.Point(14, 68);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.Size = new System.Drawing.Size(76, 15);
             this.label1.TabIndex = 11;
             this.label1.Text = "Concept Tree";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(288, 59);
+            this.label2.Location = new System.Drawing.Point(336, 68);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.Size = new System.Drawing.Size(58, 15);
             this.label2.TabIndex = 12;
             this.label2.Text = "Summary";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 361);
+            this.label3.Location = new System.Drawing.Point(14, 417);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.Size = new System.Drawing.Size(58, 15);
             this.label3.TabIndex = 13;
             this.label3.Text = "Keywords";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(288, 361);
+            this.label4.Location = new System.Drawing.Point(336, 417);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(28, 13);
+            this.label4.Size = new System.Drawing.Size(28, 15);
             this.label4.TabIndex = 14;
             this.label4.Text = "Text";
             // 
@@ -411,9 +425,10 @@
             "24",
             "32",
             "48"});
-            this.cmbFont.Location = new System.Drawing.Point(640, 27);
+            this.cmbFont.Location = new System.Drawing.Point(747, 31);
+            this.cmbFont.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cmbFont.Name = "cmbFont";
-            this.cmbFont.Size = new System.Drawing.Size(60, 21);
+            this.cmbFont.Size = new System.Drawing.Size(69, 23);
             this.cmbFont.TabIndex = 16;
             this.cmbFont.SelectedIndexChanged += new System.EventHandler(this.CmbFont_SelectedIndexChanged);
             // 
@@ -421,17 +436,18 @@
             // 
             this.lblFont.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFont.AutoSize = true;
-            this.lblFont.Location = new System.Drawing.Point(606, 30);
+            this.lblFont.Location = new System.Drawing.Point(707, 35);
+            this.lblFont.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFont.Name = "lblFont";
-            this.lblFont.Size = new System.Drawing.Size(28, 13);
+            this.lblFont.Size = new System.Drawing.Size(31, 15);
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "Font";
             // 
             // ConceptualBrowserForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 681);
+            this.ClientSize = new System.Drawing.Size(1176, 786);
             this.Controls.Add(this.cmbFont);
             this.Controls.Add(this.lblFont);
             this.Controls.Add(this.label4);
@@ -450,6 +466,7 @@
             this.Controls.Add(this.menuStripMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMain;
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "ConceptualBrowserForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Conceptual Browser";

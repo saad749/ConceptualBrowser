@@ -205,8 +205,7 @@ namespace ConceptualBrowser.Business.Entities
 
             for (int i = 0; i < Keywords.Count; i++)
             {
-                EquivalentNode equivalentNode = new EquivalentNode();
-                equivalentNode = Keywords[i].Clone();
+                EquivalentNode equivalentNode = Keywords[i].Clone();
                 tempKeywords.Add(equivalentNode);
             }
             equivalentRectangle.Keywords = tempKeywords;
@@ -217,7 +216,12 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         // calculate economy of the extracted concept
-        // (r/(c*d))*(r-(c+d))
+        // W (R) = (r / dc) (r - (d + c))
+        // where r is the cardinal of R (i.e., the number of pairs in R)
+        // d is the cardinal of the domain of R.
+        // c is the cardinal of the range of R.
+        // Remark: The quantity(r / dc) provides a measure of the density of the relation R.
+        // The quantity(r - (d + c)) is a measure of the economy of information.
         public double CalculateEconomy(BinaryRelation binaryRelation)
         {
             double num1 = ((double)TupleCount/ (double)(TotalResults * Keywords.Count));

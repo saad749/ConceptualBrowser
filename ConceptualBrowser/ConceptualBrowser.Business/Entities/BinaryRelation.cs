@@ -187,6 +187,10 @@ namespace ConceptualBrowser.Business.Entities
             }
         }
 
+        /// <summary>
+        /// Returns Count of All Sentences in the Binary Relation
+        /// </summary>
+        /// <returns></returns>
         public int GetTupleCount()
         {
             return Keywords.ToList().Sum(k => k.Sentences.Count);

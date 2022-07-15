@@ -1,158 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BE810C55-C74F-4922-8864-7552CA2D7CF4}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConceptualBrowser.Business</RootNamespace>
-    <AssemblyName>ConceptualBrowser.Business</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper, Version=27.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.27.2.1\lib\net47\CsvHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="Iso639, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Iso639.1.0.0\lib\netstandard2.0\Iso639.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="NTextCat">
       <HintPath>..\ConceptualBrowser.FormUI\Assets\NTextCat.dll</HintPath>
     </Reference>
-    <Reference Include="src, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\dotnet-stop-words.1.1.0\lib\netstandard2.0\src.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard1.1\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Common\ConceptExtraction.cs" />
-    <Compile Include="Common\Constant.cs" />
-    <Compile Include="Common\Helpers\LogHelper.cs" />
-    <Compile Include="Common\LanguageDetection.cs" />
-    <Compile Include="Common\Performance\PerformanceMonitor.cs" />
-    <Compile Include="Common\EmptyWords\EmptyWords.cs" />
-    <Compile Include="Common\EmptyWords\IEmptyWords.cs" />
-    <Compile Include="Common\Stemmers\IStemmer.cs" />
-    <Compile Include="Common\Stemmers\NoStemmer.cs" />
-    <Compile Include="Common\Stemmers\Stemmers.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\arabicStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\armenianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\basqueStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\catalanStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\danishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\dutchStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\englishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\finnishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\frenchStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\germanStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\greekStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\hindiStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\hungarianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\indonesianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\irishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\italianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\lithuanianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\nepaliStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\norwegianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\porterStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\portugueseStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\romanianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\russianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\serbianStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\spanishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\swedishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\tamilStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\turkishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Algorithms\yiddishStemmer.generated.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Among.cs" />
-    <Compile Include="Common\Stemmers\Snowball\Stemmer.cs" />
-    <Compile Include="Entities\BinaryRelation.cs" />
-    <Compile Include="Entities\ConceptTree.cs" />
-    <Compile Include="Entities\Coverage.cs" />
-    <Compile Include="Entities\EquivalentNode.cs" />
-    <Compile Include="Entities\EquivalentRectangle.cs" />
-    <Compile Include="Entities\KeywordNode.cs" />
-    <Compile Include="Entities\Sentence.cs" />
-    <Compile Include="Entities\NodeTree.cs" />
-    <Compile Include="Entities\OptimalConcept.cs" />
-    <Compile Include="Entities\OptimalConceptTreeItem.cs" />
-    <Compile Include="Entities\OptimalTree.cs" />
-    <Compile Include="Entities\Rank.cs" />
-    <Compile Include="Entities\RootNode.cs" />
-    <Compile Include="Common\TextAnalysis\TextAnalyzer.cs" />
-    <Compile Include="Common\TextAnalysis\ITextAnalyzer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Core14.profile.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="dotnet-stop-words" Version="1.1.0" />
+    <PackageReference Include="Iso639" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NTextCat" Version="0.3.65" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.330701">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

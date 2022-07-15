@@ -457,7 +457,7 @@ namespace ConceptualBrowser.FormUI
             int i = 1;
             int? parentId = null;
             // If a tree/heap structure is required
-            /*foreach (OptimalConcept optimal in optimals)
+            foreach (OptimalConcept optimal in optimals)
             {
                 if (i != 0)
                 {
@@ -470,19 +470,19 @@ namespace ConceptualBrowser.FormUI
                     OptimalConcept = optimal
                 });
                 i++;
-            }*/
+            }
 
             //normal list
-            foreach (OptimalConcept optimal in optimals)
-            {
-                treeItems.Add(new OptimalConceptTreeItem()
-                {
-                    Id = i,
-                    ParentId = 0,
-                    OptimalConcept = optimal
-                });
-                i++;
-            }
+            //foreach (OptimalConcept optimal in optimals)
+            //{
+            //    treeItems.Add(new OptimalConceptTreeItem()
+            //    {
+            //        Id = i,
+            //        ParentId = 0,
+            //        OptimalConcept = optimal
+            //    });
+            //    i++;
+            //}
 
             return treeItems;
         }
