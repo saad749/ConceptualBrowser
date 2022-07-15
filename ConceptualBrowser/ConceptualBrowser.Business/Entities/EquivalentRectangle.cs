@@ -24,7 +24,7 @@ namespace ConceptualBrowser.Business.Entities
 
 
         public int TupleCount { get; set; }
-        public int TotalResults { get; set; }
+        public int SentenceCount { get; set; }
 
 
         //	 create EquivalentRectangle of the BinaryRelation
@@ -47,7 +47,7 @@ namespace ConceptualBrowser.Business.Entities
 
             }
             TupleCount = binaryRelation.GetTupleCount();
-            TotalResults = binaryRelation.TotalResults;
+            SentenceCount = binaryRelation.TotalResults;
         }
 
         //	 create inverse of EquivalentR
@@ -95,7 +95,7 @@ namespace ConceptualBrowser.Business.Entities
                 //}
                 this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
             }
-            TotalResults = Sentences.Count;
+            SentenceCount = Sentences.Count;
 
 
         }
@@ -153,7 +153,7 @@ namespace ConceptualBrowser.Business.Entities
             }
 
             TupleCount = Keywords.Sum(w => w.Indexes.Count);
-            TotalResults = Sentences.Count;
+            SentenceCount = Sentences.Count;
             return CalculateHighestTuples();
         }
 
@@ -210,7 +210,7 @@ namespace ConceptualBrowser.Business.Entities
             }
             equivalentRectangle.Keywords = tempKeywords;
             TupleCount = equivalentRectangle.TupleCount;
-            TotalResults = equivalentRectangle.TotalResults;
+            SentenceCount = equivalentRectangle.SentenceCount;
 
             return equivalentRectangle;
         }
@@ -222,11 +222,10 @@ namespace ConceptualBrowser.Business.Entities
         // c is the cardinal of the range of R.
         // Remark: The quantity(r / dc) provides a measure of the density of the relation R.
         // The quantity(r - (d + c)) is a measure of the economy of information.
-        // The parameter binaryRelation is not requiredd!!!!
-        public double CalculateEconomy(BinaryRelation binaryRelation)
+        public double CalculateEconomy()
         {
-            double num1 = ((double)TupleCount/ (double)(TotalResults * Keywords.Count));
-            double dem = (TupleCount - (TotalResults + Keywords.Count));
+            double num1 = ((double)TupleCount/ (double)(SentenceCount * Keywords.Count));
+            double dem = (TupleCount - (SentenceCount + Keywords.Count));
             return (num1 * dem);
         }
 
@@ -236,7 +235,7 @@ namespace ConceptualBrowser.Business.Entities
             Keywords = temp.Keywords;
             Sentences = null;
             Sentences = temp.Sentences;
-            TotalResults = temp.TotalResults;
+            SentenceCount = temp.SentenceCount;
             TupleCount = temp.TupleCount;
         }
 

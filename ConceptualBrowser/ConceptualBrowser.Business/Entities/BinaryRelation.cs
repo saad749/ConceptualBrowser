@@ -188,7 +188,7 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         /// <summary>
-        /// Returns Count of All Sentences in the Binary Relation
+        /// Returns Count of All Sentences in the Binary Relation. Is this right? Should it be Keywords.Count * Sentences.Count ?
         /// </summary>
         /// <returns></returns>
         public int GetTupleCount()

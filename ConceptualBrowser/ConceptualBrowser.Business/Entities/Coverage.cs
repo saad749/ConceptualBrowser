@@ -118,7 +118,7 @@ namespace ConceptualBrowser.Business.Entities
                     if (!InPairs(Pairs, pair[0], pair[1]))
                     {
                         temp1.ConvertToElementaryRelation(pair[0], pair[1]);
-                        gain = temp1.CalculateEconomy(BinaryRelation);
+                        gain = temp1.CalculateEconomy();
                         if (gain > max)
                         {
                             max = gain;
@@ -151,7 +151,7 @@ namespace ConceptualBrowser.Business.Entities
                 }
                 else
                 {
-                    if (!highestEquivalentRectangle.IsRectangle()) 
+                    if (!highestEquivalentRectangle.IsRectangle()) // If !(TupleCount == Sentences.Count * Keywords.Count)
                     {
                         temp1 = highestEquivalentRectangle.Clone();
                         temp2 = highestEquivalentRectangle.Clone();
@@ -165,7 +165,9 @@ namespace ConceptualBrowser.Business.Entities
                         tempTuple.AddRange(highestEquivalentRectangle.CalculateHighestTuples());
                         CurrentConcept++;
                         this.BinaryRelation.MarkAsCovered(tempTuple, CurrentConcept);
-                        AddToCoverage(highestEquivalentRectangle.ConvertToConcept(this.BinaryRelation, CurrentConcept, gain));
+                        // AddToCoverage used to recive gain earlier than (15 july 2022). This was ending up providing wrong gain values.
+                        // Today we are changing it to highestEquivalentRectangle.CalculateEconomy().
+                        AddToCoverage(highestEquivalentRectangle.ConvertToConcept(this.BinaryRelation, CurrentConcept, highestEquivalentRectangle.CalculateEconomy())); ; 
                         conceptExtracted = true; //BREAKS THE LOOP!
                     }//end of else
                 }

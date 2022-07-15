@@ -68,7 +68,7 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.DisplayMember = "Text";
             cmbLanguage.ValueMember = "Value";
             cmbLanguage.DataSource = items;
-            cmbLanguage.SelectedIndex = 1;
+            cmbLanguage.SelectedIndex = 7;
             cmbFont.SelectedIndex = 1;
 
             if (unicodeToolStripMenuItem.Checked)
