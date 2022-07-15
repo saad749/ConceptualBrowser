@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConceptualBrowser.Business.Common.EmptyWords;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -151,6 +152,11 @@ namespace ConceptualBrowser.Business.Common.Stemmer
         {
             return EmptyWordRoots.Any(w => String.Equals(word, w, StringComparison.OrdinalIgnoreCase));
             //return EmptyWordRoots.Any( w => String.Equals(TextAnalyzer.RemoveDiacritics(word), TextAnalyzer.RemoveDiacritics(w), StringComparison.OrdinalIgnoreCase));
+        }
+
+        public string RemoveStopWords(string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }
