@@ -24,10 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.330701">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.4" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Assets\icon.png">

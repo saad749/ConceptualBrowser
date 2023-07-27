@@ -55,13 +55,12 @@
     <EmbeddedResource Include="Common\TextAnalysis\EmptyWords\vie.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Catalyst" Version="1.0.31087" />
+    <PackageReference Include="Catalyst" Version="1.0.39645" />
     <PackageReference Include="Iso639" Version="1.0.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.330701">
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
