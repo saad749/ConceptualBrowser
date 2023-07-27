@@ -62,7 +62,7 @@ namespace ConceptualBrowser.Business
         {
             try
             {
-                return text.RemoveStopWords(Language.Part3);
+                return text.ToLower(Language.Culture).RemoveStopWords(Language.Part3);
             }
             catch (ArgumentException ex) //The Language is not supported exception
             {

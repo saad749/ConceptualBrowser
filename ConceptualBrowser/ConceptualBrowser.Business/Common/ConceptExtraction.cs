@@ -3,14 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.IO;
-using ConceptualBrowser.Business.Common.Performance;
-using ConceptualBrowser.Business.Common.Stemmer;
-using ConceptualBrowser.Business.Common.Helpers;
 using System.ComponentModel;
-using CsvHelper;
 
 namespace ConceptualBrowser.Business.Common
 {
