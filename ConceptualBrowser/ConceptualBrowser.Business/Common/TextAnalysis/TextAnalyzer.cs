@@ -13,11 +13,27 @@ namespace ConceptualBrowser.Business
     {
         public Language Language { get; set; }
         public IStemmer Stemmer { get; set; }
+        public string LanguageCode { get; set; }
+
+        // PERFORMANCE OPTIMIZATION: Static cache for stemming results to avoid repeated computation
+        private static readonly Dictionary<string, Dictionary<string, string>> _stemCache =
+            new Dictionary<string, Dictionary<string, string>>();
+        private static readonly object _stemCacheLock = new object();
 
         public TextAnalyzer(string languageCode)
         {
+            LanguageCode = languageCode;
             Language = Language.FromPart3(languageCode);
             Stemmer = Stemmers.GetStemmer(languageCode);
+
+            // PERFORMANCE OPTIMIZATION: Initialize cache for this language if not exists
+            lock (_stemCacheLock)
+            {
+                if (!_stemCache.ContainsKey(languageCode))
+                {
+                    _stemCache[languageCode] = new Dictionary<string, string>();
+                }
+            }
         }
 
         public List<String> GetSentences(string text)
@@ -72,7 +88,27 @@ namespace ConceptualBrowser.Business
 
         public string Stem(string word)
         {
-            return Stemmer.Stem(word);
+            // PERFORMANCE OPTIMIZATION: Use cache to avoid repeated stemming of same words
+            var languageCache = _stemCache[LanguageCode];
+
+            if (languageCache.TryGetValue(word, out string cachedStem))
+            {
+                return cachedStem;
+            }
+
+            // Word not in cache, perform stemming and cache the result
+            string stem = Stemmer.Stem(word);
+
+            lock (_stemCacheLock)
+            {
+                // Double-check locking pattern to avoid race conditions
+                if (!languageCache.ContainsKey(word))
+                {
+                    languageCache[word] = stem;
+                }
+            }
+
+            return stem;
         }
 
         public string RemoveDiacritics(string InputStr)

@@ -22,9 +22,16 @@ namespace ConceptualBrowser.Business.Entities
         public int TotalUniqueCovered { get; set; }
         public TextAnalyzer TextAnalyzer { get; set; }
 
+        // PERFORMANCE OPTIMIZATION: Fast lookup dictionaries for O(1) access instead of O(n) list searches
+        private Dictionary<string, KeywordNode> _keywordLookup = new Dictionary<string, KeywordNode>();
+        private Dictionary<string, RootNode> _rootLookup = new Dictionary<string, RootNode>();
+
         public BinaryRelation(string languageCode, string text)
         {
             Keywords = new List<KeywordNode>();
+            // PERFORMANCE: Initialize fast lookup dictionaries
+            _keywordLookup = new Dictionary<string, KeywordNode>();
+            _rootLookup = new Dictionary<string, RootNode>();
 
             TextAnalyzer = new TextAnalyzer(languageCode);
             List<String> sentenceList = TextAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
@@ -136,8 +143,8 @@ namespace ConceptualBrowser.Business.Entities
                 String stem = TextAnalyzer.Stem(tempWord.ToLower());//-k
                 RootNode root = new RootNode();
                 
-                //USE By Reference
-                KeywordNode keyword = Keywords.FirstOrDefault(v => v.Keyword == stem);
+                //PERFORMANCE OPTIMIZATION: Use O(1) dictionary lookup instead of O(n) FirstOrDefault
+                _keywordLookup.TryGetValue(stem, out KeywordNode keyword);
 
                 if (keyword != null)
                 {
@@ -152,10 +159,13 @@ namespace ConceptualBrowser.Business.Entities
                         //For some reason if the word doesnt exists in Roots List of Binary Relation, then Add it to Binary Relation .. Word or Stem??
                         //Add the sentence to the list of the sentences to the Keyword that has the stem of this word
 
-                        keyword.KeywordRank++; 
-                        root = Roots.FirstOrDefault(r => r.Root.Equals(stem, StringComparison.OrdinalIgnoreCase));
-                        if (!root.ExistsInOriginalWords(tempWord))//-k
-                            root.OriginalWords.Add(tempWord);//-k
+                        keyword.KeywordRank++;
+                        //PERFORMANCE OPTIMIZATION: Use O(1) dictionary lookup instead of O(n) FirstOrDefault
+                        if (_rootLookup.TryGetValue(stem.ToLowerInvariant(), out root) && root != null)
+                        {
+                            if (!root.ExistsInOriginalWords(tempWord))//-k
+                                root.OriginalWords.Add(tempWord);//-k
+                        }
 
                         //tempSentence.KeywordNodes.Add(keyword);//Addition for Speed
                         sentence.KeywordNodes.Add(keyword);
@@ -177,12 +187,16 @@ namespace ConceptualBrowser.Business.Entities
 
                     root = new RootNode(stem, orginalWords);
                     Roots.Add(root);
+                    //PERFORMANCE OPTIMIZATION: Add to dictionary for fast lookups
+                    _rootLookup[stem.ToLowerInvariant()] = root;
 
                     KeywordNode temp = new KeywordNode(stem, Keywords.Count, 1, sentences);
 
                     //tempSentence.KeywordNodes.Add(temp);//Addition for Speed - By Reference!!
                     sentence.KeywordNodes.Add(temp);
                     Keywords.Add(temp);
+                    //PERFORMANCE OPTIMIZATION: Add to dictionary for fast lookups
+                    _keywordLookup[stem] = temp;
                 }
             }
         }

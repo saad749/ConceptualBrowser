@@ -193,35 +193,14 @@ namespace ConceptualBrowser.Business.Entities
             OptimalConcepts.Add(concept);
         }
 
-        // sort the list of concepts depende on the gain of each one
+        // PERFORMANCE OPTIMIZATION: Sort using built-in O(n log n) algorithm instead of O(n²) bubble sort
         private void Sort()
         {
-            /*********************Bubble sort*********************/
-            int index = -1;
-            for (int j = 0; j < this.OptimalConcepts.Count; j++)
-            {
-                index = -1;
-                OptimalConcept optimal = OptimalConcepts[j];
-                for (int i = j + 1; i < OptimalConcepts.Count; i++)
-                {
-                    if (optimal.Gain < OptimalConcepts[i].Gain)
-                    {
-                        optimal = OptimalConcepts[i];
-                        index = i;
-                    }
-                    else if ((optimal.Gain == OptimalConcepts[i].Gain) && (optimal.NodesTree.TotalNodes < OptimalConcepts[i].NodesTree.Height))
-                    {
-                        optimal = OptimalConcepts[i];
-                        index = i;
-                    }
-                }
-                if (index != -1)
-                {
-                    OptimalConcept optimal2 = OptimalConcepts[j];
-                    this.OptimalConcepts[j] = optimal;
-                    this.OptimalConcepts[index] =  optimal2;
-                }
-            }
+            // Sort by Gain (descending), then by NodesTree.Height (descending) as tiebreaker
+            this.OptimalConcepts = this.OptimalConcepts
+                .OrderByDescending(o => o.Gain)
+                .ThenByDescending(o => o.NodesTree.Height)
+                .ToList();
         }
 
         private void AddToHeapOfConcepts(int step, int currentConcept)
