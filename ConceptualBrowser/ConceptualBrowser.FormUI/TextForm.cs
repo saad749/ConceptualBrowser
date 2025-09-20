@@ -12,6 +12,7 @@ namespace ConceptualBrowser.FormUI
 {
     public partial class TextForm : Form
     {
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string UserText { get; set; }
         public TextForm()
         {

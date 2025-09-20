@@ -15,17 +15,25 @@ using ConceptualBrowser.Business.Common.Stemmer;
 using ConceptualBrowser.Business.Entities;
 using Iso639;
 using Newtonsoft.Json;
+using System.ComponentModel.Design.Serialization;
 
 namespace ConceptualBrowser.FormUI
 {
     public partial class ConceptualBrowserForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Language Language { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<OptimalConceptTreeItem> OptimalTree { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string FileText { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Encoding Encoding { get; set; } = Encoding.Default;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Stopwatch Stopwatch { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double CoveragePercentage { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float FontSize { get; set; } = 10.0F;
 
         public ConceptualBrowserForm()
