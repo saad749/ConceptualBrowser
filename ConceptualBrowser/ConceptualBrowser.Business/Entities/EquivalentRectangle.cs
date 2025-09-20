@@ -22,6 +22,11 @@ namespace ConceptualBrowser.Business.Entities
 
         public Dictionary<int, HashSet<int>> KeywordsSentencesDictionary { get; set; } = new Dictionary<int, HashSet<int>>();
 
+        // PERFORMANCE OPTIMIZATION: Cache rectangle properties for faster detection
+        private bool? _isRectangleCache = null;
+        private bool _cacheValid = false;
+        private int _lastTupleCount = -1;
+        private int _lastProductCount = -1;
 
         public int TupleCount { get; set; }
         public int SentenceCount { get; set; }
@@ -48,6 +53,7 @@ namespace ConceptualBrowser.Business.Entities
             }
             TupleCount = binaryRelation.GetTupleCount();
             SentenceCount = binaryRelation.TotalResults;
+            InvalidateCache(); // PERFORMANCE OPTIMIZATION: Invalidate cache after structure change
         }
 
         //	 create inverse of EquivalentR
@@ -96,6 +102,7 @@ namespace ConceptualBrowser.Business.Entities
                 this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
             }
             SentenceCount = Sentences.Count;
+            InvalidateCache(); // PERFORMANCE OPTIMIZATION: Invalidate cache after structure change
 
 
         }
@@ -154,6 +161,7 @@ namespace ConceptualBrowser.Business.Entities
 
             TupleCount = Keywords.Sum(w => w.Indexes.Count);
             SentenceCount = Sentences.Count;
+            InvalidateCache(); // PERFORMANCE OPTIMIZATION: Invalidate cache after structure change
             return CalculateHighestTuples();
         }
 
@@ -237,15 +245,41 @@ namespace ConceptualBrowser.Business.Entities
             Sentences = temp.Sentences;
             SentenceCount = temp.SentenceCount;
             TupleCount = temp.TupleCount;
+            InvalidateCache(); // PERFORMANCE OPTIMIZATION: Invalidate cache after structure change
         }
 
         /// <summary>
+        /// PERFORMANCE OPTIMIZATION: Cached rectangle detection for faster repeated checks
         /// (TupleCount == Sentences.Count * Keywords.Count) This is the Rectangle definition
         /// </summary>
         /// <returns></returns>
         public bool IsRectangle()
         {
-            return (TupleCount == Sentences.Count * Keywords.Count);
+            int currentProductCount = Sentences.Count * Keywords.Count;
+
+            // Check if cache is valid
+            if (_cacheValid && _lastTupleCount == TupleCount && _lastProductCount == currentProductCount)
+            {
+                return _isRectangleCache.Value;
+            }
+
+            // Calculate and cache result
+            bool isRectangle = (TupleCount == currentProductCount);
+            _isRectangleCache = isRectangle;
+            _lastTupleCount = TupleCount;
+            _lastProductCount = currentProductCount;
+            _cacheValid = true;
+
+            return isRectangle;
+        }
+
+        /// <summary>
+        /// PERFORMANCE OPTIMIZATION: Invalidate rectangle cache when structure changes
+        /// </summary>
+        private void InvalidateCache()
+        {
+            _cacheValid = false;
+            _isRectangleCache = null;
         }
 
         //	 convert this EquivalentR to object of type OptimalConcept
