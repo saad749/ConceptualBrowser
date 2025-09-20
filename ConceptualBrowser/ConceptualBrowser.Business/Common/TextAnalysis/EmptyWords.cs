@@ -14,13 +14,43 @@ namespace ConceptualBrowser.Business.Common.TextAnalysis
 {
     internal static class EmptyWords
     {
+        // PERFORMANCE OPTIMIZATION: Cache stop words to avoid repeated file loading
+        private static readonly Dictionary<string, HashSet<string>> _stopWordCache = new Dictionary<string, HashSet<string>>();
+        private static readonly object _cacheLock = new object();
+
         public static string RemoveStopWords(this string text, string language)
         {
-            var emptyWords = LoadStopWords(language);
+            var emptyWords = GetCachedStopWords(language);
 
             text = text.Split(' ').Where(x => !emptyWords.Contains(x)).DefaultIfEmpty().Aggregate((current, next) => current + " " + next);
 
             return text ?? string.Empty;
+        }
+
+        /// <summary>
+        /// PERFORMANCE OPTIMIZATION: Get stop words from cache or load once and cache
+        /// </summary>
+        private static HashSet<string> GetCachedStopWords(string language)
+        {
+            if (_stopWordCache.TryGetValue(language, out var cachedWords))
+            {
+                return cachedWords;
+            }
+
+            lock (_cacheLock)
+            {
+                // Double-check locking pattern
+                if (_stopWordCache.TryGetValue(language, out cachedWords))
+                {
+                    return cachedWords;
+                }
+
+                // Load stop words once and cache as HashSet for O(1) lookups
+                var stopWordsList = LoadStopWords(language);
+                var stopWordsSet = new HashSet<string>(stopWordsList);
+                _stopWordCache[language] = stopWordsSet;
+                return stopWordsSet;
+            }
         }
 
         private static List<string> LoadStopWords(string lang)

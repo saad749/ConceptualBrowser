@@ -171,6 +171,10 @@ namespace ConceptualBrowser.Business.Entities
                         sentence.KeywordNodes.Add(keyword);
                         keyword.Sentences.Add(tempSentence); //Referencing issue may be???//-s
 
+                        // PERFORMANCE OPTIMIZATION: Also maintain index-based relationships for memory efficiency
+                        sentence.KeywordIndexes.Add(keyword.KeywordIndex);
+                        keyword.SentenceIndexes.Add(tempSentence.SentenceIndex);
+
                         
                         
                     }
@@ -197,6 +201,10 @@ namespace ConceptualBrowser.Business.Entities
                     Keywords.Add(temp);
                     //PERFORMANCE OPTIMIZATION: Add to dictionary for fast lookups
                     _keywordLookup[stem] = temp;
+
+                    // PERFORMANCE OPTIMIZATION: Also maintain index-based relationships for memory efficiency
+                    sentence.KeywordIndexes.Add(temp.KeywordIndex);
+                    // Note: SentenceIndexes is already populated in KeywordNode constructor
                 }
             }
         }

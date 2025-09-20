@@ -22,11 +22,16 @@ namespace ConceptualBrowser.Business.Entities
         /// </summary>
         public double KeywordRank { get; set; }
 
-        //public HashSet<int> SentenceIndexes { get; set; }
         /// <summary>
-        /// Sentences in which the word occured
+        /// PERFORMANCE OPTIMIZATION: Use indexes instead of full sentence objects to reduce memory usage
+        /// </summary>
+        public HashSet<int> SentenceIndexes { get; set; } = new HashSet<int>();
+
+        /// <summary>
+        /// Sentences in which the word occured (DEPRECATED: Use SentenceIndexes for memory efficiency)
         /// </summary>
         [JsonIgnore]
+        [Obsolete("Use SentenceIndexes for better memory efficiency")]
         public List<Sentence> Sentences { get; set; } = new List<Sentence>();// list of words associated with this KeywordNode
 
         public KeywordNode(string keyWord, int number, int rank, List<Sentence> sentences)
@@ -34,14 +39,15 @@ namespace ConceptualBrowser.Business.Entities
             Keyword = keyWord;
             KeywordIndex = number;
             KeywordRank = rank;
+            // PERFORMANCE OPTIMIZATION: Store both for backward compatibility during transition
             Sentences = sentences;
-            //SentenceIndexes = new HashSet<int>(sentences.Select(s => s.SentenceIndex).ToList());
+            SentenceIndexes = new HashSet<int>(sentences.Select(s => s.SentenceIndex));
         }
 
         public bool ContainsSentenceIndex(int sentenceIndex)
         {
-            //return SentenceIndexes.Contains(sentenceIndex);
-            return Sentences.Any(n => n.SentenceIndex == sentenceIndex);
+            // PERFORMANCE OPTIMIZATION: Use O(1) HashSet lookup instead of O(n) LINQ query
+            return SentenceIndexes.Contains(sentenceIndex);
         }
     }
 }

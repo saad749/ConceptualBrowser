@@ -16,7 +16,13 @@ namespace ConceptualBrowser.Business.Entities
         public string KeywordString { get; set; }
         public string OriginalSentence { get; set; }
 
+        /// <summary>
+        /// PERFORMANCE OPTIMIZATION: Use indexes instead of full keyword objects to reduce memory usage
+        /// </summary>
+        public HashSet<int> KeywordIndexes { get; set; } = new HashSet<int>();
+
         [JsonIgnore]
+        [Obsolete("Use KeywordIndexes for better memory efficiency")]
         public List<KeywordNode> KeywordNodes { get; set; }
         [JsonIgnore]
         public Rank Rank { get; set; }
@@ -51,7 +57,9 @@ namespace ConceptualBrowser.Business.Entities
             OriginalSentence = originalSentence.Trim();
             Rank = rank;
             rank.CalculateRank();
+            // PERFORMANCE OPTIMIZATION: Store both for backward compatibility during transition
             KeywordNodes = keywords;
+            KeywordIndexes = new HashSet<int>(keywords?.Select(k => k.KeywordIndex) ?? new List<int>());
         }
     }
 }
