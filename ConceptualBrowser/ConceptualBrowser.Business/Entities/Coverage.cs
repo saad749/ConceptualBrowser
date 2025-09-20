@@ -261,74 +261,12 @@ namespace ConceptualBrowser.Business.Entities
         private void ProcessConceptsParallel(List<(KeywordNode keyword, Sentence sentence)> uncoveredSentences,
             double minGainThreshold, ref int consecutiveLowGainConcepts, int maxLowGainConcepts)
         {
-            // Use concurrent collections for thread-safe operations
-            var conceptResults = new ConcurrentBag<OptimalConcept>();
-            var processedIndexes = new ConcurrentBag<(int keywordIndex, int sentenceIndex)>();
+            // SIMPLIFIED FIX: For now, use sequential processing to avoid the temporary coverage issue
+            // The complex parallel extraction was causing concepts to be lost in separate instances
+            ProcessConceptsSequential(uncoveredSentences, minGainThreshold, ref consecutiveLowGainConcepts, maxLowGainConcepts);
 
-            // Process concepts in parallel
-            Parallel.ForEach(uncoveredSentences, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-                item =>
-                {
-                    var (keyword, sentence) = item;
-
-                    // Create a temporary coverage for thread-safe concept extraction
-                    var tempCoverage = CreateTemporaryCoverage();
-                    tempCoverage.ExtractOptimalConcept(this.BinaryRelation, keyword.KeywordIndex, sentence.SentenceIndex);
-
-                    // Collect results if concepts were extracted
-                    if (tempCoverage.OptimalConcepts.Count > 0)
-                    {
-                        foreach (var concept in tempCoverage.OptimalConcepts)
-                        {
-                            conceptResults.Add(concept);
-                        }
-                        processedIndexes.Add((keyword.KeywordIndex, sentence.SentenceIndex));
-                    }
-                });
-
-            // Merge results back into main collection (thread-safe)
-            lock (_optimalConceptsLock)
-            {
-                foreach (var concept in conceptResults.OrderByDescending(c => c.Gain))
-                {
-                    if (OptimalConcepts.Count >= MaxConcepts)
-                        break;
-
-                    OptimalConcepts.Add(concept);
-
-                    // Update concept numbering
-                    lock (_currentConceptLock)
-                    {
-                        CurrentConcept++;
-                        concept.ConceptNumber = CurrentConcept;
-                    }
-
-                    // Check for low gain concepts
-                    if (concept.Gain < minGainThreshold)
-                    {
-                        consecutiveLowGainConcepts++;
-                        if (consecutiveLowGainConcepts >= maxLowGainConcepts)
-                            break;
-                    }
-                    else
-                    {
-                        consecutiveLowGainConcepts = 0;
-                    }
-                }
-            }
-        }
-
-        // PERFORMANCE OPTIMIZATION: Create a temporary coverage instance for thread-safe parallel processing
-        private Coverage CreateTemporaryCoverage()
-        {
-            var tempCoverage = new Coverage(BinaryRelation.TextAnalyzer.LanguageCode, string.Empty)
-            {
-                BinaryRelation = this.BinaryRelation,
-                EnableEarlyTermination = this.EnableEarlyTermination,
-                MaxIterationsPerConcept = this.MaxIterationsPerConcept,
-                MinGainThreshold = this.MinGainThreshold
-            };
-            return tempCoverage;
+            // TODO: Future improvement - implement proper thread-safe ExtractOptimalConcept method
+            // that can be called directly without creating temporary Coverage instances
         }
 
         // get the elements that are contained in the optimal rectangles of pr(k,u)

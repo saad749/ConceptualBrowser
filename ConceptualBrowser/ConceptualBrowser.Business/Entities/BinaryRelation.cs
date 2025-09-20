@@ -33,7 +33,7 @@ namespace ConceptualBrowser.Business.Entities
         private readonly object _keywordsLock = new object();
 
         // PERFORMANCE OPTIMIZATION: Parallel processing configuration
-        public bool EnableParallelProcessing { get; set; } = true;
+        public bool EnableParallelProcessing { get; set; } = true; // Enable parallel processing
         public int ParallelThreshold { get; set; } = 50; // Use parallel processing for 50+ sentences
 
         public BinaryRelation(string languageCode, string text)
