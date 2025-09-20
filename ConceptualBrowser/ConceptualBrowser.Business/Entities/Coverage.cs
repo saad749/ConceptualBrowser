@@ -1,5 +1,6 @@
 ﻿using ConceptualBrowser.Business.Common.Stemmer;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,14 @@ namespace ConceptualBrowser.Business.Entities
         public int BatchSize { get; set; } = 1000; // Process keywords in batches for memory efficiency
         public bool EnableBatchProcessing { get; set; } = true; // Enable batch processing for large texts
         public int MemoryCheckInterval { get; set; } = 100; // Check memory usage every N concepts
+
+        // PERFORMANCE OPTIMIZATION: Parallel processing for concept extraction
+        public bool EnableParallelConceptExtraction { get; set; } = true; // Enable parallel concept extraction
+        public int ParallelConceptThreshold { get; set; } = 20; // Use parallel processing for 20+ uncovered sentences
+
+        // PERFORMANCE OPTIMIZATION: Thread-safe collections for parallel concept extraction
+        private readonly object _optimalConceptsLock = new object();
+        private readonly object _currentConceptLock = new object();
 
         public Coverage(string languageCode, string text)
         {
@@ -158,6 +167,8 @@ namespace ConceptualBrowser.Business.Entities
                 int endIndex = Math.Min(startIndex + BatchSize, keywords.Count);
                 var batch = keywords.Skip(startIndex).Take(endIndex - startIndex);
 
+                // Collect uncovered sentences for potential parallel processing
+                var uncoveredSentences = new List<(KeywordNode keyword, Sentence sentence)>();
                 foreach (KeywordNode keyword in batch)
                 {
                     List<Sentence> sentences = keyword.Sentences;
@@ -165,54 +176,46 @@ namespace ConceptualBrowser.Business.Entities
                     {
                         if (sentence.LastCoveredByConceptNumber < 0)
                         {
-                            int[] indexes = { keyword.KeywordIndex, sentence.SentenceIndex };
-
-                            int conceptCountBefore = OptimalConcepts.Count;
-                            this.ExtractOptimalConcept(this.BinaryRelation, indexes[0], indexes[1]);
-
-                            // Check concept quality and early termination
-                            if (OptimalConcepts.Count > conceptCountBefore)
-                            {
-                                var newConcept = OptimalConcepts.Last();
-                                if (newConcept.Gain < minGainThreshold)
-                                {
-                                    consecutiveLowGainConcepts++;
-                                    if (consecutiveLowGainConcepts >= maxLowGainConcepts)
-                                        return;
-                                }
-                                else
-                                {
-                                    consecutiveLowGainConcepts = 0;
-                                }
-
-                                if (EnableEarlyTermination && OptimalConcepts.Count >= MaxConcepts)
-                                    return;
-                            }
-                        }
-
-                        processedCount++;
-
-                        // Memory management and progress reporting
-                        if (processedCount % MemoryCheckInterval == 0)
-                        {
-                            // Force garbage collection periodically for large texts
-                            if (processedCount % (MemoryCheckInterval * 10) == 0)
-                            {
-                                GC.Collect();
-                                GC.WaitForPendingFinalizers();
-                            }
-
-                            // Check coverage
-                            var coveredSentences = keywords.SelectMany(x => x.Sentences)
-                                .Count(x => x.LastCoveredByConceptNumber >= 0);
-
-                            if (backgroundWorker != null)
-                                backgroundWorker.ReportProgress((int)(coveredSentences * 100.0 / targetCoverage));
-
-                            if (coveredSentences >= targetCoverage)
-                                return;
+                            uncoveredSentences.Add((keyword, sentence));
                         }
                     }
+                }
+
+                // Decide whether to use parallel processing for concept extraction
+                if (EnableParallelConceptExtraction && uncoveredSentences.Count >= ParallelConceptThreshold)
+                {
+                    ProcessConceptsParallel(uncoveredSentences, minGainThreshold, ref consecutiveLowGainConcepts, maxLowGainConcepts);
+                }
+                else
+                {
+                    ProcessConceptsSequential(uncoveredSentences, minGainThreshold, ref consecutiveLowGainConcepts, maxLowGainConcepts);
+                }
+
+                processedCount += uncoveredSentences.Count;
+
+                // Early termination check
+                if (EnableEarlyTermination && OptimalConcepts.Count >= MaxConcepts)
+                    return;
+
+                // Memory management and progress reporting
+                if (processedCount % MemoryCheckInterval == 0)
+                {
+                    // Force garbage collection periodically for large texts
+                    if (processedCount % (MemoryCheckInterval * 10) == 0)
+                    {
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                    }
+
+                    // Check coverage
+                    var coveredSentences = keywords.SelectMany(x => x.Sentences)
+                        .Count(x => x.LastCoveredByConceptNumber >= 0);
+
+                    if (backgroundWorker != null)
+                        backgroundWorker.ReportProgress((int)(coveredSentences * 100.0 / targetCoverage));
+
+                    if (coveredSentences >= targetCoverage)
+                        return;
                 }
 
                 // Report batch completion
@@ -222,6 +225,110 @@ namespace ConceptualBrowser.Business.Entities
                     backgroundWorker.ReportProgress(overallProgress);
                 }
             }
+        }
+
+        // PERFORMANCE OPTIMIZATION: Sequential concept processing for smaller batches
+        private void ProcessConceptsSequential(List<(KeywordNode keyword, Sentence sentence)> uncoveredSentences,
+            double minGainThreshold, ref int consecutiveLowGainConcepts, int maxLowGainConcepts)
+        {
+            foreach (var (keyword, sentence) in uncoveredSentences)
+            {
+                int conceptCountBefore = OptimalConcepts.Count;
+                this.ExtractOptimalConcept(this.BinaryRelation, keyword.KeywordIndex, sentence.SentenceIndex);
+
+                // Check concept quality and early termination
+                if (OptimalConcepts.Count > conceptCountBefore)
+                {
+                    var newConcept = OptimalConcepts.Last();
+                    if (newConcept.Gain < minGainThreshold)
+                    {
+                        consecutiveLowGainConcepts++;
+                        if (consecutiveLowGainConcepts >= maxLowGainConcepts)
+                            return;
+                    }
+                    else
+                    {
+                        consecutiveLowGainConcepts = 0;
+                    }
+
+                    if (EnableEarlyTermination && OptimalConcepts.Count >= MaxConcepts)
+                        return;
+                }
+            }
+        }
+
+        // PERFORMANCE OPTIMIZATION: Parallel concept processing for larger batches
+        private void ProcessConceptsParallel(List<(KeywordNode keyword, Sentence sentence)> uncoveredSentences,
+            double minGainThreshold, ref int consecutiveLowGainConcepts, int maxLowGainConcepts)
+        {
+            // Use concurrent collections for thread-safe operations
+            var conceptResults = new ConcurrentBag<OptimalConcept>();
+            var processedIndexes = new ConcurrentBag<(int keywordIndex, int sentenceIndex)>();
+
+            // Process concepts in parallel
+            Parallel.ForEach(uncoveredSentences, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                item =>
+                {
+                    var (keyword, sentence) = item;
+
+                    // Create a temporary coverage for thread-safe concept extraction
+                    var tempCoverage = CreateTemporaryCoverage();
+                    tempCoverage.ExtractOptimalConcept(this.BinaryRelation, keyword.KeywordIndex, sentence.SentenceIndex);
+
+                    // Collect results if concepts were extracted
+                    if (tempCoverage.OptimalConcepts.Count > 0)
+                    {
+                        foreach (var concept in tempCoverage.OptimalConcepts)
+                        {
+                            conceptResults.Add(concept);
+                        }
+                        processedIndexes.Add((keyword.KeywordIndex, sentence.SentenceIndex));
+                    }
+                });
+
+            // Merge results back into main collection (thread-safe)
+            lock (_optimalConceptsLock)
+            {
+                foreach (var concept in conceptResults.OrderByDescending(c => c.Gain))
+                {
+                    if (OptimalConcepts.Count >= MaxConcepts)
+                        break;
+
+                    OptimalConcepts.Add(concept);
+
+                    // Update concept numbering
+                    lock (_currentConceptLock)
+                    {
+                        CurrentConcept++;
+                        concept.ConceptNumber = CurrentConcept;
+                    }
+
+                    // Check for low gain concepts
+                    if (concept.Gain < minGainThreshold)
+                    {
+                        consecutiveLowGainConcepts++;
+                        if (consecutiveLowGainConcepts >= maxLowGainConcepts)
+                            break;
+                    }
+                    else
+                    {
+                        consecutiveLowGainConcepts = 0;
+                    }
+                }
+            }
+        }
+
+        // PERFORMANCE OPTIMIZATION: Create a temporary coverage instance for thread-safe parallel processing
+        private Coverage CreateTemporaryCoverage()
+        {
+            var tempCoverage = new Coverage(BinaryRelation.TextAnalyzer.LanguageCode, string.Empty)
+            {
+                BinaryRelation = this.BinaryRelation,
+                EnableEarlyTermination = this.EnableEarlyTermination,
+                MaxIterationsPerConcept = this.MaxIterationsPerConcept,
+                MinGainThreshold = this.MinGainThreshold
+            };
+            return tempCoverage;
         }
 
         // get the elements that are contained in the optimal rectangles of pr(k,u)

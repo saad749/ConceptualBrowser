@@ -1,5 +1,6 @@
 ﻿using ConceptualBrowser.Business.Common.Stemmer;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,15 @@ namespace ConceptualBrowser.Business.Entities
         // PERFORMANCE OPTIMIZATION: Fast lookup dictionaries for O(1) access instead of O(n) list searches
         private Dictionary<string, KeywordNode> _keywordLookup = new Dictionary<string, KeywordNode>();
         private Dictionary<string, RootNode> _rootLookup = new Dictionary<string, RootNode>();
+
+        // PERFORMANCE OPTIMIZATION: Thread-safe collections for parallel processing
+        private readonly object _keywordLookupLock = new object();
+        private readonly object _rootLookupLock = new object();
+        private readonly object _keywordsLock = new object();
+
+        // PERFORMANCE OPTIMIZATION: Parallel processing configuration
+        public bool EnableParallelProcessing { get; set; } = true;
+        public int ParallelThreshold { get; set; } = 50; // Use parallel processing for 50+ sentences
 
         public BinaryRelation(string languageCode, string text)
         {
@@ -52,12 +62,15 @@ namespace ConceptualBrowser.Business.Entities
             }
 
             TotalSentences = Sentences.Count;
-            for (int i = 0; i < sentenceStringList.Count; i++)
+
+            // PERFORMANCE OPTIMIZATION: Use parallel processing for large texts
+            if (EnableParallelProcessing && sentenceStringList.Count >= ParallelThreshold)
             {
-                List<string> wordsList = TextAnalyzer.Tokenizer(sentenceStringList[i]);
-                //Word2Vec -- wordsList can be shortened here by using word2vec.
-                tempTotalWords += wordsList.Count;
-                AppendToBinaryRelation(wordsList, Sentences[i]);
+                tempTotalWords = ProcessSentencesParallel(sentenceStringList);
+            }
+            else
+            {
+                tempTotalWords = ProcessSentencesSequential(sentenceStringList);
             }
 
             Console.WriteLine("Total Words: " + tempTotalWords);
@@ -67,6 +80,43 @@ namespace ConceptualBrowser.Business.Entities
 
             KeywordsSentencesSum = Keywords.SelectMany(s => s.Sentences).Count();
             Console.WriteLine("KeywordsSentencesSum: " + KeywordsSentencesSum);
+        }
+
+        // PERFORMANCE OPTIMIZATION: Sequential sentence processing for smaller texts
+        private int ProcessSentencesSequential(List<string> sentenceStringList)
+        {
+            int totalWords = 0;
+            for (int i = 0; i < sentenceStringList.Count; i++)
+            {
+                List<string> wordsList = TextAnalyzer.Tokenizer(sentenceStringList[i]);
+                totalWords += wordsList.Count;
+                AppendToBinaryRelation(wordsList, Sentences[i]);
+            }
+            return totalWords;
+        }
+
+        // PERFORMANCE OPTIMIZATION: Parallel sentence processing for large texts
+        private int ProcessSentencesParallel(List<string> sentenceStringList)
+        {
+            // Use ConcurrentDictionary for thread-safe processing
+            var results = new ConcurrentBag<(int index, List<string> words)>();
+
+            // Process sentences in parallel
+            Parallel.For(0, sentenceStringList.Count, i =>
+            {
+                List<string> wordsList = TextAnalyzer.Tokenizer(sentenceStringList[i]);
+                results.Add((i, wordsList));
+            });
+
+            // Aggregate results sequentially to maintain consistency
+            int totalWords = 0;
+            foreach (var (index, words) in results.OrderBy(r => r.index))
+            {
+                totalWords += words.Count;
+                AppendToBinaryRelationThreadSafe(words, Sentences[index]);
+            }
+
+            return totalWords;
         }
 
         public void KeywordsRank()
@@ -205,6 +255,98 @@ namespace ConceptualBrowser.Business.Entities
                     // PERFORMANCE OPTIMIZATION: Also maintain index-based relationships for memory efficiency
                     sentence.KeywordIndexes.Add(temp.KeywordIndex);
                     // Note: SentenceIndexes is already populated in KeywordNode constructor
+                }
+            }
+        }
+
+        // PERFORMANCE OPTIMIZATION: Thread-safe version of AppendToBinaryRelation for parallel processing
+        public void AppendToBinaryRelationThreadSafe(List<String> words, Sentence sentence)
+        {
+            sentence.KeywordNodes = new List<KeywordNode>();
+            foreach (string word in words)
+            {
+                Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.LastCoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence);
+                String tempWord = word;
+
+                String stem = TextAnalyzer.Stem(tempWord.ToLower());
+                RootNode root = new RootNode();
+
+                KeywordNode keyword = null;
+                // Thread-safe keyword lookup
+                lock (_keywordLookupLock)
+                {
+                    _keywordLookup.TryGetValue(stem, out keyword);
+                }
+
+                if (keyword != null)
+                {
+                    // Check if sentence already exists (thread-safe)
+                    bool sentenceExists = false;
+                    lock (keyword)
+                    {
+                        sentenceExists = keyword.Sentences.Any(n => n.SentenceIndex == tempSentence.SentenceIndex);
+                    }
+
+                    if (!sentenceExists)
+                    {
+                        // Update keyword rank (thread-safe)
+                        lock (keyword)
+                        {
+                            keyword.KeywordRank++;
+                        }
+
+                        // Thread-safe root lookup and update
+                        lock (_rootLookupLock)
+                        {
+                            if (_rootLookup.TryGetValue(stem.ToLowerInvariant(), out root) && root != null)
+                            {
+                                lock (root)
+                                {
+                                    if (!root.ExistsInOriginalWords(tempWord))
+                                        root.OriginalWords.Add(tempWord);
+                                }
+                            }
+                        }
+
+                        // Thread-safe updates
+                        sentence.KeywordNodes.Add(keyword);
+                        lock (keyword)
+                        {
+                            keyword.Sentences.Add(tempSentence);
+                            keyword.SentenceIndexes.Add(tempSentence.SentenceIndex);
+                        }
+                        sentence.KeywordIndexes.Add(keyword.KeywordIndex);
+                    }
+                }
+                else
+                {
+                    // Create new keyword and root (thread-safe)
+                    List<Sentence> sentences = new List<Sentence> { tempSentence };
+                    List<string> originalWords = new List<string> { tempWord };
+
+                    root = new RootNode(stem, originalWords);
+
+                    KeywordNode temp;
+                    lock (_keywordsLock)
+                    {
+                        temp = new KeywordNode(stem, Keywords.Count, 1, sentences);
+                        Keywords.Add(temp);
+                        Roots.Add(root);
+                    }
+
+                    // Update lookups (thread-safe)
+                    lock (_rootLookupLock)
+                    {
+                        _rootLookup[stem.ToLowerInvariant()] = root;
+                    }
+
+                    lock (_keywordLookupLock)
+                    {
+                        _keywordLookup[stem] = temp;
+                    }
+
+                    sentence.KeywordNodes.Add(temp);
+                    sentence.KeywordIndexes.Add(temp.KeywordIndex);
                 }
             }
         }

@@ -115,6 +115,12 @@ namespace ConceptualBrowser.FormUI
 
         private void FillNode(List<OptimalConceptTreeItem> optimals, TreeNode node)
         {
+            // BUGFIX: Add null check to prevent crash when optimals is null
+            if (optimals == null || optimals.Count == 0)
+            {
+                return;
+            }
+
             int parentID = (int?)node?.Tag ?? 0;
 
             TreeNodeCollection nodesCollection = node?.Nodes ?? treeViewBrowser.Nodes;
@@ -238,7 +244,20 @@ namespace ConceptualBrowser.FormUI
             ConceptExtraction ce = new ConceptExtraction();
             var optimals = ce.Extract(FileText, Language.Part3, CoveragePercentage, backgroundWorker);
 
+            // BUGFIX: Handle case where concept extraction returns no results
+            if (optimals == null || optimals.Count == 0)
+            {
+                OptimalTree = new List<OptimalConceptTreeItem>();
+                return; // Early return to prevent crash
+            }
+
             OptimalTree = CreateTree(optimals.OrderByDescending(o => o.Gain).ToList());
+
+            // BUGFIX: Check if OptimalTree has any items before accessing
+            if (OptimalTree == null || OptimalTree.Count == 0)
+            {
+                return; // Early return to prevent crash
+            }
 
             var MostOptimalConcept = OptimalTree.FirstOrDefault().OptimalConcept;
 
