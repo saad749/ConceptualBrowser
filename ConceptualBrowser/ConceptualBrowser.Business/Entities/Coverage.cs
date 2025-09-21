@@ -30,8 +30,8 @@ namespace ConceptualBrowser.Business.Entities
         public bool EnableBatchProcessing { get; set; } = false; // FIXED: Disabled to maintain sequential concept discovery order
         public int MemoryCheckInterval { get; set; } = 100; // Check memory usage every N concepts
 
-        // PERFORMANCE OPTIMIZATION: Parallel processing for concept extraction
-        public bool EnableParallelConceptExtraction { get; set; } = false; // FIXED: Disabled until concept extraction logic is made thread-safe
+        // PHASE 4 OPTIMIZATION: Re-enable parallel processing with proper thread safety
+        public bool EnableParallelConceptExtraction { get; set; } = true; // PHASE 4: Re-enabled with thread-safe implementation
         public int ParallelConceptThreshold { get; set; } = 20; // Use parallel processing for 20+ uncovered sentences
 
         // PERFORMANCE OPTIMIZATION: Thread-safe collections for parallel concept extraction

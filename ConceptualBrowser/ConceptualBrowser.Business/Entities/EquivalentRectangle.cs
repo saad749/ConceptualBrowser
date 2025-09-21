@@ -28,6 +28,12 @@ namespace ConceptualBrowser.Business.Entities
         private int _lastTupleCount = -1;
         private int _lastProductCount = -1;
 
+        // PHASE 4 OPTIMIZATION: Cache economy calculation results
+        private double? _economyCache = null;
+        private int _economyCacheTupleCount = -1;
+        private int _economyCacheSentenceCount = -1;
+        private int _economyCacheKeywordsCount = -1;
+
         public int TupleCount { get; set; }
         public int SentenceCount { get; set; }
 
@@ -232,9 +238,27 @@ namespace ConceptualBrowser.Business.Entities
         // The quantity(r - (d + c)) is a measure of the economy of information.
         public double CalculateEconomy()
         {
-            double num1 = ((double)TupleCount/ (double)(SentenceCount * Keywords.Count));
+            // PHASE 4 OPTIMIZATION: Use cached result if available and valid
+            if (_economyCache.HasValue &&
+                _economyCacheTupleCount == TupleCount &&
+                _economyCacheSentenceCount == SentenceCount &&
+                _economyCacheKeywordsCount == Keywords.Count)
+            {
+                return _economyCache.Value;
+            }
+
+            // Calculate and cache the result
+            double num1 = ((double)TupleCount / (double)(SentenceCount * Keywords.Count));
             double dem = (TupleCount - (SentenceCount + Keywords.Count));
-            return (num1 * dem);
+            double result = num1 * dem;
+
+            // Update cache
+            _economyCache = result;
+            _economyCacheTupleCount = TupleCount;
+            _economyCacheSentenceCount = SentenceCount;
+            _economyCacheKeywordsCount = Keywords.Count;
+
+            return result;
         }
 
         public void Equate(EquivalentRectangle temp)
@@ -274,12 +298,14 @@ namespace ConceptualBrowser.Business.Entities
         }
 
         /// <summary>
-        /// PERFORMANCE OPTIMIZATION: Invalidate rectangle cache when structure changes
+        /// PERFORMANCE OPTIMIZATION: Invalidate all caches when structure changes
         /// </summary>
         private void InvalidateCache()
         {
             _cacheValid = false;
             _isRectangleCache = null;
+            // PHASE 4: Also clear economy cache
+            _economyCache = null;
         }
 
         //	 convert this EquivalentR to object of type OptimalConcept

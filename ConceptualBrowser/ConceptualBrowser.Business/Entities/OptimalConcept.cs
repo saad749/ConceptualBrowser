@@ -14,8 +14,22 @@ namespace ConceptualBrowser.Business.Entities
         public double Gain { get; set; }
         public List<Sentence> Sentences { get; set; }
         public List<KeywordNode> Keywords { get; set; }
+
+        // PHASE 4 OPTIMIZATION: Lazy initialization to save memory
+        private NodeTree _nodesTree = null;
         [JsonIgnore]
-        public NodeTree NodesTree { get; set; } = null;
+        public NodeTree NodesTree
+        {
+            get
+            {
+                if (_nodesTree == null && Sentences != null)
+                {
+                    _nodesTree = new NodeTree(Sentences.Count);
+                }
+                return _nodesTree;
+            }
+            set { _nodesTree = value; }
+        }
 
         public OptimalConcept(int conceptNumber, double gain, List<KeywordNode> keywords, List<Sentence> sentences)
         {
@@ -23,7 +37,8 @@ namespace ConceptualBrowser.Business.Entities
             Gain = gain;
             Keywords = keywords;
             Sentences = sentences;
-            NodesTree = new NodeTree(sentences.Count);
+            // PHASE 4 OPTIMIZATION: Defer NodeTree creation until actually needed
+            // NodesTree = new NodeTree(sentences.Count); // Removed - will be created on demand
         }
 
         public void Model()
