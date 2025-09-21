@@ -101,10 +101,12 @@ namespace ConceptualBrowser.Business.Entities
             // Use ConcurrentDictionary for thread-safe processing
             var results = new ConcurrentBag<(int index, List<string> words)>();
 
-            // Process sentences in parallel
+            // Process sentences in parallel - each thread gets its own TextAnalyzer instance
             Parallel.For(0, sentenceStringList.Count, i =>
             {
-                List<string> wordsList = TextAnalyzer.Tokenizer(sentenceStringList[i]);
+                // THREAD SAFETY FIX: Create thread-local TextAnalyzer to avoid shared state issues
+                var threadLocalAnalyzer = new TextAnalyzer(TextAnalyzer.LanguageCode);
+                List<string> wordsList = threadLocalAnalyzer.Tokenizer(sentenceStringList[i]);
                 results.Add((i, wordsList));
             });
 

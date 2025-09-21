@@ -20,18 +20,18 @@ namespace ConceptualBrowser.Business.Entities
         public ConceptTree HeapConcepts { get; set; } //= new ConceptTree(1000);
 
         // PERFORMANCE OPTIMIZATION: Configurable limits for large text processing
-        public int MaxConcepts { get; set; } = 500; // Limit total concepts for very large texts
-        public int MaxIterationsPerConcept { get; set; } = 100; // Limit iterations per concept
-        public double MinGainThreshold { get; set; } = 0.001; // Minimum acceptable gain
-        public bool EnableEarlyTermination { get; set; } = true; // Enable/disable optimizations
+        public int MaxConcepts { get; set; } = 30000; // FIXED: Increased 3x to allow even better concept discovery
+        public int MaxIterationsPerConcept { get; set; } = 300; // Increased 3x for more thorough concept extraction
+        public double MinGainThreshold { get; set; } = 0.0003; // Reduced 3x to allow lower-gain concepts
+        public bool EnableEarlyTermination { get; set; } = false; // FIXED: Disabled to match baseline behavior
 
         // PERFORMANCE OPTIMIZATION: Incremental processing for large texts
         public int BatchSize { get; set; } = 1000; // Process keywords in batches for memory efficiency
-        public bool EnableBatchProcessing { get; set; } = true; // Enable batch processing for large texts
+        public bool EnableBatchProcessing { get; set; } = false; // FIXED: Disabled to maintain sequential concept discovery order
         public int MemoryCheckInterval { get; set; } = 100; // Check memory usage every N concepts
 
         // PERFORMANCE OPTIMIZATION: Parallel processing for concept extraction
-        public bool EnableParallelConceptExtraction { get; set; } = true; // Enable parallel concept extraction
+        public bool EnableParallelConceptExtraction { get; set; } = false; // FIXED: Disabled until concept extraction logic is made thread-safe
         public int ParallelConceptThreshold { get; set; } = 20; // Use parallel processing for 20+ uncovered sentences
 
         // PERFORMANCE OPTIMIZATION: Thread-safe collections for parallel concept extraction
@@ -77,7 +77,7 @@ namespace ConceptualBrowser.Business.Entities
             // PERFORMANCE OPTIMIZATION: Track minimum gain threshold for early termination
             double minGainThreshold = EnableEarlyTermination ? MinGainThreshold : 0.0001;
             int consecutiveLowGainConcepts = 0;
-            const int maxLowGainConcepts = 5; // Stop after 5 consecutive low-gain concepts
+            const int maxLowGainConcepts = 300; // FIXED: Increased 3x threshold to prevent premature termination
 
             // PERFORMANCE OPTIMIZATION: Incremental processing for large texts
             if (EnableBatchProcessing && keywords.Count > BatchSize)
@@ -299,14 +299,13 @@ namespace ConceptualBrowser.Business.Entities
             EquivalentRectangle temp1 = new EquivalentRectangle();
             EquivalentRectangle baseRectangle = equivalentRectangle.Clone(); // Clone once
 
-            // PERFORMANCE OPTIMIZATION: Add iteration limit to prevent infinite loops
-            int maxIterations = EnableEarlyTermination ? MaxIterationsPerConcept : 100;
-            int currentIteration = 0;
+            // FIXED: Removed iteration limit that was preventing full concept extraction
+            // int maxIterations = EnableEarlyTermination ? MaxIterationsPerConcept : 100;
+            // int currentIteration = 0;
 
             /*#######################################################*/
-            for (; !conceptExtracted && currentIteration < maxIterations;)
+            for (; !conceptExtracted;)
             {
-                currentIteration++;
                 double max = -10000; //Why arbitarary high negative value?
                 EquivalentRectangle highestEquivalentRectangle = new EquivalentRectangle();
                 double gain = -1;
@@ -335,11 +334,11 @@ namespace ConceptualBrowser.Business.Entities
                             tempSentenceIndex = pair[1];
                         }
 
-                        // PERFORMANCE OPTIMIZATION: Early exit if gain is too small
-                        if (max > 0 && gain < minimalGainThreshold && t > tuple.Count / 2)
-                        {
-                            break; // Stop searching if we're getting diminishing returns
-                        }
+                        // FIXED: Disabled aggressive early exit that prevents finding better concepts later in search
+                        // if (max > 0 && gain < minimalGainThreshold && t > tuple.Count / 2)
+                        // {
+                        //     break; // Stop searching if we're getting diminishing returns
+                        // }
                     }
                 }
                 if (highestEquivalentRectangle.Keywords.Count == 0)
