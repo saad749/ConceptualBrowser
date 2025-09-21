@@ -20,9 +20,9 @@ namespace ConceptualBrowser.Business.Entities
         public ConceptTree HeapConcepts { get; set; } //= new ConceptTree(1000);
 
         // PERFORMANCE OPTIMIZATION: Configurable limits for large text processing
-        public int MaxConcepts { get; set; } = 30000; // FIXED: Increased 3x to allow even better concept discovery
-        public int MaxIterationsPerConcept { get; set; } = 300; // Increased 3x for more thorough concept extraction
-        public double MinGainThreshold { get; set; } = 0.0003; // Reduced 3x to allow lower-gain concepts
+        public int MaxConcepts { get; set; } = 100000; // FIXED: Massively increased to ensure no concept is missed
+        public int MaxIterationsPerConcept { get; set; } = 10000; // Increased 100x for exhaustive concept extraction
+        public double MinGainThreshold { get; set; } = 0.00001; // Reduced 100x to capture even tiny gain concepts
         public bool EnableEarlyTermination { get; set; } = false; // FIXED: Disabled to match baseline behavior
 
         // PERFORMANCE OPTIMIZATION: Incremental processing for large texts
@@ -75,9 +75,9 @@ namespace ConceptualBrowser.Business.Entities
             int processedCount = 0;
 
             // PERFORMANCE OPTIMIZATION: Track minimum gain threshold for early termination
-            double minGainThreshold = EnableEarlyTermination ? MinGainThreshold : 0.0001;
+            double minGainThreshold = EnableEarlyTermination ? MinGainThreshold : 0.000001; // Reduced 100x for exhaustive extraction
             int consecutiveLowGainConcepts = 0;
-            const int maxLowGainConcepts = 300; // FIXED: Increased 3x threshold to prevent premature termination
+            const int maxLowGainConcepts = 10000; // FIXED: Massively increased to never terminate prematurely
 
             // PERFORMANCE OPTIMIZATION: Incremental processing for large texts
             if (EnableBatchProcessing && keywords.Count > BatchSize)

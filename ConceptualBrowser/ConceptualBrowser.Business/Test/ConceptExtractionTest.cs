@@ -32,7 +32,7 @@ namespace ConceptualBrowser.Business.Test
 
             // Test parameters
             string languageCode = "eng"; // Use ISO 639-3 three-letter code
-            double coveragePercentage = 0.8; // 80% coverage as commonly used
+            double coveragePercentage = 0.95; // Increased to 95% coverage to capture more concepts
 
             try
             {
