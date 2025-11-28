@@ -229,10 +229,17 @@ namespace ConceptualBrowser.FormUI
                 MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            string defaultFileName = $"exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
+            string filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            string filePath = ShowSaveFileDialog(defaultFileName, filter, "txt");
+
+            if (filePath == null)
+                return;
+
             string[] lines = OptimalTree.Select(c => c.OptimalConcept.ConceptName).ToArray();
-            string fileName = $"Output\\exported_concepts_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.txt";
-            File.WriteAllLines(fileName, lines);
-            Process.Start(fileName);
+            File.WriteAllLines(filePath, lines);
+            OpenFileInNotepad(filePath);
         }
 
         private void bgwExtraction_DoWork(object sender, DoWorkEventArgs e)
@@ -301,6 +308,14 @@ namespace ConceptualBrowser.FormUI
                 MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            string defaultFileName = $"exported_concepts_simple_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            string filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            string filePath = ShowSaveFileDialog(defaultFileName, filter, "json");
+
+            if (filePath == null)
+                return;
+
             var concepts = OptimalTree.Select(c => new
             {
                 c.OptimalConcept.ConceptName,
@@ -314,9 +329,8 @@ namespace ConceptualBrowser.FormUI
                 }).ToList()
             }).ToList();
             var json = JsonConvert.SerializeObject(concepts, Formatting.Indented);
-            string fileName = $"Output\\exported_concepts_simple_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
-            File.WriteAllText(fileName, json);
-            Process.Start(fileName);
+            File.WriteAllText(filePath, json);
+            OpenFileInNotepad(filePath);
         }
 
         private void CmbFont_SelectedIndexChanged(object sender, EventArgs e)
@@ -343,12 +357,19 @@ namespace ConceptualBrowser.FormUI
                 MessageBox.Show("Please Open a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            string defaultFileName = $"exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
+            string filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            string filePath = ShowSaveFileDialog(defaultFileName, filter, "json");
+
+            if (filePath == null)
+                return;
+
             var concepts = OptimalTree.Select(c => c.OptimalConcept).ToList();
             var detailed = new { Concepts = concepts, Text = txtText.Text };
             var json = JsonConvert.SerializeObject(detailed, Formatting.Indented);
-            string fileName = $"Output\\exported_concepts_detailed_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.json";
-            File.WriteAllText(fileName, json, Encoding);
-            Process.Start(fileName);
+            File.WriteAllText(filePath, json, Encoding);
+            OpenFileInNotepad(filePath);
         }
 
         private void TsmiImport_Click(object sender, EventArgs e)
@@ -430,9 +451,127 @@ namespace ConceptualBrowser.FormUI
             this.Close();
         }
 
+        /// <summary>
+        /// Shows a SaveFileDialog with the specified parameters and returns the selected file path.
+        /// </summary>
+        /// <param name="defaultFileName">Default file name to show in the dialog</param>
+        /// <param name="filter">File type filter (e.g., "JSON files (*.json)|*.json")</param>
+        /// <param name="defaultExt">Default file extension without the dot (e.g., "json")</param>
+        /// <returns>The selected file path, or null if the user cancelled</returns>
+        private string ShowSaveFileDialog(string defaultFileName, string filter, string defaultExt)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.FileName = defaultFileName;
+                saveFileDialog.Filter = filter;
+                saveFileDialog.DefaultExt = defaultExt;
+                // Use full path to Output folder relative to current working directory
+                saveFileDialog.InitialDirectory = Path.GetFullPath("Output");
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.OverwritePrompt = true;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    return saveFileDialog.FileName;
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safely opens a file in Notepad. Does nothing if Notepad is not available.
+        /// </summary>
+        /// <param name="filePath">The path to the file to open</param>
+        private void OpenFileInNotepad(string filePath)
+        {
+            try
+            {
+                string notepadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "notepad.exe");
+
+                if (!File.Exists(notepadPath))
+                    return;
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = notepadPath,
+                    Arguments = $"\"{filePath}\"",
+                    UseShellExecute = false
+                });
+            }
+            catch
+            {
+                // Silently fail if Notepad cannot be started
+            }
+        }
+
         private void TsmiBinaryRelation_Click(object sender, EventArgs e)
         {
-            Process.Start("Output\\matrix.csv");
+            if (OptimalTree is null || OptimalTree.Count == 0)
+            {
+                MessageBox.Show("Please process a file first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string defaultFileName = $"binary_relation_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.csv";
+            string filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+            string filePath = ShowSaveFileDialog(defaultFileName, filter, "csv");
+
+            if (filePath == null)
+                return;
+
+            string csvContent = GenerateBinaryRelationMatrix();
+            File.WriteAllText(filePath, csvContent, Encoding.UTF8);
+            OpenFileInNotepad(filePath);
+        }
+
+        /// <summary>
+        /// Generates a binary relation matrix CSV from the extracted concepts.
+        /// Rows are sentences, columns are keywords, cells indicate keyword presence in sentence.
+        /// </summary>
+        private string GenerateBinaryRelationMatrix()
+        {
+            // Collect all unique keywords and sentences from all concepts
+            var allKeywords = OptimalTree
+                .SelectMany(t => t.OptimalConcept.Keywords)
+                .GroupBy(k => k.Keyword)
+                .Select(g => g.First())
+                .OrderBy(k => k.Keyword)
+                .ToList();
+
+            var allSentences = OptimalTree
+                .SelectMany(t => t.OptimalConcept.Sentences)
+                .GroupBy(s => s.SentenceIndex)
+                .Select(g => g.First())
+                .OrderBy(s => s.SentenceIndex)
+                .ToList();
+
+            // Build the matrix
+            var sb = new StringBuilder();
+
+            // Header row: empty cell + keyword names
+            sb.Append(","); // Empty cell for row headers
+            foreach (var keyword in allKeywords)
+            {
+                sb.Append($"\"{keyword.Keyword}\",");
+            }
+            sb.AppendLine();
+
+            // Data rows: sentence index + binary values
+            foreach (var sentence in allSentences)
+            {
+                sb.Append($"{sentence.SentenceIndex},");
+
+                foreach (var keyword in allKeywords)
+                {
+                    // Check if this sentence contains this keyword
+                    bool hasKeyword = sentence.KeywordIndexes.Contains(keyword.KeywordIndex) ||
+                                      sentence.KeywordNodes.Any(k => k.Keyword == keyword.Keyword);
+                    sb.Append(hasKeyword ? "1," : "0,");
+                }
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         public List<OptimalConceptTreeItem> CreateTree(List<OptimalConcept> optimals)
