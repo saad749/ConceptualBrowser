@@ -119,10 +119,14 @@ namespace ConceptualBrowser.Business.Entities
             List<int> imagesSentenceIndex = GetImagesInverse(sentenceIndex);
             List<int> imagesKeywordIndex = GetImages(keywordIndex);
 
+            // PHASE 6 OPTIMIZATION: Convert to HashSets for O(1) lookups
+            var imagesSentenceSet = new HashSet<int>(imagesSentenceIndex);
+            var imagesKeywordSet = new HashSet<int>(imagesKeywordIndex);
+
             //Eliminate rows of inverse(Sentences) not in images of keywords
             for (int i = 0; i < Sentences.Count; i++)
             {
-                if (!imagesKeywordIndex.Contains(Sentences[i].Index)) 
+                if (!imagesKeywordSet.Contains(Sentences[i].Index))
                 {
                     Sentences.RemoveAt(i);
                     --i;
@@ -132,7 +136,7 @@ namespace ConceptualBrowser.Business.Entities
             //Eliminate rows of Keywords not in images of Sentences
             for (int i = 0; i < Keywords.Count; i++)
             {
-                if (!imagesSentenceIndex.Contains(Keywords[i].Index))
+                if (!imagesSentenceSet.Contains(Keywords[i].Index))
                 {
                     Keywords.RemoveAt(i);
                     --i;
@@ -144,7 +148,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 for (int i = 0; i < equivalentNode.Indexes.Count; i++)
                 {
-                    if (!imagesKeywordIndex.Contains(equivalentNode.Indexes[i]))
+                    if (!imagesKeywordSet.Contains(equivalentNode.Indexes[i]))
                     {
                         equivalentNode.Indexes.RemoveAt(i);
                         --i;
@@ -157,7 +161,7 @@ namespace ConceptualBrowser.Business.Entities
             {
                 for (int i = 0; i < equivalentNode.Indexes.Count; i++)
                 {
-                    if (!imagesSentenceIndex.Contains(equivalentNode.Indexes[i]))
+                    if (!imagesSentenceSet.Contains(equivalentNode.Indexes[i]))
                     {
                         equivalentNode.Indexes.RemoveAt(i);
                         --i;
@@ -174,13 +178,15 @@ namespace ConceptualBrowser.Business.Entities
         //	 return the list of nodes associated with Sentences that has index from inverse of EquivalentR
         private List<int> GetImagesInverse(int index)
         {
-            return Sentences.FirstOrDefault(s => s.Index == index).Indexes;
+            var sentence = Sentences.FirstOrDefault(s => s.Index == index);
+            return sentence?.Indexes ?? new List<int>();
         }
 
         //	 return the list of nodes associated with Keywords that has index from EquivalentR
         private List<int> GetImages(int index)
         {
-            return Keywords.FirstOrDefault(k => k.Index == index).Indexes;
+            var keyword = Keywords.FirstOrDefault(k => k.Index == index);
+            return keyword?.Indexes ?? new List<int>();
         }
 
         //	 return the list of tuples that is contained in this EquivalentR
