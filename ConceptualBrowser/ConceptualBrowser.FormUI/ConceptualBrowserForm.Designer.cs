@@ -65,6 +65,9 @@
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
             this.OpenTextBoxMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openNumericFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblPrecision = new System.Windows.Forms.Label();
+            this.nudPrecision = new System.Windows.Forms.NumericUpDown();
             this.menuStripMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -86,6 +89,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFileMenuItem,
             this.OpenTextBoxMenuItem,
+            this.openNumericFileMenuItem,
             this.tsmiImport,
             this.exportMenuItem,
             this.exitMenuItem});
@@ -446,17 +450,51 @@
             this.lblFont.Text = "Font";
             // 
             // OpenTextBoxMenuItem
-            // 
+            //
             this.OpenTextBoxMenuItem.Name = "OpenTextBoxMenuItem";
             this.OpenTextBoxMenuItem.Size = new System.Drawing.Size(180, 22);
             this.OpenTextBoxMenuItem.Text = "Open Textbox";
             this.OpenTextBoxMenuItem.Click += new System.EventHandler(this.OpenTextBoxMenuItem_Click);
-            // 
+            //
+            // openNumericFileMenuItem
+            //
+            this.openNumericFileMenuItem.Name = "openNumericFileMenuItem";
+            this.openNumericFileMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openNumericFileMenuItem.Text = "Open &Numeric CSV";
+            this.openNumericFileMenuItem.Click += new System.EventHandler(this.openNumericFileMenuItem_Click);
+            //
+            // lblPrecision
+            //
+            this.lblPrecision.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPrecision.AutoSize = true;
+            this.lblPrecision.Location = new System.Drawing.Point(560, 35);
+            this.lblPrecision.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPrecision.Name = "lblPrecision";
+            this.lblPrecision.Size = new System.Drawing.Size(55, 15);
+            this.lblPrecision.TabIndex = 17;
+            this.lblPrecision.Text = "Precision";
+            //
+            // nudPrecision
+            //
+            ((System.ComponentModel.ISupportInitialize)(this.nudPrecision)).BeginInit();
+            this.nudPrecision.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudPrecision.Location = new System.Drawing.Point(625, 31);
+            this.nudPrecision.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.nudPrecision.Name = "nudPrecision";
+            this.nudPrecision.Size = new System.Drawing.Size(69, 23);
+            this.nudPrecision.TabIndex = 18;
+            this.nudPrecision.Minimum = -10;
+            this.nudPrecision.Maximum = 10;
+            this.nudPrecision.Value = -4;
+            ((System.ComponentModel.ISupportInitialize)(this.nudPrecision)).EndInit();
+            //
             // ConceptualBrowserForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1176, 786);
+            this.Controls.Add(this.nudPrecision);
+            this.Controls.Add(this.lblPrecision);
             this.Controls.Add(this.cmbFont);
             this.Controls.Add(this.lblFont);
             this.Controls.Add(this.label4);
@@ -526,6 +564,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiImport;
         private System.Windows.Forms.ToolStripMenuItem tsmiBinaryRelation;
         private System.Windows.Forms.ToolStripMenuItem OpenTextBoxMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openNumericFileMenuItem;
+        private System.Windows.Forms.Label lblPrecision;
+        private System.Windows.Forms.NumericUpDown nudPrecision;
     }
 }
 

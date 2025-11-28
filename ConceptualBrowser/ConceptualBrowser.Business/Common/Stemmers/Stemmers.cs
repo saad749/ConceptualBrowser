@@ -1,13 +1,20 @@
-﻿using Snowball;
+using Snowball;
 
 namespace ConceptualBrowser.Business.Common.Stemmer
 {
     public static class Stemmers
     {
+        /// <summary>
+        /// Special language code for numeric data processing.
+        /// </summary>
+        public const string NumericCode = "numeric";
+
         public static IStemmer GetStemmer(string languageCode)
         {
             switch (languageCode)
             {
+                case NumericCode:
+                    return new NumericStemmer();
                 case "ara":
                     return new ArabicStemmer();
                 case "hye":

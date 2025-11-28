@@ -38,9 +38,13 @@ namespace ConceptualBrowser.Business.Entities
         private readonly object _optimalConceptsLock = new object();
         private readonly object _currentConceptLock = new object();
 
-        public Coverage(string languageCode, string text)
+        public Coverage(string languageCode, string text) : this(languageCode, text, -4)
         {
-            BinaryRelation = new BinaryRelation(languageCode, text);
+        }
+
+        public Coverage(string languageCode, string text, int numericPrecision)
+        {
+            BinaryRelation = new BinaryRelation(languageCode, text, numericPrecision);
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design.Serialization;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,10 +13,10 @@ using System.Windows.Forms;
 using ConceptualBrowser.Business;
 using ConceptualBrowser.Business.Common;
 using ConceptualBrowser.Business.Common.Stemmer;
+using ConceptualBrowser.Business.Common.TextAnalysis;
 using ConceptualBrowser.Business.Entities;
 using Iso639;
 using Newtonsoft.Json;
-using System.ComponentModel.Design.Serialization;
 
 namespace ConceptualBrowser.FormUI
 {
@@ -35,6 +36,10 @@ namespace ConceptualBrowser.FormUI
         public double CoveragePercentage { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float FontSize { get; set; } = 10.0F;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int NumericPrecision { get; set; } = -4;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ExtractionLanguageCode { get; set; }
 
         public ConceptualBrowserForm()
         {
@@ -43,6 +48,7 @@ namespace ConceptualBrowser.FormUI
 
             var items = new[] {
                 new { Text = "Auto-Detect", Value = "Auto-Detect" },
+                new { Text = "Numeric (CSV)", Value = Stemmers.NumericCode },
                 new { Text = "Arabic", Value = "ara" },
                 new { Text = "Armenian", Value = "hye" },
                 new { Text = "Bulgarian", Value = "bul" },
@@ -87,6 +93,7 @@ namespace ConceptualBrowser.FormUI
             cmbLanguage.DataSource = items;
             cmbLanguage.SelectedIndex = 0;
             cmbFont.SelectedIndex = 1;
+            // nudPrecision default is set in Designer to -4 (4 decimal places)
 
             if (unicodeToolStripMenuItem.Checked)
                 Encoding = Encoding.Unicode;
@@ -151,7 +158,16 @@ namespace ConceptualBrowser.FormUI
                 List<int> coveringSentenceNumbers = optimal.OptimalConcept.Sentences.Select(n => n.SentenceIndex).ToList();
                 List<string> keywords = optimal.OptimalConcept.Keywords.Select(k => k.Keyword).ToList();
 
-                ITextAnalyzer textAnalyzer = new TextAnalyzer(Language.Part3);
+                // Use the correct analyzer based on extraction language code
+                ITextAnalyzer textAnalyzer;
+                if (ExtractionLanguageCode == Stemmers.NumericCode)
+                {
+                    textAnalyzer = new NumericAnalyzer(NumericPrecision);
+                }
+                else
+                {
+                    textAnalyzer = new TextAnalyzer(ExtractionLanguageCode ?? Language.Part3);
+                }
                 List<string> sentences = textAnalyzer.GetSentences(FileText);
                 txtText.Text = "";
                 txtSummary.Text = "";
@@ -249,7 +265,7 @@ namespace ConceptualBrowser.FormUI
 
             var backgroundWorker = sender as BackgroundWorker;
             ConceptExtraction ce = new ConceptExtraction();
-            var optimals = ce.Extract(FileText, Language.Part3, CoveragePercentage, backgroundWorker);
+            var optimals = ce.Extract(FileText, ExtractionLanguageCode, CoveragePercentage, backgroundWorker, NumericPrecision);
 
             // BUGFIX: Handle case where concept extraction returns no results
             if (optimals == null || optimals.Count == 0)
@@ -623,7 +639,57 @@ namespace ConceptualBrowser.FormUI
             }
         }
 
-        private void ProcessText(string text)
+        private void openNumericFileMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialog.Title = "Open Numeric CSV File";
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            string fileName = openFileDialog.FileName;
+            if (String.IsNullOrWhiteSpace(fileName))
+            {
+                return;
+            }
+
+            try
+            {
+                // Get precision from numeric up/down control
+                int precision = (int)nudPrecision.Value;
+
+                // Create preprocessor and convert CSV to text
+                var preprocessor = new NumericPreprocessor(precision);
+                preprocessor.HasHeaderRow = true; // Assume first row has headers
+
+                string csvContent = File.ReadAllText(fileName, Encoding);
+                var stats = preprocessor.GetStats(csvContent);
+
+                // Convert to text format for FCA processing
+                string convertedText = preprocessor.ConvertCsvToText(csvContent);
+
+                if (string.IsNullOrWhiteSpace(convertedText))
+                {
+                    MessageBox.Show("Could not convert numeric data. Please check the CSV format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Show stats to user
+                tssLanguage.Text = $"Numeric Data: {stats.TotalRows} rows, {stats.AttributeCount} attrs, +{stats.PositiveCount}/-{stats.NegativeCount}";
+
+                // Process the converted text using "none" language (no text stemming)
+                ProcessNumericText(convertedText);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error processing numeric file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ProcessNumericText(string text)
         {
             fileToolStripMenuItem.Enabled = false;
             treeViewBrowser.Nodes.Clear();
@@ -635,9 +701,8 @@ namespace ConceptualBrowser.FormUI
                 txtSummary.Text = "";
                 txtKeywords.Text = "";
 
-                //Also Take Language by User Input
-                Language = Language.FromPart3(cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : cmbLanguage.SelectedValue.ToString());
-                tssLanguage.Text = "Language: " + Language.Name;
+                // Use "none" for numeric data - the NumericPreprocessor already did the stemming
+                Language = Language.FromPart3("none");
 
                 CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
                 tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
@@ -646,7 +711,76 @@ namespace ConceptualBrowser.FormUI
                 pbMain.Minimum = 0;
                 pbMain.Value = 5;
 
-                if (Language.Part3 == "ara" || Language.Part3 == "urd" || Language.Part3 == "heb" || Language.Part3 == "yid" || Language.Part3 == "fas")
+                // Numeric data is left-to-right
+                txtKeywords.SelectionAlignment = HorizontalAlignment.Left;
+                txtText.SelectionAlignment = HorizontalAlignment.Left;
+                txtKeywords.RightToLeft = RightToLeft.No;
+                txtText.RightToLeft = RightToLeft.No;
+                txtSummary.RightToLeft = RightToLeft.No;
+
+                bgwExtraction.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error processing numeric data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                fileToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void ProcessText(string text)
+        {
+            fileToolStripMenuItem.Enabled = false;
+            treeViewBrowser.Nodes.Clear();
+
+            try
+            {
+                // Check if Numeric mode is selected
+                string selectedLanguage = cmbLanguage.SelectedValue?.ToString();
+                bool isNumericMode = selectedLanguage == Stemmers.NumericCode;
+
+                // Set precision for numeric processing
+                NumericPrecision = (int)nudPrecision.Value;
+
+                if (isNumericMode)
+                {
+                    // For numeric mode, pass raw CSV to be processed by NumericAnalyzer
+                    FileText = text;
+                    txtText.Text = FileText;
+
+                    // Get stats for display (using a temporary preprocessor just for stats)
+                    var statsPreprocessor = new NumericPreprocessor(NumericPrecision);
+                    statsPreprocessor.HasHeaderRow = true;
+                    var stats = statsPreprocessor.GetStats(text);
+
+                    tssLanguage.Text = $"Numeric: {stats.TotalRows} rows, {stats.AttributeCount} attrs, +{stats.PositiveCount}/-{stats.NegativeCount}";
+
+                    // Use "numeric" language code so BinaryRelation uses NumericAnalyzer
+                    ExtractionLanguageCode = Stemmers.NumericCode;
+                    Language = Language.FromPart3("none"); // For display purposes only
+                }
+                else
+                {
+                    FileText = text;
+                    txtText.Text = FileText;
+
+                    // Detect or use selected language
+                    string langCode = cmbLanguage.SelectedIndex == 0 ? DetectLanguage(FileText) : selectedLanguage;
+                    ExtractionLanguageCode = langCode;
+                    Language = Language.FromPart3(langCode);
+                    tssLanguage.Text = "Language: " + Language.Name;
+                }
+
+                txtSummary.Text = "";
+                txtKeywords.Text = "";
+
+                CoveragePercentage = Convert.ToDouble(cmbCoveragePercentage.SelectedItem) / 100;
+                tssCoveragePercentage.Text = "Coverage Percentage: " + CoveragePercentage * 100;
+
+                pbMain.Maximum = 100;
+                pbMain.Minimum = 0;
+                pbMain.Value = 5;
+
+                if (!isNumericMode && (Language.Part3 == "ara" || Language.Part3 == "urd" || Language.Part3 == "heb" || Language.Part3 == "yid" || Language.Part3 == "fas"))
                 {
                     txtKeywords.SelectionAlignment = HorizontalAlignment.Right;
                     txtText.SelectionAlignment = HorizontalAlignment.Right;

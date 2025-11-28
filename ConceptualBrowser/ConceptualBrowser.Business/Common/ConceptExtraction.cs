@@ -11,9 +11,15 @@ namespace ConceptualBrowser.Business.Common
     public class ConceptExtraction
     {
         List<Sentence> sentences = new List<Sentence>();
+
         public List<OptimalConcept> Extract(String text, string languageCode, double coveragePercentage, BackgroundWorker backgroundWorker)
         {
-            Coverage coverage = new Coverage(languageCode, text);
+            return Extract(text, languageCode, coveragePercentage, backgroundWorker, -4);
+        }
+
+        public List<OptimalConcept> Extract(String text, string languageCode, double coveragePercentage, BackgroundWorker backgroundWorker, int numericPrecision)
+        {
+            Coverage coverage = new Coverage(languageCode, text, numericPrecision);
 
             List<OptimalConcept> optimals = coverage.ExtractAll(coveragePercentage, backgroundWorker);
 

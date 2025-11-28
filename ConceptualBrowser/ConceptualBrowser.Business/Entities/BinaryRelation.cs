@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ConceptualBrowser.Business.Common.Helpers;
 using ConceptualBrowser.Business.Common;
+using ConceptualBrowser.Business.Common.TextAnalysis;
 
 namespace ConceptualBrowser.Business.Entities
 {
@@ -21,7 +22,8 @@ namespace ConceptualBrowser.Business.Entities
         public int MaxRank { get; set; } = 2; //2 because the value can never be mroe than 1 //C# 6.0 allows property initializers// WHY 200?????
         public int KeywordsSentencesSum { get; set; }
         public int TotalUniqueCovered { get; set; }
-        public TextAnalyzer TextAnalyzer { get; set; }
+        public ITextAnalyzer TextAnalyzer { get; set; }
+        public string LanguageCode { get; set; }
 
         // PERFORMANCE OPTIMIZATION: Fast lookup dictionaries for O(1) access instead of O(n) list searches
         private Dictionary<string, KeywordNode> _keywordLookup = new Dictionary<string, KeywordNode>();
@@ -36,15 +38,35 @@ namespace ConceptualBrowser.Business.Entities
         public bool EnableParallelProcessing { get; set; } = true; // Enable parallel processing
         public int ParallelThreshold { get; set; } = 50; // Use parallel processing for 50+ sentences
 
-        public BinaryRelation(string languageCode, string text)
+        public BinaryRelation(string languageCode, string text) : this(languageCode, text, -4)
+        {
+        }
+
+        public BinaryRelation(string languageCode, string text, int numericPrecision)
         {
             Keywords = new List<KeywordNode>();
+            LanguageCode = languageCode;
             // PERFORMANCE: Initialize fast lookup dictionaries
             _keywordLookup = new Dictionary<string, KeywordNode>();
             _rootLookup = new Dictionary<string, RootNode>();
 
-            TextAnalyzer = new TextAnalyzer(languageCode);
-            List<String> sentenceList = TextAnalyzer.GetSentences(TextAnalyzer.RemoveDiacritics(text));
+            List<string> sentenceList;
+
+            // Check if numeric mode
+            if (languageCode == Stemmers.NumericCode)
+            {
+                var numericAnalyzer = new NumericAnalyzer(numericPrecision);
+                numericAnalyzer.HasHeaderRow = true;
+                TextAnalyzer = numericAnalyzer;
+                sentenceList = numericAnalyzer.GetSentences(text);
+            }
+            else
+            {
+                var textAnalyzer = new TextAnalyzer(languageCode);
+                TextAnalyzer = textAnalyzer;
+                sentenceList = textAnalyzer.GetSentences(textAnalyzer.RemoveDiacritics(text));
+            }
+
             CreateBinaryRelation(sentenceList);
         }
 
@@ -101,11 +123,21 @@ namespace ConceptualBrowser.Business.Entities
             // Use ConcurrentDictionary for thread-safe processing
             var results = new ConcurrentBag<(int index, List<string> words)>();
 
-            // Process sentences in parallel - each thread gets its own TextAnalyzer instance
+            // Process sentences in parallel - each thread gets its own analyzer instance
             Parallel.For(0, sentenceStringList.Count, i =>
             {
-                // THREAD SAFETY FIX: Create thread-local TextAnalyzer to avoid shared state issues
-                var threadLocalAnalyzer = new TextAnalyzer(TextAnalyzer.LanguageCode);
+                // THREAD SAFETY FIX: Create thread-local analyzer to avoid shared state issues
+                ITextAnalyzer threadLocalAnalyzer;
+                if (LanguageCode == Stemmers.NumericCode)
+                {
+                    // For numeric, get precision from existing analyzer
+                    int precision = (TextAnalyzer as NumericAnalyzer)?.Stemmer?.Precision ?? -4;
+                    threadLocalAnalyzer = new NumericAnalyzer(precision);
+                }
+                else
+                {
+                    threadLocalAnalyzer = new TextAnalyzer(LanguageCode);
+                }
                 List<string> wordsList = threadLocalAnalyzer.Tokenizer(sentenceStringList[i]);
                 results.Add((i, wordsList));
             });
