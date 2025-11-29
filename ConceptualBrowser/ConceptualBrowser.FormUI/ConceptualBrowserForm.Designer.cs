@@ -65,7 +65,6 @@
             this.cmbFont = new System.Windows.Forms.ComboBox();
             this.lblFont = new System.Windows.Forms.Label();
             this.OpenTextBoxMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openNumericFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblPrecision = new System.Windows.Forms.Label();
             this.nudPrecision = new System.Windows.Forms.NumericUpDown();
             this.menuStripMain.SuspendLayout();
@@ -89,7 +88,6 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFileMenuItem,
             this.OpenTextBoxMenuItem,
-            this.openNumericFileMenuItem,
             this.tsmiImport,
             this.exportMenuItem,
             this.exitMenuItem});
@@ -456,13 +454,6 @@
             this.OpenTextBoxMenuItem.Text = "Open Textbox";
             this.OpenTextBoxMenuItem.Click += new System.EventHandler(this.OpenTextBoxMenuItem_Click);
             //
-            // openNumericFileMenuItem
-            //
-            this.openNumericFileMenuItem.Name = "openNumericFileMenuItem";
-            this.openNumericFileMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openNumericFileMenuItem.Text = "Open &Numeric CSV";
-            this.openNumericFileMenuItem.Click += new System.EventHandler(this.openNumericFileMenuItem_Click);
-            //
             // lblPrecision
             //
             this.lblPrecision.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -564,7 +555,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiImport;
         private System.Windows.Forms.ToolStripMenuItem tsmiBinaryRelation;
         private System.Windows.Forms.ToolStripMenuItem OpenTextBoxMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openNumericFileMenuItem;
         private System.Windows.Forms.Label lblPrecision;
         private System.Windows.Forms.NumericUpDown nudPrecision;
     }
