@@ -80,7 +80,7 @@ namespace ConceptualBrowser.Business
             {
                 return text.ToLower(Language.Culture).RemoveStopWords(Language.Part3);
             }
-            catch (ArgumentException ex) //The Language is not supported exception
+            catch (ArgumentException) //The Language is not supported exception
             {
                 return text;
             }

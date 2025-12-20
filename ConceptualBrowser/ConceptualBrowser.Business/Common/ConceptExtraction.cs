@@ -36,13 +36,8 @@ namespace ConceptualBrowser.Business.Common
 
             var stems = keywords.Select(x => x.Keyword).OrderBy(x => x).ToList();
 
-            var sentences = keywords
-                .SelectMany(x => x.Sentences)
-                .GroupBy(p => p.SentenceIndex)
-                .Select(g => g.FirstOrDefault())
-                .Distinct()
-                .OrderBy(x => x.SentenceIndex)
-                .ToList();
+            // PERFORMANCE: Use BinaryRelation.Sentences directly instead of deprecated keyword.Sentences
+            var sentences = binaryRelation.Sentences.OrderBy(x => x.SentenceIndex).ToList();
 
             string[,] matrix = new string[sentences.Count + 1, keywords.Count + 1];
 
@@ -60,7 +55,8 @@ namespace ConceptualBrowser.Business.Common
             {
                 for (int j = 0; j < sentences.Count; j++)
                 {
-                    if(sentences[j].KeywordNodes.Any(x => x.Keyword == keywords[i].Keyword))
+                    // PERFORMANCE: Use index-based KeywordIndexes instead of deprecated KeywordNodes
+                    if(sentences[j].KeywordIndexes.Contains(keywords[i].KeywordIndex))
                         matrix[j + 1, i + 1] = 1.ToString();
                     else
                         matrix[j + 1, i + 1] = 0.ToString();

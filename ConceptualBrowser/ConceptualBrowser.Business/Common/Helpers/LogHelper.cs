@@ -45,7 +45,8 @@ namespace ConceptualBrowser.Business.Common.Helpers
         {
             Console.Write(additionalMessage);
             Console.WriteLine("Keyword -  Value: " + keywordNode.Keyword + "\t" + keywordNode.KeywordIndex + "\t" + keywordNode.KeywordRank);
-            PrintSentences(keywordNode.Sentences);
+            // PERFORMANCE: Use SentenceIndexes instead of deprecated Sentences property
+            Console.WriteLine("Sentence Indexes: " + string.Join(", ", keywordNode.SentenceIndexes));
         }
         public static void PrintSentences(List<Sentence> sentences, string additionalMessage = "")
         {

@@ -40,7 +40,9 @@ namespace ConceptualBrowser.Business.Entities
             KeywordIndex = number;
             KeywordRank = rank;
             // PERFORMANCE OPTIMIZATION: Store both for backward compatibility during transition
+#pragma warning disable CS0618 // Type or member is obsolete
             Sentences = sentences;
+#pragma warning restore CS0618
             SentenceIndexes = new HashSet<int>(sentences.Select(s => s.SentenceIndex));
         }
 

@@ -17,6 +17,17 @@ namespace ConceptualBrowser.Business.Entities
         public string OriginalSentence { get; set; }
 
         /// <summary>
+        /// Category for numeric data analysis (e.g., "positive", "negative")
+        /// Only populated when processing numeric CSV files with a category column
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
+        /// Quick check for positive category (true = positive, false = negative/other)
+        /// </summary>
+        public bool IsPositive { get; set; }
+
+        /// <summary>
         /// PERFORMANCE OPTIMIZATION: Use indexes instead of full keyword objects to reduce memory usage
         /// </summary>
         public HashSet<int> KeywordIndexes { get; set; } = new HashSet<int>();
@@ -58,7 +69,9 @@ namespace ConceptualBrowser.Business.Entities
             Rank = rank;
             rank.CalculateRank();
             // PERFORMANCE OPTIMIZATION: Store both for backward compatibility during transition
+#pragma warning disable CS0618 // Type or member is obsolete
             KeywordNodes = keywords;
+#pragma warning restore CS0618
             KeywordIndexes = new HashSet<int>(keywords?.Select(k => k.KeywordIndex) ?? new List<int>());
         }
     }

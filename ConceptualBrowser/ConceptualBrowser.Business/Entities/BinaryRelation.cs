@@ -74,13 +74,27 @@ namespace ConceptualBrowser.Business.Entities
         {
             int tempTotalWords = 0;
             Sentences = new List<Sentence>();
+
+            // Check if we're using NumericAnalyzer to extract category information
+            var numericAnalyzer = TextAnalyzer as NumericAnalyzer;
+
             for (int i = 0; i < sentenceStringList.Count; i++)
             {
                 int[] ranks = new int[] { i + 1, i + 1 };
                 int[] totals = new int[] { (sentenceStringList.Count + 2) / 2, (sentenceStringList.Count + 2) / 2 };
                 Rank rank = new Rank(2, ranks, totals);
 
-                Sentences.Add(new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]));
+                var sentence = new Sentence(i, Constant.NotCovered, rank, sentenceStringList[i]);
+
+                // Set category information if processing numeric data
+                if (numericAnalyzer != null)
+                {
+                    var (category, isPositive) = numericAnalyzer.GetCategory(sentenceStringList[i]);
+                    sentence.Category = category;
+                    sentence.IsPositive = isPositive;
+                }
+
+                Sentences.Add(sentence);
             }
 
             TotalSentences = Sentences.Count;
@@ -100,7 +114,7 @@ namespace ConceptualBrowser.Business.Entities
             this.KeywordsRank();
             this.AddHighestRankKeywords();
 
-            KeywordsSentencesSum = Keywords.SelectMany(s => s.Sentences).Count();
+            KeywordsSentencesSum = Keywords.Sum(s => s.SentenceIndexes.Count);
             Console.WriteLine("KeywordsSentencesSum: " + KeywordsSentencesSum);
         }
 
@@ -175,9 +189,10 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < Sentences.Count; i++)
             {
                 Sentence sentence = Sentences[i];
-                for (int j = 0; j < sentence.KeywordNodes.Count; j++)
+                // PERFORMANCE: Use index-based lookup instead of deprecated KeywordNodes
+                foreach (int keywordIndex in sentence.KeywordIndexes)
                 {
-                    KeywordNode keywordNode = sentence.KeywordNodes[j];
+                    KeywordNode keywordNode = Keywords[keywordIndex];
 
                     if (keywordNode.KeywordRank < max)
                     {
@@ -215,12 +230,17 @@ namespace ConceptualBrowser.Business.Entities
 
         public void AppendToBinaryRelation(List<String> words, Sentence sentence)
         {
+            // NOTE: Must maintain both deprecated and new properties for algorithm compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
             sentence.KeywordNodes = new List<KeywordNode>();
             foreach (string word in words)
             {
                 //These temporary Variables are SUPER VARIABLES. DONT EVEN THINK TO REMOVE THEM. THIS WILL SKIP A LOT OF
                 //CONCEPTS. AND CAN TAKE FOR EVER TO UNDERSTAND!!!
                 Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.LastCoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence); // Why to create a tempSentence? -s refers to this variable
+                // Copy category information to the temporary sentence
+                tempSentence.Category = sentence.Category;
+                tempSentence.IsPositive = sentence.IsPositive;
                 String tempWord = word; //Why again? Why create tempVariables?? -k refers to this variable
 
 
@@ -232,10 +252,11 @@ namespace ConceptualBrowser.Business.Entities
 
                 if (keyword != null)
                 {
-                    //If the stram of the word already exists in the List of keywords with the Binary Relations Then 
+                    //If the stram of the word already exists in the List of keywords with the Binary Relations Then
 
                     //KeywordNode tempKeywordNode = Keywords.FirstOrDefault(v => v.Keyword == stem);
-                    if (!keyword.Sentences.Any( n => n.SentenceIndex == tempSentence.SentenceIndex)) 
+                    // PERFORMANCE: Use O(1) HashSet lookup instead of O(n) LINQ Any()
+                    if (!keyword.SentenceIndexes.Contains(tempSentence.SentenceIndex)) 
                     {
                         //If the word exists in the list of key words, then it checks if the word has any sentences that has a sentenceIndex
                         //that matches the sentence that word was found in (if not its probably repeated in the same sentence and ignored)... THEN
@@ -291,15 +312,21 @@ namespace ConceptualBrowser.Business.Entities
                     // Note: SentenceIndexes is already populated in KeywordNode constructor
                 }
             }
+#pragma warning restore CS0618
         }
 
         // PERFORMANCE OPTIMIZATION: Thread-safe version of AppendToBinaryRelation for parallel processing
         public void AppendToBinaryRelationThreadSafe(List<String> words, Sentence sentence)
         {
+            // NOTE: Must maintain both deprecated and new properties for algorithm compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
             sentence.KeywordNodes = new List<KeywordNode>();
             foreach (string word in words)
             {
                 Sentence tempSentence = new Sentence(sentence.SentenceIndex, sentence.LastCoveredByConceptNumber, sentence.Rank, sentence.KeywordNodes, sentence.OriginalSentence);
+                // Copy category information to the temporary sentence
+                tempSentence.Category = sentence.Category;
+                tempSentence.IsPositive = sentence.IsPositive;
                 String tempWord = word;
 
                 String stem = TextAnalyzer.Stem(tempWord.ToLower());
@@ -315,11 +342,8 @@ namespace ConceptualBrowser.Business.Entities
                 if (keyword != null)
                 {
                     // Check if sentence already exists (thread-safe)
-                    bool sentenceExists = false;
-                    lock (keyword)
-                    {
-                        sentenceExists = keyword.Sentences.Any(n => n.SentenceIndex == tempSentence.SentenceIndex);
-                    }
+                    // PERFORMANCE: Use O(1) HashSet lookup instead of O(n) LINQ Any()
+                    bool sentenceExists = keyword.SentenceIndexes.Contains(tempSentence.SentenceIndex);
 
                     if (!sentenceExists)
                     {
@@ -383,6 +407,7 @@ namespace ConceptualBrowser.Business.Entities
                     sentence.KeywordIndexes.Add(temp.KeywordIndex);
                 }
             }
+#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -391,7 +416,8 @@ namespace ConceptualBrowser.Business.Entities
         /// <returns></returns>
         public int GetTupleCount()
         {
-            return Keywords.ToList().Sum(k => k.Sentences.Count);
+            // PERFORMANCE: Use O(1) HashSet Count instead of deprecated Sentences list
+            return Keywords.Sum(k => k.SentenceIndexes.Count);
         }
 
         public void MarkAsCovered(List<int[]> tuples, int current)
@@ -401,6 +427,9 @@ namespace ConceptualBrowser.Business.Entities
             {
                 int[] pair = tuples[i];
                 KeywordNode keyword = Keywords[pair[0]];
+
+                // NOTE: Must update keyword.Sentences copies to match how ExtractConcepts checks them
+#pragma warning disable CS0618 // Type or member is obsolete
                 //LogHelper.PrintKeyword(keyword, "Marked As Covered: ");
                 if (keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber == -1) //THis Part is important as it is used for Randomizations!
                 {
@@ -410,6 +439,7 @@ namespace ConceptualBrowser.Business.Entities
 
                 keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).LastCoveredByConceptNumber = current;
                 keyword.Sentences.FirstOrDefault(n => n.SentenceIndex == pair[1]).CovertedbyConceptNumbers.Add(current); //Added to keep track of concept numbers
+#pragma warning restore CS0618
             }
         }
 

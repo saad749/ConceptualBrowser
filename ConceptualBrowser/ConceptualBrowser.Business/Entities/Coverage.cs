@@ -70,7 +70,8 @@ namespace ConceptualBrowser.Business.Entities
         private void ExtractConcepts(double coveragePercentage, BackgroundWorker backgroundWorker)
         {
             List<KeywordNode> keywords = BinaryRelation.Keywords.ToList();
-            var sentencesCount = keywords.SelectMany(x => x.Sentences).Count();
+            // PERFORMANCE: Use index-based count instead of deprecated Sentences property
+            var sentencesCount = keywords.Sum(x => x.SentenceIndexes.Count);
 
             // PERFORMANCE OPTIMIZATION: Cache calculations and add early termination
             int targetCoverage = (int)(sentencesCount * coveragePercentage);
@@ -92,7 +93,11 @@ namespace ConceptualBrowser.Business.Entities
 
             foreach (KeywordNode keyword in keywords)
             {
+                // NOTE: Must use keyword.Sentences (not SentenceIndexes) to maintain algorithm behavior
+                // The sentence copies in keyword.Sentences are updated independently by MarkAsCovered
+#pragma warning disable CS0618 // Type or member is obsolete
                 List<Sentence> sentences = keyword.Sentences;
+#pragma warning restore CS0618
                 foreach (Sentence sentence in sentences)
                 {
                     if (sentence.LastCoveredByConceptNumber < 0)
@@ -134,7 +139,10 @@ namespace ConceptualBrowser.Business.Entities
                     // PERFORMANCE OPTIMIZATION: Only recalculate coverage periodically
                     if (processedCount % progressReportInterval == 0)
                     {
+                        // NOTE: Must count using keyword.Sentences to match how MarkAsCovered updates them
+#pragma warning disable CS0618 // Type or member is obsolete
                         coveredSentences = keywords.SelectMany(x => x.Sentences).Count(x => x.LastCoveredByConceptNumber >= 0);
+#pragma warning restore CS0618
 
                         if (backgroundWorker != null)
                             backgroundWorker.ReportProgress((int)(coveredSentences * 100.0 / targetCoverage));
@@ -148,7 +156,9 @@ namespace ConceptualBrowser.Business.Entities
                 // PERFORMANCE OPTIMIZATION: Check coverage less frequently
                 if (processedCount % (progressReportInterval * 10) == 0)
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     var coverage = keywords.SelectMany(x => x.Sentences).Count(x => x.LastCoveredByConceptNumber >= 0);
+#pragma warning restore CS0618
                     if (coverage >= targetCoverage)
                         return;
                 }
@@ -175,7 +185,10 @@ namespace ConceptualBrowser.Business.Entities
                 var uncoveredSentences = new List<(KeywordNode keyword, Sentence sentence)>();
                 foreach (KeywordNode keyword in batch)
                 {
+                    // NOTE: Must use keyword.Sentences to maintain algorithm behavior
+#pragma warning disable CS0618 // Type or member is obsolete
                     List<Sentence> sentences = keyword.Sentences;
+#pragma warning restore CS0618
                     foreach (Sentence sentence in sentences)
                     {
                         if (sentence.LastCoveredByConceptNumber < 0)
@@ -212,8 +225,10 @@ namespace ConceptualBrowser.Business.Entities
                     }
 
                     // Check coverage
+#pragma warning disable CS0618 // Type or member is obsolete
                     var coveredSentences = keywords.SelectMany(x => x.Sentences)
                         .Count(x => x.LastCoveredByConceptNumber >= 0);
+#pragma warning restore CS0618
 
                     if (backgroundWorker != null)
                         backgroundWorker.ReportProgress((int)(coveredSentences * 100.0 / targetCoverage));
@@ -317,8 +332,6 @@ namespace ConceptualBrowser.Business.Entities
                 int tempSentenceIndex = -1;
                 int[] pr = { keywordIndex, sentenceIndex };//list of originally calculate tuples
                 Pairs.Add(pr);
-                // PERFORMANCE OPTIMIZATION: Add early termination for very small gains
-                const double minimalGainThreshold = 0.0001;
 
                 for (int t = 0; t < tuple.Count; t++)
                 {
@@ -350,11 +363,9 @@ namespace ConceptualBrowser.Business.Entities
                     KeywordNode tempKeyword = this.BinaryRelation.Keywords[keywordIndex];
                     List<KeywordNode> tempKeywords = new List<KeywordNode> { tempKeyword };
 
-                    //List<Sentence> tempSentences = new List<Sentence>();
-                    List<Sentence> tempSentences = tempKeyword.Sentences.Where(w => w.SentenceIndex == sentenceIndex).ToList(); // Shouldnt we add all the sentences?? Although this doesnt makes a difference! //It doesnt matters because each keyword will have the same sentenceIndex only Once. So no real need to of ToList();
-                    //LogHelper.PrintSentence(tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u), "ExtractOptimalConcept - ");
-                    //Sentence sentence = tempKeyword.Sentences.FirstOrDefault(w => w.SentenceIndex == u);// getURLNodeHasNo(u);
-                    //tempSentences.Add(sentence);
+                    // PERFORMANCE: Use direct index lookup instead of deprecated Sentences property
+                    // Each keyword can only have a sentence index once, so direct lookup is equivalent
+                    List<Sentence> tempSentences = new List<Sentence> { this.BinaryRelation.Sentences[sentenceIndex] };
 
 
 

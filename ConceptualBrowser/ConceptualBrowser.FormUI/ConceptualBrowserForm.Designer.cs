@@ -476,7 +476,7 @@
             this.nudPrecision.TabIndex = 18;
             this.nudPrecision.Minimum = -10;
             this.nudPrecision.Maximum = 10;
-            this.nudPrecision.Value = -4;
+            this.nudPrecision.Value = 0;
             ((System.ComponentModel.ISupportInitialize)(this.nudPrecision)).EndInit();
             //
             // ConceptualBrowserForm

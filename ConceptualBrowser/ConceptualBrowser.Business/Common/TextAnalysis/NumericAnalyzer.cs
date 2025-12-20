@@ -225,6 +225,31 @@ namespace ConceptualBrowser.Business.Common.TextAnalysis
         }
 
         /// <summary>
+        /// Gets the category information for a CSV row.
+        /// Returns (category string, isPositive bool).
+        /// </summary>
+        /// <param name="sentence">A CSV row</param>
+        /// <returns>Tuple of (category value, whether it's positive)</returns>
+        public (string Category, bool IsPositive) GetCategory(string sentence)
+        {
+            var values = ParseCsvLine(sentence);
+
+            if (values.Count == 0)
+                return (null, false);
+
+            int catIndex = _categoryColumnIndex >= 0 ? _categoryColumnIndex : values.Count - 1;
+
+            if (catIndex < values.Count)
+            {
+                string category = values[catIndex].Trim();
+                bool isPositive = PositiveValues.Contains(category);
+                return (category, isPositive);
+            }
+
+            return (null, false);
+        }
+
+        /// <summary>
         /// Stems a numeric value using the configured precision.
         /// </summary>
         public string Stem(double value)

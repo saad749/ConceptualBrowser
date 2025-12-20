@@ -41,6 +41,12 @@ namespace ConceptualBrowser.FormUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ExtractionLanguageCode { get; set; }
 
+        /// <summary>
+        /// Index of the last sentence in the text (used for highlighting test/special sentence)
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int LastSentenceIndex { get; set; } = -1;
+
         public ConceptualBrowserForm()
         {
             InitializeComponent();
@@ -137,6 +143,15 @@ namespace ConceptualBrowser.FormUI
                 TreeNode newNode = nodesCollection.Add(optimal.OptimalConcept.ConceptName + " (" + optimal.OptimalConcept.Gain + ")");//, optimal.Name);
                 newNode.Tag = optimal.Id;
 
+                // Highlight concepts that contain the last (test/special) sentence
+                if (LastSentenceIndex >= 0 &&
+                    optimal.OptimalConcept.Sentences != null &&
+                    optimal.OptimalConcept.Sentences.Any(s => s.SentenceIndex == LastSentenceIndex))
+                {
+                    newNode.ForeColor = Color.Green;
+                    newNode.NodeFont = new Font(treeViewBrowser.Font, FontStyle.Bold);
+                }
+
                 FillNode(optimals, newNode);
             }
         }
@@ -147,6 +162,31 @@ namespace ConceptualBrowser.FormUI
             string textSample = text.Substring(0, sampleStringLength);
             var detectedLanguage = LanguageDetection.DetectLanguage(textSample).Result;
             return detectedLanguage;
+        }
+
+        /// <summary>
+        /// Calculates the index of the last sentence in the text for special highlighting.
+        /// </summary>
+        private void CalculateLastSentenceIndex()
+        {
+            if (string.IsNullOrEmpty(FileText))
+            {
+                LastSentenceIndex = -1;
+                return;
+            }
+
+            ITextAnalyzer textAnalyzer;
+            if (ExtractionLanguageCode == Stemmers.NumericCode)
+            {
+                textAnalyzer = new NumericAnalyzer(NumericPrecision);
+            }
+            else
+            {
+                textAnalyzer = new TextAnalyzer(ExtractionLanguageCode ?? Language.Part3);
+            }
+
+            var sentences = textAnalyzer.GetSentences(FileText);
+            LastSentenceIndex = sentences.Count - 1;
         }
 
         private void treeViewBrowser_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -175,23 +215,27 @@ namespace ConceptualBrowser.FormUI
 
                 for (int i = 0; i < sentences.Count; i++)
                 {
+                    // Determine color: Green for last (test) sentence, DarkBlue for covered, Black for others
+                    bool isLastSentence = (i == LastSentenceIndex);
+                    Color sentenceColor = isLastSentence ? Color.Green : (coveringSentenceNumbers.Contains(i) ? Color.DarkBlue : Color.Black);
+
                     if (coveringSentenceNumbers.Contains(i))
                     {
-                        AppendText(txtText, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
-                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
-                        AppendText(txtSummary, i + ": ", Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
-                        AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, Color.DarkBlue, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
-
+                        AppendText(txtText, i + ": ", sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtSummary, i + ": ", sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtSummary, sentences[i].Trim() + Environment.NewLine, sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                     else
                     {
-                        AppendText(txtText, i + ": ", Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
-                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, Color.Black, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
+                        AppendText(txtText, i + ": ", sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
+                        AppendText(txtText, sentences[i].Trim() + "." + Environment.NewLine, sentenceColor, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Regular));
                     }
                 }
 
                 AppendText(txtSummary, Environment.NewLine +
                                             "Gain: " + optimal.OptimalConcept.Gain.ToString() + Environment.NewLine +
+                                            "Category: " + optimal.OptimalConcept.Category + "(P:" + optimal.OptimalConcept.PositiveCount + "/N:" + optimal.OptimalConcept.NegativeCount + ")"  + Environment.NewLine +
                                             "Keywords: " + optimal.OptimalConcept.Keywords.Count.ToString() + Environment.NewLine +
                                             "Sentences: " + optimal.OptimalConcept.Sentences.Count.ToString() + Environment.NewLine,
                                             Color.DarkGreen, new Font(FontFamily.GenericSansSerif, FontSize, FontStyle.Bold));
@@ -300,6 +344,9 @@ namespace ConceptualBrowser.FormUI
 
         private void bgwExtraction_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            // Calculate the last sentence index for highlighting
+            CalculateLastSentenceIndex();
+
             FillNode(OptimalTree, null);
             pbMain.Value = 100;
             var timeTaken = "";
@@ -441,6 +488,10 @@ namespace ConceptualBrowser.FormUI
                             sentences.Add(sentence);
                         }
 
+                        // Set extraction language code and calculate last sentence index for highlighting
+                        ExtractionLanguageCode = Language.Part3;
+                        CalculateLastSentenceIndex();
+
                         FillNode(OptimalTree, null);
                         //MessageBox.Show("Extraction Completed!", "Success!");
                         fileToolStripMenuItem.Enabled = true;
@@ -579,9 +630,8 @@ namespace ConceptualBrowser.FormUI
 
                 foreach (var keyword in allKeywords)
                 {
-                    // Check if this sentence contains this keyword
-                    bool hasKeyword = sentence.KeywordIndexes.Contains(keyword.KeywordIndex) ||
-                                      sentence.KeywordNodes.Any(k => k.Keyword == keyword.Keyword);
+                    // Check if this sentence contains this keyword (using index-based lookup)
+                    bool hasKeyword = sentence.KeywordIndexes.Contains(keyword.KeywordIndex);
                     sb.Append(hasKeyword ? "1," : "0,");
                 }
                 sb.AppendLine();

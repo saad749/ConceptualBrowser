@@ -50,12 +50,10 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < binaryRelation.Keywords.Count; i++)
             {
                 KeywordNode keyword = binaryRelation.Keywords[i];
-                List<int> tempSentenceIndexes = keyword.Sentences.Select(t => t.SentenceIndex).ToList();
+                // PERFORMANCE: Use index-based SentenceIndexes instead of deprecated Sentences property
+                List<int> tempSentenceIndexes = keyword.SentenceIndexes.ToList();
                 EquivalentNode nodes = new EquivalentNode(i, tempSentenceIndexes);
                 Keywords.Add(nodes);
-                //KeywordsSentencesDictionary.Add(i, keyword.SentenceIndexes);
-                
-
             }
             TupleCount = binaryRelation.GetTupleCount();
             SentenceCount = binaryRelation.TotalResults;
@@ -95,16 +93,8 @@ namespace ConceptualBrowser.Business.Entities
             Sentences.Clear();
             foreach (Sentence sentence in sentences)
             {
-                List<int> tempKeywordIndexes = new List<int>();
-                //Added Keywords to the Sentence List while creating Binary Relation This avoids going through each keywords and checking all the sentences that 
-                //IF a given sentence index is available in the list or not.
-                //THis is visible in the line below and the commented out code
-                tempKeywordIndexes = sentence.KeywordNodes.Select(k => k.KeywordIndex).ToList();
-                //foreach (EquivalentNode equivalentNode in Keywords)
-                //{
-                //    if (equivalentNode.Indexes.Contains(sentence.SentenceIndex))
-                //        tempKeywordIndexes.Add(equivalentNode.Index);
-                //}
+                // PERFORMANCE: Use index-based KeywordIndexes instead of deprecated KeywordNodes property
+                List<int> tempKeywordIndexes = sentence.KeywordIndexes.ToList();
                 this.Sentences.Add(new EquivalentNode(sentence.SentenceIndex, tempKeywordIndexes));
             }
             SentenceCount = Sentences.Count;
@@ -332,6 +322,8 @@ namespace ConceptualBrowser.Business.Entities
             for (int i = 0; i < tempKeywords.Count; i++)
             {
                 KeywordNode keywordNode = tempKeywords[i];
+                // NOTE: Must use keyword.Sentences (copies) since MarkAsCovered updates those, not BinaryRelation.Sentences
+#pragma warning disable CS0618 // Type or member is obsolete
                 for (int j = 0; j < keywordNode.Sentences.Count; j++)
                 {
                     Sentence sentence = keywordNode.Sentences[j];
@@ -341,8 +333,9 @@ namespace ConceptualBrowser.Business.Entities
                         if (!tempSentences.Any(x => x.SentenceIndex == sentence.SentenceIndex))
                             tempSentences.Add(sentence);
                     }
-                    
+
                 }
+#pragma warning restore CS0618
             }
             return new OptimalConcept(currentConceptNo, gain, tempKeywords, tempSentences);
         }
