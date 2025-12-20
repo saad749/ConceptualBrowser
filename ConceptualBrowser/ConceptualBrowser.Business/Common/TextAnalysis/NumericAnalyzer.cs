@@ -123,7 +123,7 @@ namespace ConceptualBrowser.Business.Common.TextAnalysis
             if (values.Count == 0)
                 return tokens;
 
-            // Determine category column
+            // Category handling disabled - treat all columns as data - Enabled Now
             int catIndex = _categoryColumnIndex >= 0 ? _categoryColumnIndex : values.Count - 1;
 
             // Add category marker as a token
@@ -131,10 +131,10 @@ namespace ConceptualBrowser.Business.Common.TextAnalysis
             {
                 string category = values[catIndex].Trim();
                 bool isPositive = PositiveValues.Contains(category);
-                tokens.Add(isPositive ? "[+]" : "[-]");
+                //tokens.Add(isPositive ? "[+]" : "[-]"); -- No need to add category token as of now
             }
 
-            // Process each attribute value (except category)
+            // Process each attribute value (all columns now treated as data) -- Enabled Now
             int attrIndex = 0;
             for (int i = 0; i < values.Count; i++)
             {
